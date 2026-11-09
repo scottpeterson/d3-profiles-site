@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="darkreader-lock">
+<meta name="theme-color" content="#17325e">
+<meta name="robots" content="noindex">
+<meta name="description" content="Sign in to D3 WBB School Report Cards with the email you used at checkout.">
+<meta name="ste-allow" content="WBB">
+<title>Sign in: School Report Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="top"><div class="bar">
+  <a class="brand" href="index.html">D3 WBB School Report Cards</a>
+</div></header>
+
+<main class="page"><div class="wrap narrow stack">
+  <h1>Sign in</h1>
+  <p class="msg warn" id="msg" hidden></p>
+
+  <form class="card stack" id="form">
+    <label class="field" for="email">Email you used at checkout
+      <input class="text" type="email" id="email" autocomplete="email" required>
+    </label>
+    <div class="actions"><button class="btn primary" type="submit" id="send">Email me a sign-in link</button></div>
+    <p class="note">The link works once and expires after an hour. Open it on the device where you want to use the site.</p>
+  </form>
+
+  <div class="card stack" id="sent" hidden>
+    <p class="msg good" id="sentText"></p>
+    <p class="note">No email after a few minutes? Check your spam folder, then
+    <a href="signin.html" id="again">send another link</a>.</p>
+  </div>
+
+  <p class="note">To get access, <a href="index.html#buy">buy a year of access</a>.</p>
+</div></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="profiles-app.js"></script>
+<script>
+(async function () {
+  const P = window.PROFILES;
+  const params = new URLSearchParams(location.search);
+  const hash = new URLSearchParams(location.hash.replace(/^#/, ""));
+  const msg = document.getElementById("msg");
+  function warn(text) { msg.textContent = text; msg.hidden = false; }
+
+  if (P.configured === false) {
+    warn("The site is not connected to its database yet. Fill in config.js.");
+    document.getElementById("send").disabled = true;
+    return;
+  }
+
+  // Supabase sends an expired or reused link back here with an error.
+  if (hash.get("error")) {
+    warn("That sign-in link expired or was already used. Send yourself a new one.");
+  } else if (params.has("noaccess")) {
+    // Signed in, but the purchase ended or was refunded. Sign out so the
+    // visitor can try another email instead of bouncing back to the app.
+    await P.client.auth.signOut();
+    warn("That email has no active access. Access lasts 365 days from purchase. Sign in with another email, or buy a new year.");
+  } else if (params.has("signedout")) {
+    warn("You're signed out on this device.");
+  } else if (params.has("error")) {
+    warn("The school data did not load. Try again in a minute.");
+  } else if (await P.currentSession()) {
+    // A sign-in link lands here; once the session exists, open the app.
+    location.replace("app.html");
+    return;
+  }
+
+  document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const send = document.getElementById("send");
+    send.disabled = true;
+    const error = await P.sendLink(email, location.origin + location.pathname);
+    // Same message whether or not the email has an account, so nobody can
+    // use this form to learn who bought access.
+    if (error) console.warn("sign-in link:", error.message);
+    document.getElementById("sentText").textContent =
+      "If " + email + " has access, a sign-in link is on its way.";
+    document.getElementById("form").hidden = true;
+    document.getElementById("sent").hidden = false;
+  });
+})();
+</script>
+</body>
+</html>

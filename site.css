@@ -1,0 +1,110 @@
+/* Shared styles for the landing, sign-in, and thank-you pages. Tokens match
+   app.html (generate_school_profiles.py) so the product reads as one site. */
+:root {
+  --ink: #1a2230; --ink-2: #4a5568; --ink-3: #5f6b7a; --field-line: #7b8594;
+  --surface: #f5f7fa; --card: #ffffff; --line: #e3e8ef;
+  --accent: #1e5fd6; --accent-ink: #ffffff; --accent-soft: #e8effc; --accent-deep: #1a4fb4;
+  --head-a: #17325e; --head-b: #1e5fd6;
+  --good-bg: #e7f5ec; --good-ink: #1d5c33; --warn-bg: #fff4e0; --warn-ink: #6b4200;
+  --space: 16px;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--surface); color: var(--ink);
+       font: 16px/1.55 "IBM Plex Sans", system-ui, -apple-system, sans-serif; }
+a { color: var(--accent); }
+h1, h2, h3 { line-height: 1.25; margin: 0; }
+p, ul, ol { margin: 0; }
+
+header.top { background: linear-gradient(135deg, var(--head-a), var(--head-b)); color: #fff; }
+header.top .bar { max-width: 1080px; margin: 0 auto; padding: 14px 20px; display: flex;
+                  align-items: center; gap: 16px; }
+header.top .brand { font-weight: 600; font-size: 16px; color: #fff; text-decoration: none; margin-right: auto; }
+header.top a.signin { color: #fff; font-weight: 500; }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+.narrow { max-width: 520px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
+       padding: 10px 18px; border-radius: 8px; font: 600 16px/1.2 "IBM Plex Sans", system-ui, sans-serif;
+       text-decoration: none; cursor: pointer; border: 1px solid var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+.btn.secondary { background: var(--card); color: var(--accent); }
+.btn.secondary:hover { background: var(--accent-soft); }
+.btn[disabled] { opacity: .6; cursor: default; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+.hero { background: linear-gradient(135deg, var(--head-a), var(--head-b)); color: #fff; padding: 40px 0 48px; }
+.hero h1 { font-size: 32px; letter-spacing: -.02em; max-width: 760px; }
+.hero p.lead { font-size: 20px; max-width: 700px; margin-top: 14px; color: #e6edfb; }
+.hero .actions { margin-top: 24px; }
+.hero .btn.primary { background: #fff; color: var(--head-a); border-color: #fff; }
+.hero .btn.primary:hover { background: var(--accent-soft); border-color: var(--accent-soft); }
+.hero .btn.secondary { background: transparent; color: #fff; border-color: #fff; }
+.hero .btn.secondary:hover { background: rgba(255, 255, 255, .12); }
+.hero .terms { margin-top: 12px; font-size: 14px; color: #dbe5f9; }
+
+section.block { padding: 48px 0 0; }
+section.block > .wrap > h2 { font-size: 24px; letter-spacing: -.01em; }
+section.block > .wrap > p.intro { margin-top: 8px; color: var(--ink-2); max-width: 720px; }
+
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+.cards + .cards { margin-top: 16px; }
+.cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 900px) { .cards, .cards.two { grid-template-columns: 1fr; } }
+.card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 1px 2px rgba(16, 24, 40, .04); }
+.card > * + * { margin-top: 8px; }
+.card h3 { font-size: 20px; display: flex; align-items: center; gap: 10px; }
+.card p, .card li { color: var(--ink-2); font-size: 16px; }
+.card ul { padding-left: 18px; }
+.card li + li { margin-top: 4px; }
+.icon { flex: none; width: 36px; height: 36px; border-radius: 8px; background: var(--accent-soft);
+        color: var(--accent-deep); display: grid; place-items: center; }
+.icon svg { width: 20px; height: 20px; }
+
+dl.grades { margin: 20px 0 0; padding: 8px 20px; }
+dl.grades > div { display: grid; grid-template-columns: 200px 1fr; gap: 16px; padding: 12px 0; }
+dl.grades > div + div { border-top: 1px solid var(--line); }
+dl.grades dt { font-weight: 600; }
+dl.grades dd { margin: 0; color: var(--ink-2); }
+
+.buy { margin-top: 48px; }
+.buy .card { padding: 28px; }
+.buy h2 { font-size: 24px; }
+.buy .price { font-size: 32px; font-weight: 600; }
+.buy .actions { margin-top: 16px; }
+
+.faq { margin-top: 20px; display: grid; gap: 12px; }
+.faq details { background: var(--card); border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(16, 24, 40, .08); }
+.faq summary { font-weight: 600; cursor: pointer; }
+.faq details p { margin-top: 8px; color: var(--ink-2); }
+
+footer { margin-top: 56px; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 14px; }
+footer .wrap > * + * { margin-top: 6px; }
+
+/* Sign-in and thank-you pages */
+main.page { padding: 48px 0; }
+main.page h1 { font-size: 32px; }
+main.page .card { margin-top: 20px; padding: 24px; }
+label.field { display: block; font-weight: 600; font-size: 16px; }
+input.text { display: block; width: 100%; margin-top: 6px; min-height: 44px; padding: 10px 12px;
+             border: 1px solid var(--field-line); border-radius: 8px; font: 16px "IBM Plex Sans", system-ui, sans-serif;
+             color: var(--ink); background: var(--card); }
+input.text:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.note { color: var(--ink-2); font-size: 14px; }
+.msg { border-radius: 8px; padding: 12px 14px; font-size: 14px; border: 1px solid; }
+.msg.good { background: var(--good-bg); color: var(--good-ink); border-color: #6fae86; }
+.msg.warn { background: var(--warn-bg); color: var(--warn-ink); border-color: #c99a4a; }
+.stack > * + * { margin-top: 16px; }
+[hidden] { display: none !important; }
+
+@media (max-width: 640px) {
+  .wrap { padding: 0 16px; }
+  .hero { padding: 28px 0 32px; }
+  .hero h1 { font-size: 24px; }
+  .hero p.lead { font-size: 16px; }
+  section.block { padding-top: 36px; }
+  section.block > .wrap > h2 { font-size: 20px; }
+  dl.grades > div { grid-template-columns: 1fr; gap: 4px; }
+}

@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Grades for every D3 women's basketball program, with school filters and the source of every figure.">
+<meta name="color-scheme" content="light">
+<meta name="darkreader-lock">
+<meta name="theme-color" content="#17325e">
+<meta name="ste-allow" content="III">
+<title>D3 WBB School Report Cards</title>
+<style>
+  :root {
+    --ink: #1a2230; --ink-2: #4a5568; --ink-3: #5f6b7a; --field-line: #7b8594;
+    --surface: #f5f7fa; --card: #ffffff; --line: #e3e8ef;
+    --accent: #1e5fd6;
+    /* Grade chips: blue -> gray -> orange diverging scale. Letters are the
+       primary encoding; colors validated for CVD + normal-vision separation
+       and WCAG AA text contrast (dataviz validator, 2026-07-26). */
+    --chip-a-bg: #1e5fd6; --chip-a-ink: #ffffff;
+    --chip-b-bg: #7fadee; --chip-b-ink: #132a52;
+    --chip-c-bg: #d9dde3; --chip-c-ink: #3c4553;
+    --chip-d-bg: #eca75c; --chip-d-ink: #4d2a06;
+    --chip-f-bg: #b34e18; --chip-f-ink: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         color: var(--ink); background: var(--surface); }
+  header { background: linear-gradient(135deg, #17325e, #1e5fd6); color: #fff; padding: 22px 28px; }
+  header h1 { margin: 0 0 4px; font-size: 24px; }
+  header p { margin: 0; opacity: .85; font-size: 14px; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 16px 20px 60px; }
+
+  .filterBar { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+               margin: 0 0 12px; } /* 16px page padding above; 12px below, the card gap */
+  /* Ranking priorities stays in view beside the filters. Filter cards sit in rows of
+     similar height (tall, mid, short), so a row's cards line up without a short card
+     stretching to a tall one. */
+  .controlsWrap { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 12px;
+                  align-items: start; margin: 0 0 16px; }
+  .priorities { position: sticky; top: 12px; }
+  .controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .control { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+             padding: 14px 16px 16px; box-shadow: 0 1px 3px rgba(16,24,40,.06); }
+  .control h2 { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 600;
+                color: var(--ink); }
+  .cicon { flex: none; width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+           background: #e8effc; color: #1a4fb4; }
+  /* One vertical rhythm for everything inside a card: 8px between items, 16px above a
+     subhead, 6px between a subhead and its control. */
+  .control > * { margin: 0; }
+  .control > * + * { margin-top: 8px; }
+  .control > h2 + * { margin-top: 12px; }
+  .control > * + h3 { margin-top: 16px; }
+  .control > h3 + * { margin-top: 6px; }
+  .control .cnote { font-size: 12px; color: var(--ink-3); }
+  .control h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+  .weight { display: grid; grid-template-columns: 92px minmax(0, 1fr) 24px; gap: 8px; align-items: center;
+            font-size: 12px; color: var(--ink-2); }
+  .weight input { width: 100%; accent-color: var(--accent); }
+  .weight output { text-align: center; font-variant-numeric: tabular-nums; }
+  /* Checkboxes in aligned columns, two per row; a long label wraps under its own text. */
+  .checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; }
+  .checks.one { grid-template-columns: 1fr; }
+  .checks label { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: var(--ink-2);
+                  line-height: 1.35; }
+  .checks input { accent-color: var(--accent); margin: 1px 0 0; flex: none; }
+  .rangeRow { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
+  .rangeRow input[type=range] { width: 140px; accent-color: var(--accent); }
+  .control input[type=range] { background: transparent; }
+  #search { padding: 6px 10px; border: 1px solid var(--field-line); border-radius: 7px; font-size: 14px;
+            width: 100%; box-sizing: border-box; }
+  .control select { padding: 6px 40px 6px 8px; border: 1px solid var(--field-line); border-radius: 7px; font-size: 14px;
+           width: 100%; box-sizing: border-box; background-color: var(--card); color: var(--ink);
+           -webkit-appearance:none;appearance:none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%234a5568' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+           background-repeat: no-repeat; background-position: right 16px center; background-size: 12px 8px; }
+  .homeRow { display: flex; gap: 6px; }
+  #homeZip { padding: 6px 10px; border: 1px solid var(--field-line); border-radius: 7px;
+             font-size: 14px; width: 110px; }
+  #geoBtn { border: 1px solid var(--field-line); background: var(--card); border-radius: 7px;
+            font-size: 14px; padding: 4px 9px; cursor: pointer; }
+  #geoBtn:hover { border-color: var(--accent); }
+  #homeStatus { font-size: 12px; color: var(--ink-3); }
+  #resetAll { border: 1px solid #b3261e; border-radius: 8px; min-height: 32px;
+              background: #b3261e; color: #fff; font-size: 14px; font-weight: 600;
+              padding: 8px 12px; cursor: pointer; }
+  #resetAll:hover { background: #8f1e18; }
+  #account { font-size: 13px; color: var(--ink-2); margin-right: auto; }
+  #savePdf, #signOut { border: 1px solid var(--field-line); border-radius: 8px; min-height: 32px; background: var(--card);
+             color: var(--ink); font-size: 14px; font-weight: 600; padding: 8px 12px; cursor: pointer; }
+  #savePdf:hover, #signOut:hover { border-color: var(--accent); }
+  /* "i" buttons open the method notes and sources tagged with the card's topic. */
+  .control { position: relative; }
+  .control h2 .info { margin-left: auto; flex: none; width: 32px; height: 32px; border: 0; border-radius: 8px;
+                      background: transparent; color: var(--ink-3); display: grid; place-items: center; cursor: pointer; }
+  .control h2 .info:hover { background: #e8effc; color: #1a4fb4; }
+  .control h2 .info[aria-expanded="true"] { background: #1a4fb4; color: #fff; }
+  .control > .infoPop { position: absolute; z-index: 30; top: 54px; left: 8px; right: 8px; margin: 0;
+             max-height: 380px; overflow-y: auto; background: var(--card); border: 1px solid var(--field-line);
+             border-radius: 10px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(16,24,40,.18);
+             font-size: 12px; color: var(--ink-2); line-height: 1.45; }
+  .infoPop > * { margin: 0; }
+  .infoPop > * + * { margin-top: 8px; }
+  .infoPop h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); margin-top: 12px; }
+  .infoPop ul { padding-left: 16px; }
+  .infoPop li + li { margin-top: 4px; }
+  .infoPop a { color: var(--accent); }
+  #printView { display: none; }
+  @media print {
+    @page { size: letter landscape; margin: 0.45in; }
+    body { background: #fff; }
+    body > *:not(#printView) { display: none !important; }
+    #printView { display: block; color: #1a2230; font-size: 10.5px; line-height: 1.4;
+                 -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #printView h1 { font-size: 18px; margin: 0 0 4px; }
+    #printView h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; margin: 12px 0 4px; color: #5f6b7a; }
+    #printView p, #printView ul { margin: 0 0 4px; }
+    #printView ul { padding-left: 16px; }
+    #printView table { width: 100%; border-collapse: collapse; border: 0; overflow: visible; background: #fff; }
+    #printView thead th { position: static; background: #17325e; color: #fff; font-size: 9px; padding: 4px 3px; }
+    #printView td { padding: 3px; border-top: 1px solid #e3e8ef; font-size: 10px; }
+    #printView td.school { white-space: nowrap; font-weight: 600; }
+    #printView .num { text-align: center; }
+    #printView .chip { min-width: 22px; padding: 1px 4px; font-size: 9.5px; }
+    #printView tr { break-inside: avoid; }
+  }
+  .count { font-size: 12px; color: var(--ink-3); margin: 2px 0 8px; }
+
+  table { width: 100%; border-collapse: collapse; background: var(--card);
+          border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  thead th { position: sticky; top: 0; background: #17325e; color: #fff; font-size: 12px;
+             text-transform: uppercase; letter-spacing: .04em; padding: 9px 8px; text-align: left;
+             cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th:hover { background: #1d3f78; }
+  thead th .dir { opacity: .9; font-size: 12px; margin-left: 3px; }
+  thead th.num, td.num { text-align: center; }
+  tbody td { padding: 7px 8px; border-top: 1px solid var(--line); font-size: 14px;
+             vertical-align: middle; }
+  tbody tr:nth-child(even) { background: #fafbfd; }
+  tbody tr:hover { background: #eef3fb; }
+  .school { font-weight: 600; }
+  .flags { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+  .flag { padding: 1px 7px; border-radius: 6px; font-size: 12px; font-weight: 600;
+          white-space: nowrap; border: 1px solid currentColor; }
+  .flag.fail { background: #fdecea; color: #8a1c1c; }
+  .flag.hcm { background: #fff4e0; color: #6b4200; }
+  tr.asideHead td { background: var(--surface); font-weight: 600; font-size: 14px; color: var(--ink);
+                    padding: 12px 8px; cursor: default; }
+  tr.asideHead .sub { font-weight: 400; }
+  .schoolcell { display: flex; align-items: center; gap: 9px; }
+  .logo { width: 24px; height: 24px; object-fit: contain; flex: none; }
+  .sub { color: var(--ink-3); font-size: 12px; }
+  .chip { display: inline-block; min-width: 30px; padding: 2px 6px; border-radius: 6px;
+          font-weight: 600; font-size: 12px; text-align: center; }
+  .g-a { background: var(--chip-a-bg); color: var(--chip-a-ink); }
+  .g-b { background: var(--chip-b-bg); color: var(--chip-b-ink); }
+  .g-c { background: var(--chip-c-bg); color: var(--chip-c-ink); }
+  .g-d { background: var(--chip-d-bg); color: var(--chip-d-ink); }
+  .g-f { background: var(--chip-f-bg); color: var(--chip-f-ink); }
+  .empty { color: var(--ink-3); }
+  .tableScroll { overflow-x: auto; border-radius: 10px; }
+  .methodology { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+                 padding: 4px 16px; margin-top: 18px; font-size: 14px; color: var(--ink-2); }
+  .methodology summary { cursor: pointer; font-weight: 600; padding: 10px 0; color: var(--ink); }
+  tbody tr { cursor: pointer; }
+
+  /* Detail overlay (opens in-page; nothing leaves this file) */
+  #detail { position: fixed; inset: 0; z-index: 40; overflow-y: auto; background: var(--surface);
+            display: none; }
+  #detail.open { display: block; }
+  body.noscroll { overflow: hidden; }
+  .dwrap { max-width: 980px; margin: 0 auto; padding: 16px 18px 48px; }
+  .hback { border: 1px solid var(--field-line); background: var(--card); border-radius: 8px;
+           padding: 7px 14px; font-size: 14px; cursor: pointer; margin-bottom: 12px; }
+  .hero { border-radius: 14px; padding: 26px 30px; display: flex; align-items: center;
+          gap: 28px; filter: drop-shadow(0 3px 10px rgba(16,24,40,.25)); flex-wrap: wrap; }
+  .hero img { width: 120px; height: 120px; object-fit: contain; flex: none;
+              filter: drop-shadow(0 2px 8px rgba(0,0,0,.2)); }
+  .hero img.circle { background: #fff; border-radius: 50%; padding: 12px; }
+  .hero h2 { font-size: 32px; margin: 0; letter-spacing: -.02em; }
+  .hmascot { font-style: italic; opacity: .9; font-size: 16px; margin-top: 2px; }
+  .hsub { opacity: .88; font-size: 14px; margin-top: 8px; }
+  .dcard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-top: 16px;
+           box-shadow: 0 1px 3px rgba(16,24,40,.06); }
+  .dcard h3 { font-size: 16px; margin: 0 0 12px; }
+  .dcard table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  /* Stacked per-season tables share fixed column widths so their columns line up */
+  .dcard table.fixed { table-layout: fixed; }
+  .dcard table.fixed td { overflow-wrap: anywhere; }
+  .dcard th { text-align: left; font-size: 12px; text-transform: uppercase;
+              letter-spacing: .04em; color: var(--ink-3); padding: 4px 6px;
+              border-bottom: 1px solid var(--line); background: none; position: static; }
+  .dcard td { padding: 5px 6px; border-bottom: 1px solid var(--line); }
+  .dcard tr:last-child td { border-bottom: none; }
+  .dcard th.num, .dcard td.num { text-align: center; }
+  .dtwo { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+          gap: 16px; margin-top: 16px; }
+  .dtwo .dcard { margin-top: 0; }
+  .gradeStrip { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; }
+  .gsItem { text-align: center; }
+  .gsItem .chip { font-size: 16px; padding: 6px 15px; min-width: 52px; border-radius: 9px; }
+  .gsItem .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+                 color: var(--ink-3); margin-top: 7px; }
+  .gsItem .sub2 { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .bars { position: relative; display: flex; align-items: flex-end; gap: 8px;
+          padding-left: 36px; }
+  .bars .bar { flex: 1; display: flex; flex-direction: column; height: 134px;
+               justify-content: flex-end; align-items: center; }
+  .bars .rec { font-size: 12px; color: var(--ink-2); margin-bottom: 2px;
+               white-space: nowrap; }
+  .bars .fill { width: 100%; border-radius: 4px 4px 0 0; }
+  .bars .yr { font-size: 12px; color: var(--ink-3); margin-top: 4px; height: 14px; }
+  /* 0/50/100% win-percentage gridlines; bar plot area is exactly 100px tall */
+  .bars .gl { position: absolute; left: 36px; right: 0; border-top: 1px dashed var(--line); }
+  .bars .gl.mid { border-top-style: solid; border-color: #cdd5e0; }
+  .bars .gt { position: absolute; left: 0; width: 28px; text-align: right;
+              font-size: 12px; color: var(--ink-3); transform: translateY(50%); }
+  .statRow { display: flex; gap: 30px; flex-wrap: wrap; }
+  .stat .v { font-size: 20px; font-weight: 600; }
+  .stat .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+               color: var(--ink-3); margin-top: 2px; }
+  .note { font-size: 12px; color: var(--ink-3); margin-top: 10px; }
+
+  .pin { cursor: pointer; color: var(--ink-3); font-size: 16px; width: 26px; }
+  .pin.on { color: #d99000; }
+  #compareBar { display: none; align-items: center; gap: 8px; flex-wrap: wrap;
+                background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+                padding: 8px 12px; margin-bottom: 8px; font-size: 14px; }
+  #compareBar.show { display: flex; }
+  .cchip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line);
+           border-radius: 16px; padding: 3px 10px; }
+  .cchip img { width: 18px; height: 18px; object-fit: contain; }
+  .cchip b { cursor: pointer; color: var(--ink-3); }
+  #compareBtn { border: 0; background: var(--accent); color: #fff; border-radius: 8px;
+                padding: 6px 14px; font-size: 14px; cursor: pointer; }
+  #compareBtn:disabled { background: var(--ink-3); cursor: default; }
+  #clearPins { border: 1px solid var(--line); background: var(--card); color: var(--ink-2);
+               border-radius: 8px; padding: 5px 12px; font-size: 14px; cursor: pointer; }
+  #clearPins:hover { border-color: var(--accent); color: var(--accent); }
+  .cmp th { background: #17325e; }
+  .cmp th .cmphead { display: flex; flex-direction: column; align-items: center; gap: 6px;
+                     padding: 10px 6px; border-radius: 10px; cursor: pointer; min-width: 130px; }
+  .cmp th .cmphead img { width: 44px; height: 44px; object-fit: contain; }
+  .cmp td:first-child, .cmp th:first-child { text-align: left; font-weight: 600;
+                                             white-space: nowrap; }
+  .cmp td, .cmp th { text-align: center; }
+  .cmp td .best { font-weight: 600; }
+
+  #tip { position: fixed; z-index: 50; max-width: 320px; background: #1a2230; color: #f2f5f9;
+         font-size: 12px; line-height: 1.45; text-transform: none; letter-spacing: normal;
+         white-space: pre-line;
+         padding: 9px 11px; border-radius: 8px; box-shadow: 0 4px 14px rgba(16,24,40,.35);
+         pointer-events: none; display: none; }
+
+  @media (max-width: 1180px) { .controls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .controlsWrap { grid-template-columns: 1fr; } .priorities { position: static; } }
+  /* Phones: keep the school in view while the stats swipe underneath it */
+  @media (max-width: 720px) {
+    header { padding: 16px 14px; }
+    header h1 { font-size: 20px; }
+    .wrap { padding: 10px 8px 40px; }
+    .controlsWrap, .controls { grid-template-columns: 1fr; }
+    .priorities { position: static; }
+    .filterBar { flex-wrap: wrap; }
+    /* border-collapse and the table's own overflow:hidden (rounded corners)
+       both break sticky cells in Chrome. Trade the corners for stickiness */
+    table { border-collapse: separate; border-spacing: 0; overflow: visible; }
+    thead th:nth-child(2), tbody td:nth-child(2) {
+      position: sticky; left: 0; z-index: 5; }
+    thead th:nth-child(2) { z-index: 6; }
+    tbody td:nth-child(2) { background: var(--card);
+      box-shadow: 2px 0 4px rgba(16,24,40,.06); max-width: 150px; }
+    tbody tr:nth-child(even) td:nth-child(2) { background: #fafbfd; }
+    tbody tr:hover td:nth-child(2) { background: #eef3fb; }
+    .hero { padding: 18px; gap: 16px; }
+    .hero img { width: 80px; height: 80px; }
+    .hero img.circle { padding: 8px; }
+    .hero h2 { font-size: 24px; }
+    .dwrap { padding: 10px 8px 40px; }
+    .dcard { padding: 14px 12px; }
+    .gradeStrip { gap: 20px; }
+    .bars { gap: 4px; }
+    .bars .rec { font-size: 12px; }
+    #detail .dcard { overflow-x: auto; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="profiles-app.js"></script>
+</head>
+<body>
+<header>
+  <h1>D3 Women's Basketball: School Report Cards</h1>
+  <p>411 programs · window 2018-2027 · recency-weighted · set your priorities and the ranking rebuilds for you</p>
+</header>
+<div class="wrap">
+
+<div class="filterBar">
+  <span id="account"></span><button type="button" id="signOut">Sign out</button><button type="button" id="savePdf">Save top 20 as PDF</button>
+  <button type="button" id="resetAll">Reset everything</button>
+</div>
+<div class="controlsWrap">
+  <section data-topic="priorities" class="control priorities">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>Ranking priorities</h2>
+    <p class="cnote">Set a grade to 0 to drop it from the ranking.</p>
+    <div class="weight"><span>Reg. season</span><input type="range" id="w-reg" min="0" max="10" value="5"><output id="o-reg">5</output></div>
+    <div class="weight"><span>Tournament</span><input type="range" id="w-trn" min="0" max="10" value="5"><output id="o-trn">5</output></div>
+    <div class="weight"><span>Coaching stability</span><input type="range" id="w-coach" min="0" max="10" value="5"><output id="o-coach">5</output></div>
+    <div class="weight"><span>Roster stability</span><input type="range" id="w-roster" min="0" max="10" value="5"><output id="o-roster">5</output></div>
+    <div class="weight"><span>Academics</span><input type="range" id="w-acad" min="0" max="10" value="5"><output id="o-acad">5</output></div>
+    <div class="weight"><span>Player development</span><input type="range" id="w-dev" min="0" max="10" value="5"><output id="o-dev">5</output></div>
+    <div class="weight"><span>Athletic dept.</span><input type="range" id="w-ath" min="0" max="10" value="5"><output id="o-ath">5</output></div>
+    <div class="weight"><span>Net price</span><input type="range" id="w-cost" min="0" max="10" value="5"><output id="o-cost">5</output></div>
+    <div class="weight"><span>School finances</span><input type="range" id="w-health" min="0" max="10" value="5"><output id="o-health">5</output></div>
+  </section>
+<div class="controls">
+  <section data-topic="location" class="control tall">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-11a6.5 6.5 0 0 1 13 0c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></span>Location</h2>
+    <h3>Region</h3>
+    <div class="checks" id="regionChecks"></div>
+    <h3>Campus setting</h3>
+    <div class="checks one" id="settingChecks">
+      <label><input type="checkbox" value="city" checked> City</label>
+      <label><input type="checkbox" value="suburb" checked> Suburb</label>
+      <label><input type="checkbox" value="townNear" checked> Town near a city</label>
+      <label><input type="checkbox" value="townRemote" checked> Distant or remote town</label>
+      <label><input type="checkbox" value="ruralNear" checked> Rural near a city</label>
+      <label><input type="checkbox" value="ruralRemote" checked> Distant or remote rural</label>
+    </div>
+    <h3>Near a city of</h3>
+    <select id="citySize">
+      <option value="0">50,000+ people</option>
+      <option value="1">100,000+ people</option>
+      <option value="2" selected>250,000+ people</option>
+      <option value="3">1,000,000+ people</option>
+    </select>
+    <h3>Max miles to a city that size</h3>
+    <div class="rangeRow"><input type="range" id="cityMi" min="10" max="160" step="10" value="160"><span id="cityMiLabel">Any</span></div>
+  </section>
+  <section data-topic="graduate" class="control tall">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5l10-5 10 5-10 5z"/><path d="M6 11.5v4.5c3.2 2.2 8.8 2.2 12 0v-4.5M22 9.5v5.5"/></svg></span>Graduate study</h2>
+    <p class="cnote">A name with College or University does not tell you whether a school offers graduate degrees.</p>
+    <h3>Highest degree offered</h3>
+    <div class="checks" id="degreeChecks">
+      <label><input type="checkbox" value="Bachelor's" checked> Bachelor's only</label>
+      <label><input type="checkbox" value="Master's" checked> Up to a master's</label>
+      <label><input type="checkbox" value="Doctorate" checked> Doctorate</label>
+    </div>
+    <h3>Awards a master's in</h3>
+    <select id="gradField"><option value="">Any field, or none</option></select>
+    <p class="cnote">The federal survey behind this filter does not track combined bachelor's and master's programs, often called 4+1 programs. Check the school's catalog for those.</p>
+  </section>
+  <section data-topic="majors" class="control tall">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="18" r="1.2"/></svg></span>Majors</h2>
+    <p class="cnote">Show only schools that award bachelor's degrees in every field you check.</p>
+    <div class="checks" id="majorChecks"></div>
+  </section>
+  <section data-topic="find" class="control mid">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></span>Find a school</h2>
+    <h3>Name, conference, or mascot</h3>
+    <input type="search" id="search" placeholder="School, conference, or mascot…">
+    <h3>State</h3>
+    <select id="state"><option value="">Any state</option></select>
+    <h3>Distance from home</h3>
+    <div class="homeRow">
+      <input type="text" id="homeZip" inputmode="numeric" maxlength="5" placeholder="Home ZIP">
+      <button type="button" id="geoBtn" title="Use my location">&#128205;</button>
+    </div>
+    <div class="rangeRow"><input type="range" id="dist" min="50" max="1550" step="50" value="1550"><span id="distLabel">Any</span></div>
+    <div id="homeStatus"></div>
+  </section>
+  <section data-topic="finances" class="control mid">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 16.5V12M12 16.5V8M17 16.5V4.5"/></svg></span>School finances</h2>
+    <h3>Undergrad enrollment, 2013 to 2023</h3>
+    <select id="enrollChg">
+      <option value="">Any change</option>
+      <option value="-25">Fell less than 25%</option>
+      <option value="-10">Fell less than 10%</option>
+      <option value="0">Grew or held</option>
+    </select>
+    <h3>Federal oversight</h3>
+    <div class="checks one" id="fedChecks">
+      <label><input type="checkbox" value="fail"> Set aside a failing composite score</label>
+      <label><input type="checkbox" value="hcm"> Set aside Heightened Cash Monitoring</label>
+    </div>
+    <p class="cnote">Set-aside schools move below the table with their flag and leave the Overall grade.</p>
+    <p class="cnote">Public schools get no composite score. The Department of Education scores only private schools.</p>
+  </section>
+  <section data-topic="school" class="control mid">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5M5.5 10v8M10 10v8M14 10v8M18.5 10v8M3 20.5h18"/></svg></span>School</h2>
+    <h3>School type</h3>
+    <div class="checks" id="controlChecks">
+      <label><input type="checkbox" value="Public" checked> Public</label>
+      <label><input type="checkbox" value="Private" checked> Private</label>
+    </div>
+    <h3>Student body</h3>
+    <div class="checks" id="genderChecks">
+      <label><input type="checkbox" value="Women" checked> Women's college</label>
+      <label><input type="checkbox" value="Coed" checked> Coed</label>
+    </div>
+    <h3>Size, undergrad and grad</h3>
+    <div class="checks" id="sizeChecks">
+      <label><input type="checkbox" value="xs" checked> &lt; 1,000</label>
+      <label><input type="checkbox" value="s" checked> 1,000-3,000</label>
+      <label><input type="checkbox" value="m" checked> 3,000-10,000</label>
+      <label><input type="checkbox" value="l" checked> &gt; 10,000</label>
+    </div>
+  </section>
+  <section data-topic="cost" class="control short">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.3c-.5-.9-1.5-1.4-2.8-1.4-1.6 0-2.8.8-2.8 1.9 0 2.6 5.6 1.4 5.6 4.2 0 1.1-1.2 2-2.8 2-1.3 0-2.4-.5-2.9-1.5M12 6v12"/></svg></span>Cost</h2>
+    <h3>Family income</h3>
+    <select id="income">
+      <option value="">All families</option>
+      <option value="0">$0 to $30,000</option>
+      <option value="1">$30,001 to $48,000</option>
+      <option value="2">$48,001 to $75,000</option>
+      <option value="3">$75,001 to $110,000</option>
+      <option value="4">Over $110,000</option>
+    </select>
+    <h3>Max net price</h3>
+    <div class="rangeRow"><input type="range" id="netMax" min="5000" max="60000" step="2500" value="60000"><span id="netMaxLabel">Any</span></div>
+    <h3>Max tuition and fees</h3>
+    <div class="rangeRow"><input type="range" id="tuition" min="10000" max="70000" step="2500" value="70000"><span id="tuitionLabel">Any</span></div>
+  </section>
+  <section data-topic="athletics" class="control short">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5.5a2.5 2.5 0 0 0 2.6 3.6M16 6h2.5a2.5 2.5 0 0 1-2.6 3.6M12 13v3.5M8.5 20h7M10 16.5h4V20h-4z"/></svg></span>Basketball and athletics</h2>
+    <h3>Min NCAA trips, last 10 years</h3>
+    <div class="rangeRow"><input type="range" id="ncaa" min="0" max="9" step="1" value="0"><span id="ncaaLabel">Any</span></div>
+    <h3>Directors' Cup, all sports</h3>
+    <select id="cupTop">
+      <option value="0">Any finish</option>
+      <option value="25">Top 25</option>
+      <option value="50">Top 50</option>
+      <option value="100">Top 100</option>
+      <option value="200">Top 200</option>
+    </select>
+  </section>
+  <section data-topic="academics" class="control short">
+    <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5c3-1 6-.7 9 1.2 3-1.9 6-2.2 9-1.2V19c-3-1-6-.7-9 1.2-3-1.9-6-2.2-9-1.2z"/><path d="M12 6.7v13.5"/></svg></span>Academics</h2>
+    <h3>Max acceptance rate</h3>
+    <div class="rangeRow"><input type="range" id="accept" min="10" max="100" step="5" value="100"><span id="acceptLabel">Any</span></div>
+    <h3>Min first-year retention</h3>
+    <div class="rangeRow"><input type="range" id="retMin" min="50" max="95" step="5" value="50"><span id="retMinLabel">Any</span></div>
+  </section>
+</div>
+</div>
+
+<div id="compareBar"></div>
+<div class="count" id="count"></div>
+<div class="tableScroll">
+<table>
+  <thead><tr>
+    <th data-tip="Pin up to three schools, then compare them side by side.">&#9734;</th>
+    <th class="num" data-key="score" data-tip="Rank under your current priorities and filters. Click any column header to sort by it.">#</th>
+    <th data-key="team" data-tip="Program, conference, and campus location.">School</th>
+    <th class="num" data-key="score" data-tip="Your nine priority weights applied to the component scores.
+Each component is measured in standard deviations from the D3 average.
+Re-graded against the schools that match your filters.
+
+Move the sliders to re-rank.">Overall</th>
+    <th class="num" data-key="reg" data-tip="Win percentage in each of the last 10 seasons, plus a bonus for making the NCAA field.
+Recent seasons count more: each season back counts about 78% of the one after it.
+
+Graded by distance from the D3 average, so outlier programs stand apart.">Reg. Season</th>
+    <th class="num" data-key="trn" data-tip="NCAA tournament wins and how deep each run went, over the last 10 tournaments.
+Recent tournaments count more.
+
+Source: NCAA tournament results, 1982 to present.">Tourn.</th>
+    <th class="num" data-key="coach" data-tip="Stability of the head-coaching position.
+• Current head coach's tenure in seasons.
+• Minus a penalty for every head-coaching change in the last 10 years.
+A vacant position scores as zero tenure.
+
+Stability usually signals overall program health.
+A coach's effect shows more in competitive success, roster stability, and development.
+No grade here covers personality or coaching style.
+
+Source: head-coach history back to each program's first season.">Coaching</th>
+    <th class="num" data-key="roster" data-tip="Two measures:
+• Retention, two thirds: the share of non-senior minutes that came back. Losing a 500-minute starter counts far more than bench churn.
+• Freshman share of team minutes, one third, pooled over the last three seasons.
+Seniors and grad students who leave count as graduations.
+
+Caveat: class years come from team roster pages.
+We cannot tell whether they mean academic class or athletic eligibility.
+A listed junior who graduated, or who left to focus on academics, counts as an early departure.
+See the method notes.">Roster</th>
+    <th class="num" data-key="acad" data-tip="Graduation rate, 60%.
+Selectivity from the acceptance rate, 40%.
+
+Graded by distance from the D3 average. Source: IPEDS 2023.">Acad.</th>
+    <th class="num" data-key="dev" data-tip="Growth of returning players in:
+• Production rate: points + rebounds + assists per 30 minutes, for 100+ minutes in both seasons.
+• Role: minutes played.
+
+Each is compared with the typical D3 player at the same starting level and class. Holding an elite rate counts as development, and routine freshman-to-sophomore gains don't inflate the grade.
+
+Minutes-weighted across every offseason from 2023-24 to 2025-26. Graded by distance from the D3 average.">Develop.</th>
+    <th class="num" data-key="ath" data-tip="Strength of the whole athletic department, every sport.
+Average Learfield Directors' Cup points per season, 2014-15 to 2025-26 (10 seasons).
+A season with no points counts as zero.
+
+Source: NACDA final Division III standings.">Athl.</th>
+    <th class="num" data-key="cost" data-tip="Average net price, lower is better.
+Net price is the cost of attendance minus grants and scholarships, for full-time first-year students who got grant aid.
+
+Source: IPEDS, 2022-23.">Price</th>
+    <th class="num" data-key="health" data-tip="School finances, two measures with equal weight:
+• Change in undergraduate enrollment, fall 2013 to fall 2023.
+• Endowment per full-time-equivalent student, fiscal year 2023.
+
+A school missing one measure is graded on the other.
+Source: IPEDS.">Finances</th>
+    <th class="num" data-key="wpct" data-tip="2026-27 record, computed from game results.
+Sorts by win percentage.">'26-27</th>
+    <th class="num" data-key="ncaa10" data-tip="NCAA tournament appearances in the last 10 seasons.
+The 2021 tournament was cancelled (COVID), so 9 is a perfect record.
+
+Hover a row's number for the most recent appearance year.">NCAA (10y)</th>
+    <th data-key="coachName" data-tip="Current head coach and their first season leading the program.">Coach</th>
+    <th class="num" data-key="retention" data-tip="Share of freshman, sophomore, and junior minutes that came back the next season, averaged over the last two offseasons.
+Weighting by minutes makes a starter leaving matter far more than a walk-on leaving.
+Seniors and grad students who leave count as graduations.
+
+Class years are as teams list them. See the Roster caveat.">Retention</th>
+    <th class="num" data-key="frMin" data-tip="Freshman share of all team minutes, pooled over the last three seasons.
+It shows whether freshmen play here.">FR Min%</th>
+    <th class="num" data-key="enrollment" data-tip="Total enrollment, undergrad + grad (U.S. Dept. of Education IPEDS, 2023).">Enroll</th>
+    <th class="num" data-key="tuition" data-tip="Published tuition and fees for 2023-24 (IPEDS).
+In-state rate for public schools. Service academies charge none.">Tuition</th>
+    <th class="num" data-key="admit" data-tip="Share of applicants admitted, fall 2023 (IPEDS). Blank for open-admission schools.">Accept</th>
+    <th class="num" data-key="grad" data-tip="Graduation rate of the full-time cohort (IPEDS 2023; 6-year rate for 4-year schools).">Grad</th>
+    <th class="num" data-key="netPrice" data-tip="Average net price for full-time first-year students who got grant aid, 2022-23 (IPEDS).
+Pick a family income to see the price for that income group.
+In-state price for public schools.">Net price</th>
+    <th class="num" data-key="firstYr" data-tip="Share of full-time first-year students who came back for a second year, fall 2023 (IPEDS).">1st-yr return</th>
+    <th data-key="setting" data-tip="NCES locale of the campus (IPEDS 2024).
+Fringe: within 10 miles of an urban area (5 for rural).
+Distant: 10 to 35 miles (5 to 25 for rural).
+Remote: farther than that.">Setting</th>
+    <th class="num" data-key="enrollChg" data-tip="Change in undergraduate enrollment, fall 2013 to fall 2023 (IPEDS).
+Blank for merged campuses that report as one school.">Undergrads since 2013</th>
+    <th class="num" data-key="endowFte" data-tip="Endowment at the end of fiscal year 2023, divided by full-time-equivalent students, fall 2023 (IPEDS).">Endowment per student</th>
+  </tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+</div>
+
+<details class="methodology" id="method">
+  <summary>Methodology</summary>
+  <p data-topic="priorities"><strong>Grades</strong> measure distance from the D3 average in standard deviations (σ).
+  They cover the last 10 seasons, and recent seasons count far more: each season back counts
+  about 78% of the one after it. A+ starts at +2.25σ, and C covers the average.</p>
+  <p data-topic="priorities">Each letter covers a fixed σ range, so the number of schools at each letter changes from
+  grade to grade. A historic outlier grades far above a strong program, and programs with similar
+  resumes grade alike. Hover any grade for its exact σ and percentile.</p>
+  <p><strong>Reg. season:</strong> win percentage plus a bonus for making the NCAA field.
+  <strong>Tournament:</strong> NCAA wins and how deep each run went.
+  <strong>Coaching stability:</strong> current coach tenure minus a penalty per head-coaching
+  change in the last decade.</p>
+  <p><strong>Coaching grade scope:</strong> the grade measures the stability of the head-coaching
+  position over the last 10 years. Stability usually signals overall program health. A coach's effect on the
+  program shows more in the Reg. season, Tournament, Roster, and Development grades. No grade here
+  covers personality or coaching style.</p>
+  <p><strong>Roster stability:</strong> minutes-weighted retention (two thirds) and freshman
+  share of minutes (one third). Retention is the share of non-senior minutes that came back the
+  next season, found by comparing each team's consecutive roster pages. Seniors and graduate
+  students who leave do not count against a program. Freshman share of minutes pools the minutes
+  of the last three rosters.</p>
+  <p><strong>Roster grade caveat, class years:</strong> the class year for each player comes
+  from the team's own roster page. We do not know whether a team lists academic class or athletic
+  eligibility, and teams may differ.</p>
+  <p>Some players graduate with eligibility left and skip a final season. If the roster lists such
+  a player as a junior, she looks like an underclassman who left, and her departure lowers the
+  program's retention. The same happens when a player stops playing to focus on academics.</p>
+  <p>We cannot separate those cases from a player who left the team for other reasons. Every
+  non-senior who does not return counts the same. Treat the Roster grade and the "Left early"
+  lists as an estimate built on that assumption.</p>
+  <p data-topic="academics"><strong>Academics:</strong> graduation rate and selectivity (from the acceptance rate), both
+  from the Integrated Postsecondary Education Data System (IPEDS), a U.S. Department of Education
+  survey.</p>
+  <p><strong>Player development:</strong> returning players' year-over-year growth in production
+  rate (pts+reb+ast per 30 min) and role (minutes). Each is measured against the typical D3
+  progression for a player at the same starting level and class, which removes regression to
+  the mean.</p>
+  <p>Holding an elite rate counts as development. A routine bounce from a low base earns no
+  credit. The grade weights players by minutes, across every offseason from 2023-24 to 2025-26. A season counts once it is
+  finished.</p>
+  <p data-topic="athletics"><strong>Athletic dept.:</strong> average Learfield Directors' Cup points per season across
+  10 seasons, 2014-15 to 2025-26. The National Association of Collegiate Directors of Athletics
+  (NACDA) publishes the standings and published none for 2019-20 or 2020-21. The Cup scores a
+  school's finishes in NCAA championships across all sports, men's and women's, up to 18 sports a
+  year.</p>
+  <p data-topic="athletics">A season with no points counts as zero, including seasons before a school joined Division
+  III. The grade says nothing about the basketball program itself.</p>
+  <p data-topic="cost"><strong>Net price:</strong> the average net price for full-time first-year students who got
+  grant aid. Lower prices grade higher. The grade uses the price for all families, even when you
+  pick a family income. A school with no reported price grades at the D3 average.</p>
+  <p data-topic="finances"><strong>School finances:</strong> the change in undergraduate enrollment from fall 2013 to
+  fall 2023. The second measure is the endowment per full-time-equivalent student at the end of
+  fiscal year 2023. Both come from IPEDS. Each is measured on a log scale, so a school that doubled and a school
+  that halved sit the same distance from no change. The two count equally.</p>
+  <p data-topic="finances">Some campuses merged and now report as one school, such as the three Vermont State
+  campuses. Their 2013 count covers one campus and their 2023 count covers the merged school, so
+  we leave their enrollment change blank. Some campuses report their endowment through a parent
+  university and show none.</p>
+  <p data-topic="finances"><strong>Federal oversight:</strong> the profile also shows two Department of Education
+  measures that the grade does not use. The financial responsibility composite score runs from
+  -1.0 to 3.0. A score of 1.5 or higher passes, 1.0 to 1.4 passes with extra oversight, and below
+  1.0 fails. Only private schools get one, so it would grade only part of the field.</p>
+  <p data-topic="finances">Every school with a failing score or a cash-monitoring listing shows a label beside its name.
+  The Federal oversight checkboxes move those schools below the table instead of hiding them, and
+  set-aside schools leave the Overall grade.</p>
+  <p data-topic="finances">Heightened
+  Cash Monitoring is a list of schools under extra federal oversight of their student aid money,
+  with the reason for each.</p>
+  <p data-topic="priorities">The <strong>Overall</strong> grade re-ranks the schools that match your filters using your
+  priority weights over the component σ-scores, then re-grades within that filtered set. Set a
+  priority to 0 to drop that grade from the ranking.</p>
+  <p data-topic="location"><strong>Campus setting and nearest city:</strong> the setting is the locale code from the
+  National Center for Education Statistics (NCES). It measures distance from the campus to an
+  urban area. Nearest-city distances are straight-line miles to the closest U.S. city of each
+  size, so they ignore cities in Canada.</p>
+  <p data-topic="graduate"><strong>Graduate study:</strong> the highest degree offered comes from the
+  IPEDS directory. A school awards a master's in a field when it awarded at least one master's degree
+  in it in July 2022 to June 2024. IPEDS has no field for combined bachelor's and master's (4+1)
+  programs, so check the school's catalog for those.</p>
+  <p data-topic="school"><strong>Women's colleges:</strong> the label follows the Women's College
+  Coalition member list, with two exceptions. William Smith counts as a women's college: it is the
+  women's college paired with Hobart, with one shared campus and one federal record. Mississippi
+  University for Women (MUW) counts as coed: it is a member, and it admits men (since 1982).</p>
+  <p data-topic="find"><strong>Distance from home:</strong> straight-line miles from your ZIP code or
+  your location to each campus. A ZIP code maps to the average location of the IPEDS campuses with
+  the same first three digits. A distance can be off by several miles.</p>
+  <p data-topic="majors"><strong>Majors:</strong> a school offers a field when it awarded at least one bachelor's
+  degree in it in either of the last two years in IPEDS. A school that reports degrees only as
+  liberal arts or interdisciplinary studies shows no fields. Check the school's catalog before
+  you rule it out.</p>
+</details>
+
+<details class="methodology" id="sources">
+  <summary>Data sources</summary>
+  <p>Each school's profile links to its page on College Navigator, the U.S. Department of
+  Education's public view of the same federal survey data. College Navigator shows the newest
+  year in IPEDS, which can be one year newer than the data here.</p>
+  <table class="fixed srcTable">
+    <colgroup><col style="width:28%"><col style="width:46%"><col style="width:26%"></colgroup>
+    <thead><tr><th>Field</th><th>Source</th><th>Data year</th></tr></thead>
+    <tbody>
+      <tr data-topic="school"><td>Enrollment</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2023</td></tr>
+      <tr data-topic="cost"><td>Tuition and fees</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Institutional Characteristics</td><td>2023-24</td></tr>
+      <tr data-topic="academics"><td>Acceptance rate</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Admissions</td><td>Fall 2023</td></tr>
+      <tr data-topic="academics"><td>Graduation rate</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Graduation Rates</td><td>2023</td></tr>
+      <tr data-topic="cost"><td>Net price, all families and by income</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Student Financial Aid</td><td>2022-23</td></tr>
+      <tr data-topic="academics"><td>First-year retention, student-to-faculty ratio</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2023</td></tr>
+      <tr data-topic="graduate"><td>Highest degree offered</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Institutional Characteristics</td><td>2024</td></tr>
+      <tr data-topic="graduate"><td>Master's fields awarded</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Completions</td><td>July 2022 to June 2024</td></tr>
+      <tr data-topic="majors"><td>Bachelor's majors offered</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Completions</td><td>July 2022 to June 2024</td></tr>
+      <tr data-topic="location"><td>Campus setting, campus location</td><td><a href="https://nces.ed.gov/programs/edge/Geographic/LocaleBoundaries" target="_blank" rel="noopener">NCES locale codes</a> in the IPEDS directory</td><td>2024</td></tr>
+      <tr data-topic="location"><td>Nearest city</td><td><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noopener">U.S. Census Bureau</a> city population estimates and place locations</td><td>July 1, 2024</td></tr>
+      <tr data-topic="find"><td>Distance from home</td><td>IPEDS campus locations; a ZIP code maps to the average location of IPEDS campuses with the same first three digits</td><td>2024</td></tr>
+      <tr data-topic="finances"><td>Undergrad enrollment change</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2013 and fall 2023</td></tr>
+      <tr data-topic="finances"><td>Endowment per student</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Finance, divided by fall enrollment</td><td>Fiscal year 2023</td></tr>
+      <tr data-topic="finances"><td>Financial responsibility composite score</td><td><a href="https://studentaid.gov/data-center/school/composite-scores" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>Newest fiscal year listed, 2021 to 2023</td></tr>
+      <tr data-topic="finances"><td>Heightened Cash Monitoring</td><td><a href="https://studentaid.gov/data-center/school/hcm" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>June 1, 2026</td></tr>
+      <tr data-topic="athletics"><td>Directors' Cup</td><td><a href="https://nacda.com/sports/2018/7/17/directorscup-nacda-directorscup-previous-standings-html.aspx" target="_blank" rel="noopener">NACDA</a> final Division III standings</td><td>2014-15 to 2025-26</td></tr>
+      <tr><td>Season records</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> team pages; the current season from game results</td><td>Every season on file</td></tr>
+      <tr data-topic="athletics"><td>NCAA tournament history</td><td>NCAA Division III tournament results</td><td>1982 to present</td></tr>
+      <tr><td>D3hoops poll rank</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> Top 25 poll</td><td>2026-27</td></tr>
+      <tr><td>Head coaches</td><td>Each team's athletics website</td><td>Every season on file</td></tr>
+      <tr><td>Rosters, class years, minutes, player stats</td><td>Each team's roster and statistics pages</td><td>Every season on file</td></tr>
+      <tr><td>Playing style</td><td>Computed by us from game box scores, blended with a preseason projection over a team's first eight games</td><td>2026-27</td></tr>
+      <tr data-topic="school"><td>Women's college or coed</td><td><a href="https://www.womenscolleges.org/colleges" target="_blank" rel="noopener">Women's College Coalition</a> member list, with two exceptions in the method notes; men's share from <a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Member list, November 9, 2026; enrollment, fall 2023</td></tr>
+    </tbody>
+  </table>
+</details>
+</div>
+
+<div id="detail"></div>
+<div id="printView"></div>
+
+<script type="module">
+function decodePayload(b64) {
+  const key = "d3statlab";
+  const raw = atob(b64);
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+const DATA = await window.PROFILES.loadSchools();
+const BINS = [[2.25, "A+"], [1.75, "A"], [1.4, "A-"], [1.0, "B+"], [0.6, "B"], [0.3, "B-"], [0.0, "C+"], [-0.3, "C"], [-0.6, "C-"], [-1.0, "D+"], [-1.4, "D"], [-1.75, "D-"], [-99, "F"]];
+const REGIONS = ["Northeast", "Southeast", "Midwest", "Southwest", "West"];
+const STATES = ["AL", "AR", "CA", "CO", "CT", "DC", "GA", "IA", "IL", "IN", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NY", "OH", "OR", "PA", "RI", "TN", "TX", "VA", "VT", "WA", "WI", "WV"];
+/* 3-digit ZIP prefix -> [lat, lon] centroid, so a typed home ZIP becomes
+   coordinates without any geocoding service (page stays fully static) */
+const ZIPS = {"006":[18.378,-66.9],"007":[18.129,-66.186],"008":[18.344,-64.973],"009":[18.399,-66.1],"010":[42.259,-72.612],"011":[42.099,-72.559],"012":[42.531,-73.226],"013":[42.6,-72.631],"014":[42.582,-71.851],"015":[42.149,-71.808],"016":[42.279,-71.817],"017":[42.413,-71.417],"018":[42.662,-71.191],"019":[42.567,-70.874],"020":[42.136,-71.279],"021":[42.344,-71.079],"022":[42.349,-71.099],"023":[42.03,-70.971],"024":[42.329,-71.237],"025":[41.742,-70.601],"026":[41.692,-70.337],"027":[41.763,-71.12],"028":[41.659,-71.393],"029":[41.82,-71.437],"030":[42.776,-71.48],"031":[43.013,-71.47],"032":[43.45,-71.709],"033":[43.215,-71.524],"034":[42.897,-72.238],"035":[44.503,-71.159],"037":[43.58,-72.285],"038":[43.128,-70.843],"040":[43.595,-70.368],"041":[43.657,-70.254],"042":[44.061,-70.228],"043":[44.328,-69.787],"044":[44.779,-68.749],"046":[44.78,-67.732],"047":[46.872,-68.213],"048":[44.194,-69.077],"049":[44.588,-69.772],"050":[43.881,-72.563],"052":[42.92,-73.238],"053":[42.934,-72.54],"054":[44.47,-73.162],"056":[44.242,-72.562],"057":[44.009,-73.176],"058":[44.652,-72.382],"060":[41.782,-72.67],"061":[41.758,-72.688],"062":[41.765,-72.234],"063":[41.35,-72.092],"064":[41.428,-72.866],"065":[41.339,-72.931],"066":[41.179,-73.178],"067":[41.556,-73.041],"068":[41.26,-73.314],"069":[41.056,-73.542],"070":[40.721,-74.25],"071":[40.763,-74.171],"072":[40.682,-74.213],"073":[40.728,-74.068],"074":[40.977,-74.194],"075":[40.914,-74.161],"076":[40.888,-74.046],"077":[40.261,-74.157],"078":[40.882,-74.686],"079":[40.796,-74.456],"080":[39.86,-75.049],"081":[39.948,-75.122],"082":[39.434,-74.546],"083":[39.451,-74.869],"085":[40.316,-74.659],"086":[40.247,-74.756],"087":[40.076,-74.201],"088":[40.54,-74.404],"089":[40.489,-74.445],"100":[40.759,-73.981],"102":[40.712,-74.016],"103":[40.599,-74.13],"104":[40.861,-73.886],"105":[41.08,-73.821],"106":[41.031,-73.771],"107":[40.953,-73.863],"108":[40.926,-73.788],"109":[41.165,-74.077],"110":[40.795,-73.733],"111":[40.749,-73.933],"112":[40.642,-73.973],"113":[40.746,-73.833],"114":[40.708,-73.801],"115":[40.73,-73.629],"116":[40.601,-73.753],"117":[40.78,-73.308],"118":[40.767,-73.521],"119":[40.928,-72.672],"120":[42.8,-74.157],"121":[42.729,-73.712],"122":[42.678,-73.795],"123":[42.806,-73.928],"124":[41.792,-74.315],"125":[41.742,-73.973],"126":[41.719,-73.901],"127":[41.747,-74.645],"128":[43.385,-73.74],"129":[44.581,-73.711],"130":[42.884,-76.346],"131":[43.275,-76.519],"132":[43.047,-76.142],"133":[42.984,-75.235],"134":[43.018,-75.6],"135":[43.098,-75.247],"136":[44.414,-75.37],"137":[42.193,-75.445],"138":[42.412,-75.337],"139":[42.136,-75.908],"140":[42.754,-78.732],"141":[43.014,-78.877],"142":[42.913,-78.812],"144":[42.877,-77.335],"145":[43.038,-77.082],"146":[43.146,-77.631],"147":[42.162,-78.702],"148":[42.299,-77.126],"149":[42.115,-76.826],"150":[40.574,-80.117],"151":[40.407,-79.938],"152":[40.458,-79.977],"153":[40.098,-80.218],"154":[39.944,-79.753],"155":[40.005,-79.03],"156":[40.29,-79.528],"157":[40.669,-79.127],"158":[41.128,-78.813],"159":[40.319,-78.834],"160":[40.917,-79.951],"161":[41.156,-80.374],"162":[40.791,-79.521],"163":[41.637,-79.754],"165":[42.098,-80.071],"166":[40.495,-78.374],"167":[41.943,-78.674],"168":[40.856,-77.948],"170":[40.318,-76.796],"171":[40.298,-76.861],"172":[39.949,-77.608],"173":[39.829,-77.159],"174":[39.96,-76.697],"175":[39.993,-76.312],"176":[40.046,-76.302],"177":[41.24,-77.012],"178":[40.917,-76.789],"179":[40.704,-76.193],"180":[40.631,-75.416],"181":[40.602,-75.508],"182":[40.978,-76.012],"183":[41.006,-75.234],"184":[41.527,-75.731],"185":[41.42,-75.653],"186":[41.282,-75.993],"187":[41.26,-75.866],"188":[41.77,-76.222],"189":[40.235,-75.07],"190":[40.038,-75.238],"191":[39.993,-75.145],"193":[39.989,-75.644],"194":[40.171,-75.359],"195":[40.451,-75.892],"196":[40.338,-75.951],"197":[39.665,-75.692],"198":[39.742,-75.596],"199":[39.055,-75.467],"200":[38.916,-77.031],"201":[38.934,-77.521],"206":[38.373,-76.72],"207":[38.988,-76.86],"208":[39.066,-77.125],"209":[39.009,-77.011],"210":[39.32,-76.603],"211":[39.487,-76.883],"212":[39.33,-76.62],"214":[38.981,-76.505],"215":[39.621,-79.003],"216":[39.085,-76.076],"217":[39.54,-77.498],"218":[38.317,-75.598],"219":[39.642,-75.956],"220":[38.87,-77.239],"221":[38.877,-77.241],"222":[38.883,-77.085],"223":[38.802,-77.113],"224":[38.272,-77.486],"225":[38.376,-77.78],"226":[39.102,-78.212],"227":[38.471,-77.995],"228":[38.429,-78.907],"229":[38.021,-78.494],"230":[37.722,-77.518],"231":[37.462,-77.116],"232":[37.59,-77.492],"233":[36.77,-76.237],"234":[36.882,-76.105],"235":[36.876,-76.246],"236":[37.076,-76.46],"238":[37.148,-77.405],"239":[37.269,-78.431],"240":[37.195,-80.182],"241":[37.117,-80.125],"242":[36.782,-82.378],"243":[36.865,-81.45],"244":[37.959,-79.309],"245":[37.131,-79.243],"246":[37.185,-81.786],"247":[37.35,-81.117],"249":[37.804,-80.438],"250":[38.335,-81.829],"251":[38.367,-81.732],"252":[38.823,-81.561],"253":[38.332,-81.616],"254":[39.426,-77.924],"255":[38.455,-81.926],"256":[37.785,-82.048],"257":[38.41,-82.406],"258":[37.796,-81.174],"259":[37.989,-81.147],"260":[40.164,-80.658],"261":[39.229,-81.527],"262":[38.954,-80.036],"263":[39.203,-80.451],"264":[39.289,-80.572],"265":[39.588,-80.008],"267":[39.433,-78.984],"268":[38.892,-79.169],"270":[36.384,-80.717],"271":[36.101,-80.256],"272":[35.976,-79.761],"273":[35.838,-79.646],"274":[36.064,-79.833],"275":[35.867,-78.594],"276":[35.789,-78.666],"277":[35.993,-78.908],"278":[35.89,-77.506],"279":[36.308,-76.418],"280":[35.352,-80.899],"281":[35.449,-80.722],"282":[35.197,-80.826],"283":[34.994,-78.889],"284":[34.216,-78.104],"285":[35.037,-77.212],"286":[35.953,-81.467],"287":[35.54,-82.575],"288":[35.576,-82.566],"289":[35.067,-83.966],"290":[33.751,-80.924],"291":[33.807,-80.829],"292":[34.033,-81.031],"293":[34.902,-81.889],"294":[32.868,-80.005],"295":[34.011,-79.456],"296":[34.665,-82.433],"297":[34.899,-80.971],"298":[33.405,-81.717],"299":[32.362,-80.832],"300":[33.868,-84.217],"301":[34.383,-85.003],"302":[33.378,-84.401],"303":[33.798,-84.377],"304":[32.361,-82.173],"305":[34.53,-83.718],"306":[34.003,-83.348],"307":[34.834,-85.116],"308":[33.529,-82.136],"309":[33.469,-82.035],"310":[32.848,-83.372],"312":[32.847,-83.699],"314":[32.021,-81.099],"315":[31.297,-82.241],"316":[30.868,-83.322],"317":[31.507,-84.046],"318":[32.879,-85.185],"319":[32.5,-84.948],"320":[30.071,-81.985],"321":[29.253,-81.222],"322":[30.305,-81.636],"323":[30.42,-84.157],"324":[30.608,-85.632],"325":[30.515,-87.055],"326":[29.645,-82.366],"327":[28.689,-81.361],"328":[28.525,-81.345],"329":[28.076,-80.614],"330":[25.941,-80.307],"331":[25.768,-80.29],"333":[26.145,-80.183],"334":[26.594,-80.118],"335":[28.337,-82.258],"336":[27.993,-82.46],"337":[27.859,-82.706],"338":[27.937,-81.732],"339":[26.621,-81.878],"341":[26.295,-81.628],"342":[27.383,-82.511],"344":[29.109,-82.185],"346":[28.336,-82.637],"347":[28.524,-81.563],"349":[27.406,-80.339],"350":[33.47,-86.647],"351":[33.27,-86.489],"352":[33.476,-86.823],"354":[33.086,-87.661],"355":[33.837,-87.265],"356":[34.771,-87.387],"357":[34.732,-86.661],"358":[34.746,-86.63],"359":[34.255,-86.067],"360":[32.271,-86.02],"361":[32.363,-86.245],"362":[33.476,-85.669],"363":[31.259,-85.494],"364":[31.392,-86.709],"365":[30.832,-87.809],"366":[30.694,-88.135],"367":[32.497,-87.123],"368":[32.538,-85.337],"370":[36.285,-86.848],"371":[35.957,-86.445],"372":[36.153,-86.77],"373":[35.295,-85.286],"374":[35.06,-85.241],"376":[36.389,-82.306],"377":[36.207,-83.97],"378":[36.043,-83.714],"379":[35.951,-83.974],"380":[35.836,-89.515],"381":[35.126,-89.963],"382":[36.228,-88.543],"383":[35.604,-88.704],"384":[35.36,-87.211],"385":[36.166,-85.39],"386":[34.673,-89.685],"387":[33.585,-90.748],"388":[34.476,-88.646],"389":[33.645,-90.083],"390":[32.378,-90.429],"391":[32.188,-90.272],"392":[32.316,-90.173],"393":[32.546,-88.777],"394":[31.394,-89.284],"395":[30.535,-89.087],"396":[31.295,-90.443],"397":[33.591,-88.584],"398":[31.772,-84.795],"402":[38.223,-85.67],"403":[38.053,-84.487],"404":[37.694,-84.391],"405":[38.019,-84.504],"406":[38.201,-84.855],"407":[36.737,-84.162],"408":[36.966,-82.998],"409":[36.912,-83.796],"410":[38.932,-84.407],"411":[38.404,-82.798],"412":[37.815,-82.806],"413":[37.603,-83.439],"415":[37.512,-82.462],"416":[37.688,-82.779],"417":[37.26,-83.19],"418":[37.229,-82.857],"420":[36.833,-88.491],"421":[36.975,-86.374],"422":[36.858,-87.482],"423":[37.738,-87.108],"424":[37.58,-87.581],"425":[37.06,-84.618],"427":[37.459,-85.602],"430":[40.172,-82.713],"431":[39.797,-82.807],"432":[40.025,-82.968],"433":[40.579,-83.083],"434":[41.365,-83.309],"435":[41.564,-83.808],"436":[41.649,-83.613],"437":[39.964,-81.944],"439":[40.328,-80.722],"440":[41.529,-81.574],"441":[41.451,-81.631],"442":[41.176,-81.52],"443":[41.073,-81.527],"444":[41.052,-80.787],"445":[41.076,-80.657],"446":[40.778,-81.562],"447":[40.841,-81.403],"448":[41.181,-82.73],"449":[40.783,-82.558],"450":[39.432,-84.417],"451":[39.183,-83.93],"452":[39.201,-84.475],"453":[39.828,-84.02],"454":[39.749,-84.171],"455":[39.915,-83.808],"456":[38.852,-82.771],"457":[39.414,-81.82],"458":[40.808,-84.057],"460":[40.044,-85.891],"461":[39.56,-86.454],"462":[39.816,-86.16],"463":[41.539,-87.364],"464":[41.508,-87.342],"465":[41.558,-86.18],"466":[41.668,-86.225],"467":[41.388,-85.171],"468":[41.105,-85.129],"469":[40.554,-85.853],"470":[39.094,-84.849],"471":[38.317,-85.755],"472":[38.984,-85.681],"473":[39.964,-85.058],"474":[39.174,-86.531],"475":[38.511,-87.289],"476":[38.341,-87.351],"477":[37.974,-87.551],"478":[39.483,-87.395],"479":[40.367,-86.882],"480":[42.607,-83.007],"481":[42.265,-83.455],"482":[42.37,-83.111],"483":[42.61,-83.252],"484":[42.967,-83.571],"485":[43.004,-83.717],"486":[43.636,-84.248],"487":[43.557,-83.946],"488":[43.146,-84.612],"489":[42.741,-84.588],"490":[42.201,-85.599],"491":[41.964,-86.356],"492":[42.039,-84.436],"493":[43.688,-85.482],"494":[43.119,-86.161],"495":[42.943,-85.611],"496":[44.508,-85.493],"497":[45.664,-84.407],"498":[46.166,-87.246],"499":[46.785,-89.054],"500":[41.867,-93.625],"501":[41.653,-93.354],"502":[41.502,-93.514],"503":[41.61,-93.66],"504":[43.191,-93.324],"505":[42.544,-94.525],"506":[42.567,-92.453],"507":[42.48,-92.335],"508":[41.073,-94.381],"510":[42.999,-96.059],"511":[42.489,-96.381],"512":[43.134,-96.024],"513":[43.411,-94.975],"515":[41.254,-95.828],"520":[42.492,-90.723],"521":[43.109,-91.823],"522":[41.803,-91.465],"523":[41.925,-91.424],"524":[41.97,-91.666],"525":[41.124,-92.336],"526":[40.889,-91.348],"528":[41.551,-90.559],"530":[43.304,-88.15],"531":[42.709,-88.013],"532":[43.041,-87.974],"534":[42.678,-87.857],"535":[42.569,-89.033],"537":[43.08,-89.415],"538":[42.855,-90.562],"539":[43.633,-88.736],"540":[44.853,-92.623],"541":[44.652,-88.347],"543":[44.509,-88.034],"544":[44.711,-89.655],"545":[45.61,-89.425],"546":[43.827,-91.23],"547":[44.817,-91.585],"548":[46.18,-91.519],"549":[44.063,-88.501],"550":[44.918,-93.013],"551":[44.97,-93.127],"553":[44.999,-93.523],"554":[44.971,-93.303],"557":[47.056,-92.687],"558":[46.806,-92.112],"559":[43.992,-92.227],"560":[44.223,-94.096],"561":[43.632,-95.603],"562":[44.997,-95.574],"563":[45.608,-94.397],"564":[46.346,-94.216],"565":[46.834,-96.394],"566":[47.527,-94.858],"567":[47.998,-96.316],"570":[43.529,-97.071],"571":[43.542,-96.744],"572":[45.232,-97.078],"573":[43.693,-98.017],"574":[45.451,-98.485],"575":[43.299,-100.623],"577":[44.044,-103.176],"580":[46.595,-97.306],"581":[46.869,-96.833],"582":[47.776,-97.146],"583":[48.456,-99.513],"584":[46.458,-98.608],"585":[46.641,-100.752],"586":[46.883,-102.8],"587":[48.115,-101.886],"588":[48.159,-103.613],"590":[45.615,-107.06],"591":[45.779,-108.567],"592":[48.114,-105.193],"593":[46.745,-105.276],"594":[47.757,-111.713],"595":[48.438,-109.439],"596":[46.598,-112.028],"597":[45.675,-112.14],"598":[47.229,-114.047],"599":[48.214,-114.323],"600":[42.178,-87.943],"601":[41.938,-88.187],"602":[42.054,-87.681],"603":[41.901,-87.816],"604":[41.59,-87.819],"605":[41.792,-88.112],"606":[41.869,-87.651],"607":[42.039,-87.827],"608":[41.837,-87.765],"609":[41.127,-87.863],"610":[41.963,-89.654],"611":[42.278,-89.003],"612":[41.565,-90.383],"613":[41.331,-89.11],"614":[40.827,-90.526],"615":[40.599,-89.794],"616":[40.716,-89.596],"617":[40.515,-88.992],"618":[40.121,-88.031],"619":[39.448,-88.278],"620":[38.905,-90.18],"622":[38.529,-89.849],"623":[39.932,-91.371],"624":[38.804,-87.988],"625":[39.869,-88.941],"626":[39.723,-89.821],"627":[39.764,-89.634],"628":[38.376,-88.57],"629":[37.638,-89.002],"630":[38.579,-90.652],"631":[38.623,-90.329],"633":[38.866,-90.727],"634":[39.929,-91.46],"635":[40.189,-92.579],"636":[37.845,-90.482],"637":[37.294,-89.554],"639":[36.785,-90.44],"640":[38.976,-94.127],"641":[39.051,-94.583],"644":[40.296,-94.783],"645":[39.758,-94.786],"646":[39.938,-93.589],"647":[38.287,-94.158],"648":[37.046,-94.439],"650":[38.468,-91.814],"651":[38.568,-92.183],"652":[39.054,-92.349],"653":[38.897,-93.231],"654":[37.733,-91.841],"655":[37.809,-92.178],"656":[37.613,-93.414],"657":[36.79,-92.545],"658":[37.196,-93.28],"660":[39.093,-95.138],"661":[39.117,-94.699],"662":[38.931,-94.668],"665":[39.191,-96.596],"666":[39.019,-95.712],"667":[37.704,-95.07],"668":[38.417,-96.202],"669":[39.554,-97.664],"670":[37.768,-97.419],"671":[37.659,-97.678],"672":[37.695,-97.341],"673":[37.189,-95.532],"674":[38.749,-97.707],"675":[38.231,-98.287],"676":[38.879,-99.327],"677":[39.362,-101.376],"678":[37.874,-100.443],"679":[37.06,-100.918],"680":[41.735,-96.306],"681":[41.266,-96.008],"683":[40.623,-96.951],"684":[40.753,-96.8],"685":[40.8,-96.645],"687":[42.145,-97.206],"688":[40.796,-98.736],"689":[40.59,-98.374],"690":[40.635,-100.51],"691":[41.093,-100.772],"693":[42.175,-103.44],"700":[29.985,-90.136],"701":[29.967,-90.086],"703":[29.65,-90.759],"704":[30.458,-90.177],"705":[30.248,-92.083],"706":[30.199,-93.205],"707":[30.338,-90.938],"708":[30.437,-91.105],"710":[32.586,-93.263],"711":[32.47,-93.748],"712":[32.515,-92.197],"713":[31.28,-92.442],"714":[31.751,-93.098],"716":[34.109,-91.985],"717":[33.336,-92.822],"718":[33.843,-93.982],"719":[34.392,-93.259],"720":[35.032,-92.276],"721":[34.928,-92.164],"722":[34.733,-92.321],"723":[35.158,-90.382],"724":[36.018,-90.767],"725":[35.875,-91.713],"726":[36.27,-92.739],"727":[36.207,-94.213],"728":[35.334,-93.213],"729":[35.363,-94.372],"730":[35.424,-97.714],"731":[35.471,-97.532],"734":[34.205,-96.88],"735":[34.605,-98.659],"736":[35.353,-99.181],"737":[36.448,-98.274],"738":[36.421,-99.407],"739":[36.595,-101.638],"740":[36.179,-96.402],"741":[36.125,-95.912],"743":[36.586,-95.088],"744":[35.702,-95.519],"745":[34.927,-95.614],"746":[36.715,-97.152],"747":[34.001,-96.387],"748":[35.195,-96.747],"749":[35.039,-94.634],"750":[32.986,-96.846],"751":[32.501,-96.561],"752":[32.842,-96.797],"753":[32.812,-96.841],"754":[33.253,-95.732],"755":[33.456,-94.098],"756":[32.485,-94.911],"757":[32.251,-95.347],"759":[31.294,-94.599],"760":[32.749,-97.182],"761":[32.755,-97.345],"762":[33.312,-97.139],"763":[34.017,-98.919],"764":[32.359,-98.63],"765":[31.085,-97.58],"766":[32.011,-97.088],"767":[31.572,-97.129],"768":[31.716,-98.985],"769":[31.431,-100.468],"770":[29.79,-95.462],"772":[29.72,-95.344],"773":[30.369,-95.502],"774":[29.711,-95.787],"775":[29.446,-95.131],"776":[30.105,-93.943],"777":[30.061,-94.115],"778":[30.437,-96.366],"779":[28.81,-96.985],"780":[28.172,-99.393],"781":[29.397,-98.069],"782":[29.465,-98.539],"783":[27.525,-97.882],"784":[27.746,-97.412],"785":[26.144,-97.978],"786":[30.36,-97.755],"787":[30.311,-97.745],"788":[28.964,-100.124],"790":[34.943,-101.684],"791":[35.186,-101.88],"792":[34.945,-100.902],"793":[33.576,-102.365],"794":[33.57,-101.904],"795":[32.678,-100.915],"796":[32.445,-99.737],"797":[32.053,-101.954],"798":[30.363,-103.651],"799":[31.764,-106.378],"800":[39.759,-104.902],"801":[39.588,-104.941],"802":[39.737,-104.993],"803":[40.018,-105.248],"804":[39.751,-105.223],"805":[40.532,-105.079],"806":[40.416,-104.716],"807":[40.448,-103.485],"808":[39.011,-104.891],"809":[38.86,-104.799],"810":[37.956,-103.978],"811":[37.474,-105.88],"812":[38.55,-106.919],"813":[37.276,-107.867],"814":[38.703,-108.031],"815":[39.098,-108.542],"816":[39.814,-108.057],"820":[41.213,-105.199],"822":[42.079,-104.191],"824":[44.761,-108.762],"825":[43.031,-108.427],"826":[42.833,-106.327],"828":[44.764,-106.941],"829":[41.591,-109.237],"832":[42.995,-112.411],"833":[42.573,-114.298],"834":[43.674,-111.884],"835":[46.417,-117.025],"836":[43.599,-116.521],"837":[43.618,-116.274],"838":[47.045,-116.938],"840":[40.568,-111.769],"841":[40.705,-111.887],"843":[41.75,-111.832],"844":[41.206,-111.95],"846":[40.133,-111.66],"847":[37.29,-113.409],"850":[33.52,-112.068],"851":[32.957,-111.653],"852":[33.391,-111.879],"853":[33.46,-112.803],"855":[32.844,-109.762],"856":[31.777,-110.981],"857":[32.236,-110.925],"860":[35.127,-111.264],"863":[34.57,-112.46],"864":[34.874,-114.181],"865":[36.293,-109.217],"870":[34.947,-107.275],"871":[35.116,-106.62],"873":[35.595,-108.438],"874":[36.77,-108.169],"875":[35.765,-105.997],"877":[35.606,-105.235],"878":[34.067,-106.905],"880":[32.382,-107.001],"881":[34.289,-103.257],"882":[32.94,-103.937],"883":[33.133,-105.802],"884":[35.17,-103.736],"890":[36.03,-115.031],"891":[36.118,-115.212],"894":[39.533,-119.739],"895":[39.515,-119.797],"897":[39.168,-119.776],"898":[40.843,-115.767],"900":[34.049,-118.312],"902":[33.953,-118.315],"903":[33.952,-118.374],"904":[34.019,-118.482],"905":[33.834,-118.343],"906":[33.923,-118.038],"907":[33.85,-118.162],"908":[33.798,-118.155],"911":[34.151,-118.142],"912":[34.153,-118.253],"913":[34.258,-118.569],"914":[34.183,-118.46],"915":[34.18,-118.327],"916":[34.183,-118.393],"917":[34.081,-117.798],"918":[34.081,-118.15],"919":[32.657,-117.07],"920":[33.028,-117.121],"921":[32.765,-117.143],"922":[33.66,-116.166],"923":[34.243,-117.271],"924":[34.098,-117.291],"925":[33.833,-117.299],"926":[33.652,-117.848],"927":[33.744,-117.877],"928":[33.827,-117.883],"930":[34.273,-119.199],"931":[34.424,-119.721],"932":[36.133,-119.493],"933":[35.377,-119.042],"934":[35.204,-120.586],"935":[34.804,-118.084],"936":[36.765,-119.673],"937":[36.791,-119.768],"939":[36.627,-121.71],"940":[37.501,-122.262],"941":[37.775,-122.419],"943":[37.414,-122.154],"944":[37.534,-122.336],"945":[37.89,-122.078],"946":[37.802,-122.254],"947":[37.871,-122.263],"948":[37.969,-122.337],"949":[38.095,-122.589],"950":[37.172,-121.929],"951":[37.333,-121.884],"952":[37.983,-121.3],"953":[37.6,-120.831],"954":[38.89,-123.016],"955":[40.792,-124.146],"956":[38.613,-121.431],"957":[38.627,-121.391],"958":[38.574,-121.413],"959":[39.584,-121.614],"960":[40.763,-122.348],"961":[39.561,-120.276],"967":[18.235,-158.246],"968":[21.305,-157.846],"969":[10.978,149.169],"970":[45.454,-122.412],"971":[45.594,-123.479],"972":[45.512,-122.656],"973":[44.832,-123.131],"974":[43.842,-123.282],"975":[42.346,-122.998],"976":[42.226,-121.742],"977":[44.059,-121.323],"978":[45.499,-118.455],"979":[44.021,-116.974],"980":[47.612,-122.207],"981":[47.627,-122.338],"982":[48.53,-122.417],"983":[47.903,-122.934],"984":[47.221,-122.477],"985":[46.937,-123.054],"986":[45.837,-122.753],"988":[47.307,-119.831],"989":[46.62,-120.5],"990":[47.597,-117.457],"991":[46.731,-117.161],"992":[47.686,-117.382],"993":[46.156,-118.806],"995":[61.19,-149.832],"996":[60.733,-149.897],"997":[67.013,-150.784],"998":[58.385,-134.638]};
+const CUR_LABEL = "2026-27";
+const CUP_DOCS = {"2014-15": "https://nacda.com/documents/2018/7/19//1415DIIIJune4.pdf?id=1960", "2015-16": "https://nacda.com/documents/2018/7/19//D3StandJuly6.pdf?id=1963", "2016-17": "https://nacda.com/documents/2018/7/19//June1FinalDIIIOverall_1_.pdf?id=1966", "2017-18": "https://nacda.com/documents/2018/7/18//May31overallDIII_final.pdf?id=1816", "2018-19": "https://nacda.com/documents/2019/6/11//DIIIJune12Overallupdate.pdf?id=3667", "2021-22": "https://nacda.com/documents/2022/6/15/FinalDIIIStandings.pdf", "2022-23": "https://nacda.com/documents/2023/6/10/DIIIFinalStandings22_23.pdf", "2023-24": "https://nacda.com/documents/2024/6/9/23.24DIII_FinalOverallStandings.pdf", "2024-25": "https://nacda.com/documents/2025/6/8/24.25DIII_FinalOverallStandings.pdf", "2025-26": "https://nacda.com/documents/2026/6/7/25.26DIII_FinalOverallStandings.pdf"};
+const CUP_COUNT = 450;
+const MAJORS = ["Accounting", "Biology", "Business", "Chemistry", "Communication", "Computer science", "Criminal justice", "Economics", "Education", "Engineering", "Exercise science", "Health professions", "Nursing", "Psychology", "Social work", "Sport management"];
+const COMP_KEYS = ["reg", "trn", "coach", "roster", "acad", "dev", "ath", "cost", "health"];
+const INCOME_LABELS = ["$0 to $30,000", "$30,001 to $48,000", "$48,001 to $75,000", "$75,001 to $110,000", "Over $110,000"];
+const CITY_LABELS = ["50,000+", "100,000+", "250,000+", "1,000,000+"];
+// NCES locale detail -> campus setting filter value
+function settingGroup(detail) {
+  if (!detail) return "";
+  const [kind, band] = detail.split(": ");
+  if (kind === "City") return "city";
+  if (kind === "Suburb") return "suburb";
+  const near = band === "Fringe";
+  return (kind === "Town" ? "town" : "rural") + (near ? "Near" : "Remote");
+}
+// Net price for the chosen family income, or for all families
+function netFor(t) {
+  const i = $("income") ? $("income").value : "";
+  return i === "" ? t.netPrice : t.netBands[+i];
+}
+
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n == null ? "" : n.toLocaleString("en-US");
+const sig = (z) => (z >= 0 ? "+" : "") + z.toFixed(2) + "σ";
+
+/* ---------- Distance from home ---------- */
+function milesBetween(a, b) {
+  const rad = x => x * Math.PI / 180;
+  const dp = rad(b[0] - a[0]), dl = rad(b[1] - a[1]);
+  const h = Math.sin(dp / 2) ** 2 +
+            Math.cos(rad(a[0])) * Math.cos(rad(b[0])) * Math.sin(dl / 2) ** 2;
+  return 2 * 3958.8 * Math.asin(Math.sqrt(h));
+}
+let geoHome = null; // [lat, lon] from the browser's geolocation, if granted
+function homePoint() {
+  const zip = $("homeZip").value.trim();
+  if (/^\d{5}$/.test(zip)) {
+    const c = ZIPS[zip.slice(0, 3)];
+    if (c) return { pt: c, label: "ZIP " + zip };
+  }
+  if (geoHome) return { pt: geoHome, label: "your location" };
+  return null;
+}
+
+function gradeFor(pct) {
+  for (const [cut, letter] of BINS) if (pct >= cut) return letter;
+  return "F";
+}
+function chip(letter) {
+  if (!letter) return '';
+  const cls = "g-" + letter[0].toLowerCase();
+  return `<span class="chip ${cls}">${letter}</span>`;
+}
+function sizeBucket(enr) {
+  if (enr == null) return null;
+  if (enr < 1000) return "xs";
+  if (enr < 3000) return "s";
+  if (enr < 10000) return "m";
+  return "l";
+}
+
+const regionBox = $("regionChecks");
+for (const r of REGIONS) {
+  const label = document.createElement("label");
+  label.innerHTML = `<input type="checkbox" value="${r}" checked> ${r}`;
+  regionBox.appendChild(label);
+}
+const majorBox = $("majorChecks");
+for (const m of MAJORS) {
+  const label = document.createElement("label");
+  label.innerHTML = `<input type="checkbox" value="${m}"> ${m}`;
+  majorBox.appendChild(label);
+}
+const gradSel = $("gradField");
+for (const m of MAJORS) {
+  const opt = document.createElement("option");
+  opt.value = m;
+  opt.textContent = m;
+  gradSel.appendChild(opt);
+}
+const stateSel = $("state");
+for (const st of STATES) {
+  const opt = document.createElement("option");
+  opt.value = st;
+  opt.textContent = st;
+  stateSel.appendChild(opt);
+}
+
+function checkedValues(boxId) {
+  return new Set([...document.querySelectorAll(`#${boxId} input:checked`)].map(i => i.value));
+}
+
+// Precompute the '25-26 win pct once for record sorting
+for (const t of DATA) {
+  if (t.record) {
+    const [w, l] = t.record.split("-").map(Number);
+    t._wpct = w + l > 0 ? w / (w + l) : null;
+    t._wins = w;
+  } else {
+    t._wpct = null;
+    t._wins = null;
+  }
+}
+
+const SORT_VALUE = {
+  score: t => t._score,
+  team: t => t.team,
+  reg: t => t.comps.reg,
+  trn: t => t.comps.trn,
+  coach: t => t.comps.coach,
+  roster: t => t.comps.roster,
+  acad: t => t.comps.acad,
+  dev: t => t.comps.dev,
+  ath: t => t.comps.ath,
+  cost: t => t.comps.cost,
+  health: t => t.comps.health,
+  enrollChg: t => t.health.chg ?? null,
+  endowFte: t => t.health.endowFte ?? null,
+  netPrice: t => netFor(t),
+  firstYr: t => t.firstYr,
+  setting: t => t.localeDetail || null,
+  admit: t => t.admit,
+  grad: t => t.grad,
+  wpct: t => t._wpct,
+  ncaa10: t => t.ncaa10,
+  coachName: t => t.coach && t.coach !== "Vacant" ? t.coach : null,
+  retention: t => t.retention,
+  frMin: t => t.frMin,
+  enrollment: t => t.enrollment,
+  tuition: t => t.tuition,
+};
+const STRING_KEYS = new Set(["team", "coachName", "setting"]);
+// Strings read naturally ascending; numbers lead with the biggest
+let sort = { key: "score", dir: "desc" };
+let lastRanked = [], lastAside = [];
+
+function applySort(rows) {
+  const get = SORT_VALUE[sort.key];
+  const mul = sort.dir === "asc" ? 1 : -1;
+  rows.sort((a, b) => {
+    const va = get(a), vb = get(b);
+    if (va == null && vb == null) return a.team.localeCompare(b.team);
+    if (va == null) return 1;  // blanks always sink to the bottom
+    if (vb == null) return -1;
+    const cmp = typeof va === "string" ? va.localeCompare(vb) : va - vb;
+    if (cmp !== 0) return mul * cmp;
+    if (sort.key === "wpct" && a._wins !== b._wins) return mul * (a._wins - b._wins);
+    return b._score - a._score || a.team.localeCompare(b.team);
+  });
+}
+
+function markSortHeader() {
+  document.querySelectorAll("thead th").forEach(th => {
+    const dir = th.querySelector(".dir");
+    if (dir) dir.remove();
+    if (th.dataset.key) th.setAttribute("aria-sort", th.dataset.key === sort.key
+      ? (sort.dir === "asc" ? "ascending" : "descending") : "none");
+    if (th.dataset.key === sort.key) {
+      const span = document.createElement("span");
+      span.className = "dir";
+      span.textContent = sort.dir === "asc" ? "▲" : "▼";
+      th.appendChild(span);
+    }
+  });
+}
+
+// Methodology tooltips on column headers (fixed-position so the table's
+// scroll container can't clip them)
+const tip = document.createElement("div");
+tip.id = "tip";
+document.body.appendChild(tip);
+document.querySelectorAll("thead th[data-tip]").forEach(th => {
+  th.addEventListener("mouseenter", () => {
+    tip.textContent = th.dataset.tip;
+    tip.style.display = "block";
+    const r = th.getBoundingClientRect();
+    const w = tip.offsetWidth;
+    let x = r.left + r.width / 2 - w / 2;
+    x = Math.max(8, Math.min(x, window.innerWidth - w - 8));
+    tip.style.left = x + "px";
+    // Below the header when it fits, otherwise above it, so long tips stay on screen
+    const h = tip.offsetHeight;
+    const below = r.bottom + 6 + h <= window.innerHeight - 8;
+    tip.style.top = Math.max(8, below ? r.bottom + 6 : r.top - 6 - h) + "px";
+  });
+  th.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+});
+
+document.querySelectorAll("thead th").forEach(th => {
+  th.addEventListener("click", () => {
+    const key = th.dataset.key;
+    if (!key) return;
+    if (sort.key === key) {
+      sort.dir = sort.dir === "asc" ? "desc" : "asc";
+    } else {
+      sort = { key, dir: STRING_KEYS.has(key) ? "asc" : "desc" };
+    }
+    recompute();
+  });
+});
+
+function recompute() {
+  const w = {};
+  for (const k of COMP_KEYS) {
+    w[k] = +$("w-" + k).value;
+    $("o-" + k).textContent = w[k];
+  }
+  const totalW = COMP_KEYS.reduce((s, k) => s + w[k], 0);
+
+  const regions = checkedValues("regionChecks");
+  const controls = checkedValues("controlChecks");
+  const genders = checkedValues("genderChecks");
+  const sizes = checkedValues("sizeChecks");
+  const maxTuition = +$("tuition").value;
+  $("tuitionLabel").textContent = maxTuition >= 70000 ? "Any" : "$" + fmt(maxTuition);
+  const maxAccept = +$("accept").value;
+  $("acceptLabel").textContent = maxAccept >= 100 ? "Any" : maxAccept + "%";
+  const minNcaa = +$("ncaa").value;
+  $("ncaaLabel").textContent = minNcaa === 0 ? "Any" : minNcaa + "+";
+  const stateFilter = $("state").value;
+  const q = $("search").value.trim().toLowerCase();
+  const settings = checkedValues("settingChecks");
+  const citySize = +$("citySize").value;
+  const cityMi = +$("cityMi").value;
+  $("cityMiLabel").textContent = cityMi >= 160 ? "Any" : "≤ " + cityMi + " mi";
+  const netMax = +$("netMax").value;
+  $("netMaxLabel").textContent = netMax >= 60000 ? "Any" : "$" + fmt(netMax);
+  const retMin = +$("retMin").value;
+  $("retMinLabel").textContent = retMin <= 50 ? "Any" : retMin + "%+";
+  const cupTop = +$("cupTop").value;
+  const majors = [...checkedValues("majorChecks")];
+  const degrees = checkedValues("degreeChecks");
+  const gradField = $("gradField").value;
+  const enrollChg = $("enrollChg").value;
+  const fed = checkedValues("fedChecks");
+
+  const home = homePoint();
+  const maxDist = +$("dist").value;
+  $("distLabel").textContent = maxDist >= 1550 ? "Any" : "≤ " + maxDist + " mi";
+  const zipTyped = $("homeZip").value.trim();
+  $("homeStatus").textContent = home ? "straight-line miles from " + home.label
+    : /^\d{5}$/.test(zipTyped) ? "ZIP not recognized. Try another."
+    : "type a ZIP (or tap 📍) to enable the distance filter";
+  try { localStorage.setItem("d3home", JSON.stringify({ zip: zipTyped, geo: geoHome })); } catch (e) {}
+  for (const t of DATA) {
+    t._mi = home && t.lat != null ? Math.round(milesBetween(home.pt, [t.lat, t.lon])) : null;
+  }
+
+  const matched = DATA.filter(t => {
+    if (home && maxDist < 1550 && (t._mi == null || t._mi > maxDist)) return false;
+    if (q && !(t.team.toLowerCase().includes(q) || t.conf.toLowerCase().includes(q) ||
+               t.mascot.toLowerCase().includes(q))) return false;
+    if (stateFilter && t.state !== stateFilter) return false;
+    if (t.region && !regions.has(t.region)) return false;
+    if (t.control) {
+      const c = t.control.startsWith("Public") ? "Public" : "Private";
+      if (!controls.has(c)) return false;
+    }
+    if (t.gender && !genders.has(t.gender)) return false;
+    const bucket = sizeBucket(t.enrollment);
+    if (bucket && !sizes.has(bucket)) return false;
+    if (maxTuition < 70000 && t.tuition != null && t.tuition > maxTuition) return false;
+    if (maxAccept < 100 && t.admit != null && t.admit > maxAccept) return false;
+    if (t.ncaa10 < minNcaa) return false;
+    const setting = settingGroup(t.localeDetail);
+    if (setting && !settings.has(setting)) return false;
+    if (cityMi < 160 && (t.cityMi[citySize] == null || t.cityMi[citySize] > cityMi)) return false;
+    const net = netFor(t);
+    if (netMax < 60000 && net != null && net > netMax) return false;
+    if (retMin > 50 && (t.firstYr == null || t.firstYr < retMin)) return false;
+    if (cupTop && (t.cupRank == null || t.cupRank > cupTop)) return false;
+    if (majors.some(m => !t.majors.includes(m))) return false;
+    if (t.highest && !degrees.has(t.highest)) return false;
+    if (gradField && !t.gradFields.includes(gradField)) return false;
+    if (enrollChg !== "" && (t.health.chg == null || t.health.chg < +enrollChg)) return false;
+    return true;
+  });
+  // Federal oversight sets schools aside instead of hiding them, so readers
+  // see which schools the checkbox affects and why.
+  const setAside = t => (fed.has("fail") && t.health.band === "Fail") || (fed.has("hcm") && !!t.health.hcm);
+  const aside = matched.filter(setAside);
+  const rows = matched.filter(t => !setAside(t));
+
+  for (const t of matched) {
+    t._score = totalW === 0 ? 0
+      : COMP_KEYS.reduce((s, k) => s + w[k] * t.comps[k], 0) / totalW;
+  }
+  // Overall grade re-standardizes the composite within the filtered set, so
+  // it stays magnitude-based: an outlier score stands apart from the pack
+  // no matter which column the table is sorted by
+  const n = rows.length;
+  const mean = rows.reduce((s, t) => s + t._score, 0) / (n || 1);
+  const sd = Math.sqrt(rows.reduce((s, t) => s + (t._score - mean) ** 2, 0) / (n || 1));
+  for (const t of rows) {
+    t._overall = (n <= 1 || sd === 0) ? "C+" : gradeFor((t._score - mean) / sd);
+  }
+
+  applySort(rows);
+  applySort(aside);
+  lastRanked = rows;
+  lastAside = aside;
+  markSortHeader();
+
+  $("count").textContent = `${n} schools match · overall grade re-ranked within your filters`
+    + (aside.length ? ` · ${aside.length} set aside below` : "");
+  renderCompareBar();
+  const asideHead = aside.length ? `<tr class="asideHead"><td colspan="${document.querySelectorAll("thead th").length}">
+    Set aside by Federal oversight: ${aside.length} school${aside.length > 1 ? "s" : ""}
+    <div class="sub">These match your other filters. They are not ranked and do not count toward the Overall grade.</div></td></tr>` : "";
+  $("rows").innerHTML = rows.map((t, i) => rowHtml(t, i + 1, chip(t._overall))).join("")
+    + asideHead + aside.map(t => rowHtml(t, "", "")).join("");
+}
+
+function flags(t) {
+  const h = t.health, out = [];
+  if (h.band === "Fail") out.push(`<span class="flag fail" title="Federal composite score ${h.score.toFixed(1)}, fiscal year ${h.fy}. Below 1.0 fails.">Failing composite score</span>`);
+  if (h.hcm) out.push(`<span class="flag hcm" title="Heightened Cash Monitoring ${h.hcm}, June 1, 2026.\nReason: ${h.hcmReason}.">Cash monitoring</span>`);
+  return out.length ? `<div class="flags">${out.join("")}</div>` : "";
+}
+
+function rowHtml(t, rank, overall) {
+  return `
+    <tr data-slug="${t._slug}">
+      <td class="num pin ${pinned.has(t._slug) ? "on" : ""}" data-pin="${t._slug}" title="Pin to compare">${pinned.has(t._slug) ? "★" : "☆"}</td>
+      <td class="num">${rank}</td>
+      <td><div class="schoolcell">${t.logo ? '<img class="logo" src="' + t.logo + '" alt="">' : '<span class="logo"></span>'}<div><span class="school"${t.mascot ? ' title="' + t.mascot + '"' : ""}>${t.team}</span>${flags(t)}
+        <div class="sub">${t.conf}${t.city ? " · " + t.city + ", " + t.state : ""}${t._mi != null ? " · " + fmt(t._mi) + " mi" : ""}</div></div></div></td>
+      <td class="num">${overall}</td>
+      <td class="num" title="${sig(t.comps.reg)} · ${t.pcts.reg}th pct">${chip(t.grades.reg)}</td>
+      <td class="num" title="${sig(t.comps.trn)} · ${t.pcts.trn}th pct">${chip(t.grades.trn)}</td>
+      <td class="num" title="${sig(t.comps.coach)} · ${t.pcts.coach}th pct">${chip(t.grades.coach)}</td>
+      <td class="num" title="${sig(t.comps.roster)} · ${t.pcts.roster}th pct">${chip(t.grades.roster)}</td>
+      <td class="num" title="${sig(t.comps.acad)} · ${t.pcts.acad}th pct">${chip(t.grades.acad)}</td>
+      <td class="num" title="${sig(t.comps.dev)} · ${t.pcts.dev}th pct">${chip(t.grades.dev)}</td>
+      <td class="num" title="${sig(t.comps.ath)} · ${t.pcts.ath}th pct">${chip(t.grades.ath)}</td>
+      <td class="num" title="${sig(t.comps.cost)} · ${t.pcts.cost}th pct">${chip(t.grades.cost)}</td>
+      <td class="num" title="${sig(t.comps.health)} · ${t.pcts.health}th pct">${chip(t.grades.health)}</td>
+      <td class="num">${t.record || ''}</td>
+      <td class="num" title="${t.lastNcaa ? "Last appearance: " + t.lastNcaa : "No appearances on record"}">${t.ncaa10}</td>
+      <td>${t.coach}${t.coachSince ? '<div class="sub">since ' + t.coachSince + "</div>" : ""}</td>
+      <td class="num">${t.retention != null ? t.retention + "%" : ''}</td>
+      <td class="num">${t.frMin != null ? t.frMin + "%" : ''}</td>
+      <td class="num">${fmt(t.enrollment) || ''}</td>
+      <td class="num">${t.tuition != null ? "$" + fmt(t.tuition) : ''}</td>
+      <td class="num">${t.admit != null ? t.admit + "%" : ''}</td>
+      <td class="num">${t.grad != null ? t.grad + "%" : ''}</td>
+      <td class="num">${netFor(t) != null ? "$" + fmt(netFor(t)) : ''}</td>
+      <td class="num">${t.firstYr != null ? t.firstYr + "%" : ''}</td>
+      <td>${t.localeDetail}</td>
+      <td class="num">${pctChange(t.health.chg)}</td>
+      <td class="num">${t.health.endowFte != null ? "$" + fmt(t.health.endowFte) : ""}</td>
+    </tr>`;
+}
+
+/* Slugs must exist before the first recompute() bakes them into the rows */
+const bySlug = {};
+for (const t of DATA) {
+  t._slug = t.team.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  bySlug[t._slug] = t;
+}
+
+/* Pinned schools for compare mode (persists across visits) */
+let pinned = new Set();
+try { pinned = new Set(JSON.parse(localStorage.getItem("d3pins") || "[]").filter(s => bySlug[s])); } catch (e) {}
+function togglePin(slug) {
+  if (pinned.has(slug)) pinned.delete(slug);
+  else if (pinned.size < 3) pinned.add(slug);
+  try { localStorage.setItem("d3pins", JSON.stringify([...pinned])); } catch (e) {}
+  recompute();
+}
+function renderCompareBar() {
+  const bar = $("compareBar");
+  bar.classList.toggle("show", pinned.size > 0);
+  if (!pinned.size) { bar.innerHTML = ""; return; }
+  const chips = [...pinned].map(s => {
+    const t = bySlug[s];
+    return `<span class="cchip">${t.logo ? `<img src="${t.logo}" alt="">` : ""}${t.team}
+      <b data-unpin="${s}" title="Remove">✕</b></span>`;
+  }).join("");
+  bar.innerHTML = `<span>Compare:</span>${chips}
+    <button id="compareBtn" ${pinned.size < 2 ? "disabled" : ""}>Compare ${pinned.size} schools →</button>
+    <button id="clearPins" type="button">Clear all</button>
+    ${pinned.size < 3 ? '<span style="color:var(--ink-3)">pin up to 3 with the ☆ column</span>' : ""}`;
+  bar.querySelectorAll("[data-unpin]").forEach(el =>
+    el.addEventListener("click", () => togglePin(el.dataset.unpin)));
+  $("clearPins").addEventListener("click", () => {
+    pinned.clear();
+    try { localStorage.setItem("d3pins", "[]"); } catch (e) {}
+    recompute();
+  });
+  const btn = $("compareBtn");
+  if (btn) btn.addEventListener("click", () => { location.hash = "compare=" + [...pinned].join(","); });
+}
+
+/* Restore home location before the first recompute so distances show up */
+try {
+  const saved = JSON.parse(localStorage.getItem("d3home") || "{}");
+  if (saved.geo) geoHome = saved.geo;
+  if (saved.zip) $("homeZip").value = saved.zip;
+} catch (e) {}
+$("geoBtn").addEventListener("click", () => {
+  if (!navigator.geolocation) { $("homeStatus").textContent = "location unavailable. Enter a ZIP instead."; return; }
+  $("homeStatus").textContent = "locating…";
+  navigator.geolocation.getCurrentPosition(
+    pos => { geoHome = [pos.coords.latitude, pos.coords.longitude]; $("homeZip").value = ""; recompute(); },
+    () => { $("homeStatus").textContent = "location unavailable. Enter a ZIP instead."; }
+  );
+});
+
+$("resetAll").addEventListener("click", () => {
+  for (const k of COMP_KEYS) $("w-" + k).value = 5;
+  document.querySelectorAll("#regionChecks input, #controlChecks input, #genderChecks input, #sizeChecks input, #settingChecks input, #degreeChecks input")
+    .forEach(c => { c.checked = true; });
+  document.querySelectorAll("#majorChecks input").forEach(c => { c.checked = false; });
+  $("citySize").value = "2";
+  $("cityMi").value = 160;
+  $("income").value = "";
+  $("netMax").value = 60000;
+  $("retMin").value = 50;
+  $("cupTop").value = "0";
+  $("gradField").value = "";
+  $("enrollChg").value = "";
+  document.querySelectorAll("#fedChecks input").forEach(c => { c.checked = false; });
+  $("tuition").value = 70000;
+  $("accept").value = 100;
+  $("ncaa").value = 0;
+  $("dist").value = 1550;
+  $("search").value = "";
+  $("state").value = "";
+  $("homeZip").value = "";
+  geoHome = null;
+  pinned.clear();
+  try { localStorage.removeItem("d3pins"); localStorage.removeItem("d3home"); } catch (e) {}
+  sort = { key: "score", dir: "desc" };
+  if (location.hash) location.hash = "";
+  recompute();
+});
+
+document.querySelectorAll("input, select").forEach(el => el.addEventListener("input", recompute));
+recompute();
+
+/* "i" buttons: each popover gathers the method notes and Data sources rows that carry the card's
+   topic, so the popover and the notes come from one text and cannot drift apart. */
+const INFO_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/></svg>';
+function closePops(except) {
+  document.querySelectorAll(".infoPop").forEach(pop => {
+    if (pop === except) return;
+    pop.hidden = true;
+    const b = document.querySelector(`[aria-controls="${pop.id}"]`);
+    if (b) b.setAttribute("aria-expanded", "false");
+  });
+}
+document.querySelectorAll("section.control[data-topic]").forEach(sec => {
+  const topic = sec.dataset.topic;
+  const paras = [...document.querySelectorAll(`#method p[data-topic~="${topic}"]`)];
+  const rows = [...document.querySelectorAll(`#sources tr[data-topic~="${topic}"]`)];
+  if (!paras.length && !rows.length) return;
+  const name = sec.querySelector("h2").textContent.trim();
+  const pop = document.createElement("div");
+  pop.className = "infoPop";
+  pop.id = "info-" + topic;
+  pop.hidden = true;
+  pop.setAttribute("role", "dialog");
+  pop.setAttribute("aria-label", name + ": how it works");
+  pop.innerHTML = paras.map(p => `<p>${p.innerHTML}</p>`).join("")
+    + (rows.length ? `<h4>Sources</h4><ul>${rows.map(r =>
+        `<li>${r.cells[0].innerHTML}: ${r.cells[1].innerHTML}. ${r.cells[2].innerHTML}.</li>`).join("")}</ul>` : "")
+    + `<p><a href="#method" class="more">Read the full method notes</a></p>`;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "info";
+  btn.innerHTML = INFO_ICON;
+  btn.setAttribute("aria-label", name + ": how it works");
+  btn.setAttribute("aria-expanded", "false");
+  btn.setAttribute("aria-controls", pop.id);
+  sec.querySelector("h2").appendChild(btn);
+  sec.appendChild(pop);
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    const open = pop.hidden;
+    closePops(pop);
+    pop.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+  });
+  pop.addEventListener("click", e => e.stopPropagation());
+  pop.querySelector(".more").addEventListener("click", e => {
+    e.preventDefault();
+    closePops();
+    $("method").open = true;
+    (paras[0] || $("sources")).scrollIntoView({ behavior: "smooth", block: "center" });
+    if (!paras.length) $("sources").open = true;
+  });
+});
+document.addEventListener("click", () => closePops());
+document.addEventListener("keydown", e => { if (e.key === "Escape") closePops(); });
+
+/* Save top 20 as PDF: a print-only page built from the current view, saved through the
+   browser's print dialog (Save as PDF on desktop and iPhone). */
+function optText(id) { const el = $(id); return el.options[el.selectedIndex].textContent.trim(); }
+function groupNote(id, label) {
+  const all = [...document.querySelectorAll(`#${id} input`)];
+  const on = all.filter(c => c.checked).map(c => c.parentElement.textContent.trim());
+  if (on.length === all.length) return null;
+  return `${label}: ${on.length ? on.join(", ") : "none"}`;
+}
+function filterSummary() {
+  const out = [];
+  const q = $("search").value.trim();
+  if (q) out.push(`Name, conference, or mascot contains "${q}"`);
+  if ($("state").value) out.push("State: " + optText("state"));
+  const home = homePoint();
+  if (home && +$("dist").value < 1550) out.push(`Within ${$("dist").value} miles of ${home.label}`);
+  for (const [id, label] of [["regionChecks", "Regions"], ["settingChecks", "Campus settings"],
+      ["controlChecks", "School types"], ["genderChecks", "Student body"], ["sizeChecks", "Sizes"],
+      ["degreeChecks", "Highest degree offered"]]) {
+    const note = groupNote(id, label);
+    if (note) out.push(note);
+  }
+  if (+$("cityMi").value < 160) out.push(`Within ${$("cityMi").value} miles of a city of ${optText("citySize")}`);
+  if ($("income").value !== "") out.push("Net prices shown for family income " + optText("income"));
+  if (+$("netMax").value < 60000) out.push("Net price up to " + $("netMaxLabel").textContent);
+  if (+$("tuition").value < 70000) out.push("Tuition and fees up to " + $("tuitionLabel").textContent);
+  if (+$("accept").value < 100) out.push("Acceptance rate up to " + $("acceptLabel").textContent);
+  if (+$("retMin").value > 50) out.push("First-year retention " + $("retMinLabel").textContent);
+  const majors = [...document.querySelectorAll("#majorChecks input:checked")].map(c => c.parentElement.textContent.trim());
+  if (majors.length) out.push("Awards bachelor's degrees in " + majors.join(", "));
+  if ($("gradField").value) out.push("Awards a master's in " + optText("gradField"));
+  if ($("enrollChg").value !== "") out.push("Undergrad enrollment since 2013: " + optText("enrollChg").toLowerCase());
+  const fed = [...document.querySelectorAll("#fedChecks input:checked")].map(c => c.parentElement.textContent.trim());
+  if (fed.length) out.push(fed.join("; ") + ` (${lastAside.length} set aside)`);
+  if (+$("ncaa").value > 0) out.push(`At least ${$("ncaa").value} NCAA trips in the last 10 years`);
+  if ($("cupTop").value !== "0") out.push("Directors' Cup: " + optText("cupTop").toLowerCase());
+  return out;
+}
+function plainFlags(t) {
+  const h = t.health, f = [];
+  if (h.band === "Fail") f.push("failing composite score");
+  if (h.hcm) f.push("cash monitoring");
+  return f.length ? ` <span class="sub">(${f.join(", ")})</span>` : "";
+}
+$("savePdf").addEventListener("click", () => {
+  const top = lastRanked.slice(0, 20);
+  const filters = filterSummary();
+  const weights = COMP_KEYS.map(k => `${COMP_LABELS[k]} ${$("w-" + k).value}`).join(", ");
+  const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  const income = $("income").value === "" ? "all families" : optText("income");
+  $("printView").innerHTML = `<h1>D3 women's basketball: top ${top.length} schools</h1>
+    <p>From D3 Women's Basketball: School Report Cards, ${date}. ${lastRanked.length} schools matched the filters below.
+    Each grade measures distance from the D3 average. The Overall grade re-ranks the matching schools with
+    the priorities below.</p>
+    <h2>Filters</h2>${filters.length ? `<ul>${filters.map(f => `<li>${f}</li>`).join("")}</ul>` : "<p>None. Every D3 program is ranked.</p>"}
+    <h2>Priorities, 0 to 10</h2><p>${weights}</p>
+    <h2>Top ${top.length}</h2>
+    <table><thead><tr><th class="num">#</th><th>School</th><th>Conference</th><th class="num">Overall</th>
+      ${COMP_KEYS.map(k => `<th class="num">${COMP_LABELS[k]}</th>`).join("")}
+      <th class="num">${CUR_LABEL}</th><th class="num">Net price, ${income}</th><th class="num">Enrollment</th></tr></thead>
+    <tbody>${top.map((t, i) => `<tr><td class="num">${i + 1}</td><td class="school">${t.team}${plainFlags(t)}</td><td>${t.conf}</td>
+      <td class="num">${chip(t._overall)}</td>${COMP_KEYS.map(k => `<td class="num">${chip(t.grades[k])}</td>`).join("")}
+      <td class="num">${t.record || ""}</td><td class="num">${netFor(t) != null ? "$" + fmt(netFor(t)) : ""}</td>
+      <td class="num">${fmt(t.enrollment) || ""}</td></tr>`).join("")}</tbody></table>
+    <h2>Sources</h2>
+    <p>School figures come from IPEDS (2022-23 and fall 2023) and federal oversight from Federal Student Aid,
+    both at the Department of Education. Athletic department grades use the NACDA Directors' Cup standings, and season
+    records use D3hoops.com and game results. The Data sources section of the page lists the year of each figure.</p>`;
+  window.print();
+});
+
+/* ---------- Detail overlay ---------- */
+
+function lum(hex) {
+  const h = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function trajectoryCard(t) {
+  const d = t.detail;
+  if (!d.seasons.length) return "";
+  const bar = lum(t.bg) > 0.82 ? "#1e5fd6" : t.bg;
+  const bars = d.seasons.map(([y, w, l, ncaa]) => {
+    const played = w + l > 0;
+    const pct = played ? w / (w + l) : 0;
+    return `<div class="bar" title="${y - 1}-${String(y).slice(2)}: ${played ? w + "-" + l : "no season"}${ncaa ? " · NCAA tournament" : ""}">
+      <div class="rec">${ncaa ? "★ " : ""}${played ? w + "-" + l : ""}</div>
+      <div class="fill" style="height:${Math.round(pct * 100)}px;background:${bar}"></div>
+      <div class="yr">'${String(y).slice(2)}</div></div>`;
+  }).join("");
+  const a = d.alltime;
+  return `<div class="dcard"><h3>Program trajectory: win% by season (★ = NCAA tournament)</h3>
+    <div class="bars">
+      <div class="gl" style="bottom:18px"></div><div class="gt" style="bottom:18px">0%</div>
+      <div class="gl mid" style="bottom:68px"></div><div class="gt" style="bottom:68px">50%</div>
+      <div class="gl" style="bottom:118px"></div><div class="gt" style="bottom:118px">100%</div>
+      ${bars}</div>
+    <div class="note">All-time: ${fmt(a.w)}-${fmt(a.l)}${a.first ? " since " + (a.first - 1) + "-" + String(a.first).slice(2) : ""}</div></div>`;
+}
+
+function tournamentCard(t) {
+  const runs = t.detail.tourn;
+  if (!runs.length) return `<div class="dcard"><h3>NCAA tournament history</h3>
+    <p class="note">No NCAA tournament appearances on record (1982-present).</p></div>`;
+  const rows = runs.map(([y, rnd, w, champ]) => `<tr>
+    <td class="num">${y}</td><td>${champ ? "🏆 National Champion" : "Reached " + rnd}</td>
+    <td class="num">${w}</td></tr>`).join("");
+  return `<div class="dcard"><h3>NCAA tournament history: ${runs.length} appearance${runs.length > 1 ? "s" : ""}</h3>
+    <table><thead><tr><th class="num">Year</th><th>Result</th><th class="num">Wins</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function styleCard(t) {
+  const s = t.detail.style;
+  if (!s || s.o == null) return "";
+  const tempo = s.tPct >= 67 ? "Fast-paced" : s.tPct <= 33 ? "Deliberate" : "Moderate tempo";
+  const identity = s.oPct - s.dPct >= 25 ? "Offense-first"
+    : s.dPct - s.oPct >= 25 ? "Defense-first"
+    : (s.oPct >= 60 && s.dPct >= 60) ? "Balanced two-way" : "Balanced";
+  let trend = "";
+  if (s.tPrev != null) {
+    const diff = s.t - s.tPrev;
+    if (diff >= 2) trend = "Playing faster than last season.";
+    else if (diff <= -2) trend = "Playing slower than last season.";
+  }
+  return `<div class="dcard"><h3>Playing style: ${identity}, ${tempo.toLowerCase()}</h3>
+    <div class="statRow">
+      <div class="stat"><div class="v">${s.o.toFixed(1)}</div><div class="lbl">Adj. offense (${s.oPct}th pct)</div></div>
+      <div class="stat"><div class="v">${s.d.toFixed(1)}</div><div class="lbl">Adj. defense (${s.dPct}th pct)</div></div>
+      <div class="stat"><div class="v">${s.t.toFixed(1)}</div><div class="lbl">Tempo, poss/40 (${s.tPct}th pct)</div></div>
+    </div>
+    <div class="note">Adjusted points scored/allowed per 100 possessions and pace, ${CUR_LABEL}.
+    Percentiles vs all of D3; defense percentile is inverted (stingier = higher). ${trend}</div></div>`;
+}
+
+// Column widths for a table that repeats once per season, so stacked copies align
+function cols(...pcts) {
+  return `<colgroup>${pcts.map(p => `<col style="width:${p}%">`).join("")}</colgroup>`;
+}
+
+// Groups rows by the season label in column idx, keeping the newest-first order
+function bySeason(rows, idx) {
+  const groups = new Map();
+  for (const r of rows) {
+    if (!groups.has(r[idx])) groups.set(r[idx], []);
+    groups.get(r[idx]).push(r);
+  }
+  return [...groups.entries()];
+}
+
+function rosterMovesCard(t) {
+  const d = t.detail;
+  const blocks = Object.entries(d.departures).map(([label, evts]) => {
+    const rows = evts.map(([p, cls, min, dest, lvl]) => `<tr><td>${p}</td><td class="num">${cls}</td>
+      <td class="num">${min ?? ""}</td><td>${dest ? dest + (lvl ? " (" + lvl + ")" : "") : ""}</td></tr>`).join("");
+    return `<h3 style="margin-top:10px">Left early, ${label}</h3>
+      <table class="fixed">${cols(34, 14, 12, 40)}<thead><tr><th>Player</th><th class="num">Class</th><th class="num">Min</th><th>Destination</th></tr></thead>
+      <tbody>${rows}</tbody></table>`;
+  }).join("");
+  const tin = bySeason(d.transfersIn, 3).map(([ssn, rows]) => `<h3 style="margin-top:14px">Transfers in, ${ssn}</h3>
+    <table class="fixed">${cols(40, 40, 20)}<thead><tr><th>Player</th><th>From</th><th class="num">Level</th></tr></thead>
+    <tbody>${rows.map(([n, o, lvl]) =>
+      `<tr><td>${n}</td><td>${o}</td><td class="num">${lvl}</td></tr>`).join("")}</tbody></table>`).join("");
+  const stats = `<div class="statRow">
+    <div class="stat"><div class="v">${t.retention != null ? t.retention + "%" : ""}</div><div class="lbl">Minutes retained</div></div>
+    <div class="stat"><div class="v">${t.frMin != null ? t.frMin + "%" : ""}</div><div class="lbl">FR share of minutes</div></div></div>`;
+  const none = !blocks && !tin ? '<p class="note">No early departures or incoming transfers on record.</p>' : "";
+  const caveat = `<p class="note">Class years are as each team lists them, and we cannot tell
+    whether a team lists academic class or athletic eligibility. A listed underclassman who graduated,
+    or who left to focus on academics, appears under "Left early" and lowers minutes retained. We cannot
+    separate those players from players who left the team for other reasons.</p>`;
+  return `<div class="dcard"><h3>Roster stability</h3>${stats}${caveat}${blocks}${tin}${none}</div>`;
+}
+
+function devCard(t) {
+  const seasons = Object.entries(t.detail.dev);
+  if (!seasons.length) return "";
+  const fmtD = (a, b, unit) => a == null || b == null ? ""
+    : `${a} to ${b} <span style="color:${b - a >= 0 ? "#1e7d3c" : "#b34e18"}">(${b - a >= 0 ? "+" : ""}${unit === 1 ? (b - a).toFixed(1) : Math.round(b - a)})</span>`;
+  const vsTyp = (rb, exp) => rb == null || exp == null ? ""
+    : `<b style="color:${rb - exp >= 0 ? "#1e7d3c" : "#b34e18"}">${rb - exp >= 0 ? "+" : ""}${(rb - exp).toFixed(1)}</b>`;
+  const tables = seasons.map(([label, rows], i) => `<h3${i ? ' style="margin-top:14px"' : ""}>Player development: returning players, ${label}</h3>
+    <table class="fixed">${cols(28, 10, 24, 24, 14)}<thead><tr><th>Player</th><th class="num">Class</th>
+      <th class="num">Minutes</th><th class="num">Prod / 30 min</th>
+      <th class="num" title="Year-over-year rate change compared with the average D3 player who started at the same production level and class. This is the fair comparison once regression to the mean is removed.">vs typical</th></tr></thead>
+    <tbody>${rows.map(([p, cls, ma, mb, ra, rb, exp]) => `<tr><td>${p}</td><td class="num">${cls}</td>
+      <td class="num">${fmtD(ma, mb, 0)}</td><td class="num">${fmtD(ra, rb, 1)}</td>
+      <td class="num">${vsTyp(rb, exp)}</td></tr>`).join("")}</tbody></table>`).join("");
+  return `<div class="dcard">${tables}
+    <div class="note">Production = points + rebounds + assists per 30 minutes (rates shown for 100+ minute
+    seasons). "vs typical" measures each returner against the average D3 progression from the same starting
+    rate and class. A star holding an elite rate scores positive. A routine bounce from a low base earns no credit.
+    The Development grade weights these residuals by minutes, plus minutes growth beyond the typical
+    progression, across every offseason from 2023-24 to 2025-26.</div></div>`;
+}
+
+function coachCard(t) {
+  const rows = t.detail.coaches.map(([n, s, e]) => `<tr><td>${n}</td>
+    <td class="num">${s || ""}</td><td class="num">${e || "current"}</td></tr>`).join("");
+  return `<div class="dcard"><h3>Head coaching history</h3>
+    <table><thead><tr><th>Coach</th><th class="num">From</th><th class="num">Through</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="3">No coaching records.</td></tr>'}</tbody></table>
+    <div class="note">The Coaching grade measures the stability of this position over the last 10 years.
+    Stability usually signals overall program health.</div></div>`;
+}
+
+function honorsRosterCard(t) {
+  const d = t.detail;
+  const aa = bySeason(d.allAmericans, 3).map(([ssn, rows]) => `<h3 style="margin-top:14px">All-America honors, ${ssn}</h3>
+    <table class="fixed">${cols(50, 25, 25)}<thead>
+    <tr><th>Player</th><th class="num">Team</th><th class="num">Type</th></tr></thead>
+    <tbody>${rows.map(([p, des, ty]) =>
+      `<tr><td>${p}</td><td class="num">${des}</td><td class="num">${ty}</td></tr>`).join("")}</tbody></table>`).join("");
+  const roster = d.roster.length ? `<table><thead><tr><th>Player</th><th class="num">Class</th>
+    <th class="num">Ht</th><th class="num">Min</th><th class="num">Pts</th><th class="num">Reb</th><th class="num">Ast</th></tr></thead>
+    <tbody>${d.roster.map(r => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num">${r[2] || ""}</td>
+      ${r.slice(3).map(v => `<td class="num">${v ?? ""}</td>`).join("")}</tr>`).join("")}</tbody></table>` : "";
+  if (!aa && !roster) return "";
+  return `<div class="dcard"><h3>${CUR_LABEL} roster${d.pollRank ? " · #" + d.pollRank + " in the D3hoops poll" : ""}</h3>${roster}${aa}</div>`;
+}
+
+function campusCard(t) {
+  const money = v => v != null ? "$" + fmt(v) : "";
+  const f = [["Enrollment", fmt(t.enrollment)], ["Type", t.control],
+    ["Tuition & fees", money(t.tuition)],
+    ["Net price, all families", money(t.netPrice)],
+    ["Acceptance rate", t.admit != null ? t.admit + "%" : ""],
+    ["Graduation rate", t.grad != null ? t.grad + "%" : ""],
+    ["First-year retention", t.firstYr != null ? t.firstYr + "%" : ""],
+    ["Students per faculty", t.sfr != null ? t.sfr + " to 1" : ""],
+    ["Setting", t.localeDetail],
+    ["Highest degree offered", t.highest]].filter(x => x[1]);
+  if (!f.length) return "";
+  const stats = `<div class="statRow">${f.map(([l, v]) =>
+    `<div class="stat"><div class="v">${v}</div><div class="lbl">${l}</div></div>`).join("")}</div>`;
+  const bands = t.netBands.some(v => v != null) ? `<h3 style="margin-top:14px">Net price by family income</h3>
+    <table class="fixed">${cols(60, 40)}<thead><tr><th>Family income</th><th class="num">Net price</th></tr></thead>
+    <tbody>${INCOME_LABELS.map((l, i) => `<tr><td>${l}</td><td class="num">${money(t.netBands[i])}</td></tr>`).join("")}</tbody></table>` : "";
+  const cities = t.detail.cities.length ? `<h3 style="margin-top:14px">Nearest city by size</h3>
+    <table class="fixed">${cols(25, 40, 20, 15)}<thead><tr><th>City size</th><th>City</th><th class="num">People</th><th class="num">Miles</th></tr></thead>
+    <tbody>${t.detail.cities.map(([c, pop, mi], i) => `<tr><td>${CITY_LABELS[i]}</td><td>${c}</td>
+      <td class="num">${fmt(pop)}</td><td class="num">${mi}</td></tr>`).join("")}</tbody></table>
+    <p class="note">Straight-line miles to the closest U.S. city of each size. Cities in Canada are not counted.</p>` : "";
+  const majors = `<h3 style="margin-top:14px">Bachelor's fields awarded</h3>
+    <p>${t.majors.length ? t.majors.join(", ") : "IPEDS lists no degrees in these fields. The school may report its degrees only as liberal arts or interdisciplinary studies, so check its catalog."}</p>
+    <p class="note">Covers only the ${MAJORS.length} fields in the Majors filter. A school with a field here awarded at least one bachelor's degree in it in July 2022 to June 2024.</p>`;
+  const grad = t.highest && t.highest !== "Bachelor's" ? `<h3 style="margin-top:14px">Master's fields awarded</h3>
+    <p>${t.gradFields.length ? t.gradFields.join(", ") : "None in the fields on the Majors filter. The school awards graduate degrees in other fields."}</p>
+    <p class="note">Covers only the ${MAJORS.length} fields in the Majors filter, July 2022 to June 2024. IPEDS does not track combined bachelor's and master's (4+1) programs.</p>` : "";
+  const check = t.unitid ? `<p class="note">Check these numbers on College Navigator, the U.S. Department of
+    Education's public view of the same data:
+    <a href="https://nces.ed.gov/collegenavigator/?id=${t.unitid}" target="_blank" rel="noopener">${t.ipedsName}</a>.
+    College Navigator can show a newer year than ours. See Data sources for the year of each figure.</p>` : "";
+  return `<div class="dcard"><h3>Campus</h3>${stats}${check}${bands}${cities}${majors}${grad}</div>`;
+}
+
+function pctChange(v) {
+  return v == null ? "" : (v > 0 ? "+" : "") + Math.round(v) + "%";
+}
+
+function financesCard(t) {
+  const h = t.health;
+  const f = [["Undergrads, fall 2013", fmt(h.u13)], ["Undergrads, fall 2023", fmt(h.u23)],
+    ["Change", pctChange(h.chg)],
+    ["Endowment per student", h.endowFte != null ? "$" + fmt(h.endowFte) : ""]].filter(x => x[1]);
+  const stats = f.length ? `<div class="statRow">${f.map(([l, v]) =>
+    `<div class="stat"><div class="v">${v}</div><div class="lbl">${l}</div></div>`).join("")}</div>` : "";
+  const comp = h.score != null
+    ? `<p><strong>${h.score.toFixed(1)}</strong>, ${h.band.toLowerCase()}, fiscal year ${h.fy}.</p>`
+    : `<p>${t.control && t.control.startsWith("Public") ? "Public schools get no score." : "Not listed in the 2021 to 2023 files."}</p>`;
+  const hcm = h.hcm
+    ? `<p>On the list as of June 1, 2026: ${h.hcm}. Reason: ${h.hcmReason}.</p>`
+    : "<p>Not on the list as of June 1, 2026.</p>";
+  return `<div class="dcard"><h3>School finances</h3>${stats}
+    <h3 style="margin-top:14px">Financial responsibility composite score</h3>${comp}
+    <p class="note">U.S. Department of Education. The score runs from -1.0 to 3.0. A score of 1.5 or higher passes, and 1.0 to 1.4 passes with extra oversight. Below 1.0 fails.</p>
+    <h3 style="margin-top:14px">Heightened Cash Monitoring</h3>${hcm}
+    <p class="note">U.S. Department of Education list of schools under extra oversight of their federal student aid money.
+    Check both on <a href="https://studentaid.gov/data-center/school/composite-scores" target="_blank" rel="noopener">composite scores</a>
+    and <a href="https://studentaid.gov/data-center/school/hcm" target="_blank" rel="noopener">Heightened Cash Monitoring</a>.</p></div>`;
+}
+
+function athleticsCard(t) {
+  const rows = t.detail.cup.map(([s, rank, pts]) => `<tr>
+    <td><a href="${CUP_DOCS[s]}" target="_blank" rel="noopener">${s}</a></td>
+    <td class="num">${rank}</td><td class="num">${fmt(pts)}</td></tr>`).join("");
+  const head = t.cupRank != null
+    ? `<div class="statRow"><div class="stat"><div class="v">#${t.cupRank} of ${CUP_COUNT}</div><div class="lbl">Rank on average points</div></div>
+       <div class="stat"><div class="v">${fmt(t.cupAvg)}</div><div class="lbl">Average points per season</div></div></div>`
+    : "";
+  const table = rows ? `<table class="fixed">${cols(40, 30, 30)}<thead><tr><th>Season</th><th class="num">Finish</th><th class="num">Points</th></tr></thead>
+    <tbody>${rows}</tbody></table>` : '<p class="note">No Directors\' Cup points in any season on file.</p>';
+  return `<div class="dcard"><h3>Athletic department: Learfield Directors' Cup</h3>${head}${table}
+    <p class="note">The Cup scores finishes in NCAA championships across all of a school's sports, men's and women's.
+    Seasons with no row scored no points. Each season links to NACDA's final standings.</p></div>`;
+}
+
+const COMP_LABELS = {reg: "Reg. season", trn: "Tournament", coach: "Coaching", roster: "Roster", acad: "Academics", dev: "Development", ath: "Athletic dept.", cost: "Net price", health: "Finances"};
+function renderDetail(t) {
+  const strip = Object.keys(COMP_LABELS).map(k => `<div class="gsItem">
+    ${chip(t.grades[k])}<div class="lbl">${COMP_LABELS[k]}</div>
+    <div class="sub2">${sig(t.comps[k])}</div></div>`).join("");
+  $("detail").innerHTML = `<div class="dwrap">
+    <button class="hback" onclick="location.hash=''">← Back to rankings</button>
+    <div class="hero" style="background:${t.bg};color:${t.tc}">
+      ${t.hero ? `<img src="${t.hero}" alt="" class="${t.circle ? "circle" : ""}">` : ""}
+      <div><h2>${t.team}</h2>
+        ${t.mascot ? `<div class="hmascot">${t.mascot}</div>` : ""}
+        <div class="hsub">${t.conf}${t.city ? " · " + t.city + ", " + t.state : ""}${t.record ? " · " + t.record + " in " + CUR_LABEL : ""}</div>
+      </div></div>
+    <div class="dcard"><h3>Report card</h3><div class="gradeStrip">${strip}</div>
+      <div class="note">Grades measure distance from the D3 average in standard deviations (σ), recency-weighted.</div></div>
+    ${trajectoryCard(t)}
+    ${styleCard(t)}
+    <div class="dtwo">${tournamentCard(t)}${coachCard(t)}</div>
+    ${rosterMovesCard(t)}
+    ${devCard(t)}
+    ${honorsRosterCard(t)}
+    ${campusCard(t)}
+    ${financesCard(t)}
+    ${athleticsCard(t)}
+  </div>`;
+}
+
+function renderCompare(ts) {
+  const grades = Object.keys(COMP_LABELS).map(k => [COMP_LABELS[k] + " grade",
+    t => `${chip(t.grades[k])}<div class="sub">${sig(t.comps[k])}</div>`, "hi", t => t.comps[k]]);
+  const rows = [
+    ...grades,
+    [CUR_LABEL + " record", t => t.record || "", null],
+    ["NCAA trips (10y)", t => t.ncaa10, "hi", t => t.ncaa10],
+    ["Head coach", t => `${t.coach}${t.coachSince ? '<div class="sub">since ' + t.coachSince + "</div>" : ""}`, null],
+    ["Minutes retained", t => t.retention != null ? t.retention + "%" : "", "hi", t => t.retention],
+    ["FR share of minutes", t => t.frMin != null ? t.frMin + "%" : "", "hi", t => t.frMin],
+    ["Enrollment", t => fmt(t.enrollment) || "", null],
+    ["Tuition & fees", t => t.tuition != null ? "$" + fmt(t.tuition) : "", "lo", t => t.tuition],
+    ["Acceptance rate", t => t.admit != null ? t.admit + "%" : "", "lo", t => t.admit],
+    ["Graduation rate", t => t.grad != null ? t.grad + "%" : "", "hi", t => t.grad],
+    [$("income").value === "" ? "Net price, all families" : "Net price, " + INCOME_LABELS[+$("income").value],
+      t => netFor(t) != null ? "$" + fmt(netFor(t)) : "", "lo", t => netFor(t)],
+    ["First-year retention", t => t.firstYr != null ? t.firstYr + "%" : "", "hi", t => t.firstYr],
+    ["Students per faculty", t => t.sfr != null ? t.sfr + " to 1" : "", "lo", t => t.sfr],
+    ["Undergrads since 2013", t => pctChange(t.health.chg), "hi", t => t.health.chg],
+    ["Endowment per student", t => t.health.endowFte != null ? "$" + fmt(t.health.endowFte) : "", "hi", t => t.health.endowFte],
+    ["Composite score", t => t.health.score != null ? t.health.score.toFixed(1) : "", "hi", t => t.health.score],
+    ["Heightened Cash Monitoring", t => t.health.hcm ? t.health.hcm + ": " + t.health.hcmReason : "No", null],
+    ["Directors' Cup rank", t => t.cupRank != null ? "#" + t.cupRank : "", "lo", t => t.cupRank],
+    ["Setting", t => t.localeDetail, null],
+    ["Highest degree offered", t => t.highest, null],
+    ["Nearest 250,000+ city", t => t.detail.cities[2] ? t.detail.cities[2][0] + " (" + t.detail.cities[2][2] + " mi)" : "", "lo", t => t.cityMi[2]],
+    ["Conference", t => t.conf, null],
+    ["Location", t => t.city ? t.city + ", " + t.state : "", null],
+  ];
+  const body = rows.map(([label, cell, better, val]) => {
+    let bestIdx = -1;
+    if (better) {
+      const vals = ts.map(t => val(t));
+      let best = null;
+      vals.forEach((v, i) => {
+        if (v == null) return;
+        if (best == null || (better === "hi" ? v > best : v < best)) { best = v; bestIdx = i; }
+      });
+      if (vals.filter(v => v === best).length > 1) bestIdx = -1; // tie: no winner
+    }
+    return `<tr><td>${label}</td>${ts.map((t, i) =>
+      `<td>${bestIdx === i ? `<span class="best">${cell(t)}</span>` : cell(t)}</td>`).join("")}</tr>`;
+  }).join("");
+  const heads = ts.map(t => `<th><div class="cmphead" style="background:${t.bg};color:${t.tc}"
+      onclick="location.hash='${t._slug}'" title="Open full profile">
+      ${t.logo ? `<img src="${t.logo}" alt="" ${t.circle ? 'style="background:#fff;border-radius:50%;padding:4px"' : ""}>` : ""}
+      <span>${t.team}</span></div></th>`).join("");
+  $("detail").innerHTML = `<div class="dwrap">
+    <button class="hback" onclick="location.hash=''">← Back to rankings</button>
+    <div class="dcard"><h3>Side by side: bold marks the better number</h3>
+    <table class="cmp"><thead><tr><th></th>${heads}</tr></thead><tbody>${body}</tbody></table>
+    <div class="note">Grade rows bold the school with the higher σ. Click a school's header for its full profile.</div></div></div>`;
+}
+
+// The standalone report carries every profile in the page. The subscriber
+// app (generate_school_profiles.py --app) fetches a profile when it opens.
+const loadDetails = window.PROFILES ? window.PROFILES.loadDetails : async () => {};
+async function syncDetail() {
+  const hash = location.hash.replace(/^#/, "");
+  const cmp = hash.match(/^compare=(.+)$/);
+  const ts = cmp ? cmp[1].split(",").map(s => bySlug[s]).filter(Boolean) : [];
+  const t = bySlug[hash];
+  await loadDetails(ts.length >= 2 ? ts : t ? [t] : []);
+  if (location.hash.replace(/^#/, "") !== hash) return;
+  if (ts.length >= 2) renderCompare(ts);
+  else if (t) renderDetail(t);
+  if (t || ts.length >= 2) {
+    $("detail").classList.add("open");
+    document.body.classList.add("noscroll");
+    $("detail").scrollTop = 0;
+  } else {
+    $("detail").classList.remove("open");
+    document.body.classList.remove("noscroll");
+  }
+}
+$("rows").addEventListener("click", e => {
+  const pin = e.target.closest("[data-pin]");
+  if (pin) { togglePin(pin.dataset.pin); return; }
+  const tr = e.target.closest("tr[data-slug]");
+  if (tr) location.hash = tr.dataset.slug;
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && $("detail").classList.contains("open")) location.hash = "";
+});
+window.addEventListener("hashchange", syncDetail);
+syncDetail();
+</script>
+</body>
+</html>
