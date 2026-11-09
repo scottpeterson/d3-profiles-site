@@ -14,10 +14,26 @@
     return new Promise(() => {});
   }
 
+  let session = null;
+
   async function currentSession() {
     if (!client) return null;
     const { data } = await client.auth.getSession();
-    return data.session;
+    session = data.session;
+    return session;
+  }
+
+  // Opens the welcome dialog on the account's first visit. The dismissal is
+  // stored in the auth user's metadata, so it shows once per account rather
+  // than once per device.
+  function showWelcome() {
+    const dialog = document.getElementById("welcome");
+    const meta = (session && session.user.user_metadata) || {};
+    if (!dialog || meta.welcomed) return;
+    const done = () => client.auth.updateUser({ data: { welcomed: true } });
+    dialog.addEventListener("close", done, { once: true });
+    document.getElementById("welcomeGo").addEventListener("click", () => dialog.close());
+    dialog.showModal();
   }
 
   function showAccount(email) {
@@ -34,8 +50,7 @@
 
   async function loadSchools() {
     if (!client) return leave("signin.html?setup=1");
-    const session = await currentSession();
-    if (!session) return leave("signin.html");
+    if (!(await currentSession())) return leave("signin.html");
     const { data, error } = await client.from("school_profiles").select("summary");
     if (error) return leave("signin.html?error=1");
     // The access rules return no rows to an account without a paid,
@@ -70,5 +85,5 @@
     return error;
   }
 
-  window.PROFILES = { client, configured, currentSession, loadSchools, loadDetails, sendLink };
+  window.PROFILES = { client, configured, currentSession, loadSchools, loadDetails, sendLink, showWelcome };
 })();

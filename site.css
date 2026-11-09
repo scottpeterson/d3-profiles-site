@@ -90,10 +90,11 @@ main.page { padding: 48px 0; }
 main.page h1 { font-size: 32px; }
 main.page .card { margin-top: 20px; padding: 24px; }
 label.field { display: block; font-weight: 600; font-size: 16px; }
-input.text { display: block; width: 100%; margin-top: 6px; min-height: 44px; padding: 10px 12px;
-             border: 1px solid var(--field-line); border-radius: 8px; font: 16px "IBM Plex Sans", system-ui, sans-serif;
-             color: var(--ink); background: var(--card); }
-input.text:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+input.text, textarea.text { display: block; width: 100%; margin-top: 6px; min-height: 44px; padding: 10px 12px;
+             border: 1px solid var(--field-line); border-radius: 8px; font: 16px/1.5 "IBM Plex Sans", system-ui, sans-serif;
+             color: var(--ink); background: var(--card); box-sizing: border-box; }
+textarea.text { resize: vertical; }
+input.text:focus, textarea.text:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .note { color: var(--ink-2); font-size: 14px; }
 .msg { border-radius: 8px; padding: 12px 14px; font-size: 14px; border: 1px solid; }
 .msg.good { background: var(--good-bg); color: var(--good-ink); border-color: #6fae86; }

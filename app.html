@@ -86,9 +86,21 @@
               padding: 8px 12px; cursor: pointer; }
   #resetAll:hover { background: #8f1e18; }
   #account { font-size: 13px; color: var(--ink-2); margin-right: auto; }
-  #savePdf, #signOut { border: 1px solid var(--field-line); border-radius: 8px; min-height: 32px; background: var(--card);
-             color: var(--ink); font-size: 14px; font-weight: 600; padding: 8px 12px; cursor: pointer; }
-  #savePdf:hover, #signOut:hover { border-color: var(--accent); }
+  #savePdf, #signOut, .filterBar .btnLink { border: 1px solid var(--field-line); border-radius: 8px; min-height: 32px; background: var(--card);
+             color: var(--ink); font-size: 14px; font-weight: 600; padding: 8px 12px; cursor: pointer;
+             text-decoration: none; display: inline-flex; align-items: center; box-sizing: border-box; }
+  #savePdf:hover, #signOut:hover, .filterBar .btnLink:hover { border-color: var(--accent); }
+  /* First-visit welcome (app only). */
+  #welcome { border: 0; border-radius: 12px; padding: 0; max-width: 560px; width: calc(100% - 32px);
+             color: var(--ink); box-shadow: 0 8px 32px rgba(16, 24, 40, .24); }
+  #welcome::backdrop { background: rgba(16, 24, 40, .5); }
+  #welcome .wbody { padding: 24px 28px 8px; }
+  #welcome h2 { margin: 0 0 12px; font-size: 24px; line-height: 1.25; }
+  #welcome p { margin: 0 0 12px; font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+  #welcome .wactions { display: flex; justify-content: flex-end; padding: 8px 28px 24px; }
+  #welcomeGo { background: var(--accent); color: #fff; border: 0; border-radius: 8px; min-height: 44px;
+               padding: 10px 18px; font-size: 16px; font-weight: 600; cursor: pointer; }
+  #welcomeGo:hover { background: #1a4fb4; }
   /* "i" buttons open the method notes and sources tagged with the card's topic. */
   .control { position: relative; }
   .control h2 .info { margin-left: auto; flex: none; width: 32px; height: 32px; border: 0; border-radius: 8px;
@@ -126,11 +138,17 @@
   }
   .count { font-size: 12px; color: var(--ink-3); margin: 2px 0 8px; }
 
-  table { width: 100%; border-collapse: collapse; background: var(--card);
-          border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-  thead th { position: sticky; top: 0; background: #17325e; color: #fff; font-size: 12px;
+  /* border-collapse and overflow:hidden both break sticky cells in Chrome, so
+     the corners come from the header cells and the wrapper stays overflow:visible
+     on desktop. The header then sticks to the top of the page while the 411
+     rows scroll under it. */
+  table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card);
+          border: 1px solid var(--line); border-radius: 10px; }
+  thead th { position: sticky; top: 0; z-index: 3; background: #17325e; color: #fff; font-size: 12px;
              text-transform: uppercase; letter-spacing: .04em; padding: 9px 8px; text-align: left;
              cursor: pointer; user-select: none; white-space: nowrap; }
+  thead th:first-child { border-top-left-radius: 9px; }
+  thead th:last-child { border-top-right-radius: 9px; }
   thead th:hover { background: #1d3f78; }
   thead th .dir { opacity: .9; font-size: 12px; margin-left: 3px; }
   thead th.num, td.num { text-align: center; }
@@ -158,7 +176,8 @@
   .g-d { background: var(--chip-d-bg); color: var(--chip-d-ink); }
   .g-f { background: var(--chip-f-bg); color: var(--chip-f-ink); }
   .empty { color: var(--ink-3); }
-  .tableScroll { overflow-x: auto; border-radius: 10px; }
+  .tableScroll { overflow: visible; border-radius: 10px; }
+  @media (max-width: 900px) { .tableScroll { overflow-x: auto; } }
   .methodology { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
                  padding: 4px 16px; margin-top: 18px; font-size: 14px; color: var(--ink-2); }
   .methodology summary { cursor: pointer; font-weight: 600; padding: 10px 0; color: var(--ink); }
@@ -265,9 +284,6 @@
     .controlsWrap, .controls { grid-template-columns: 1fr; }
     .priorities { position: static; }
     .filterBar { flex-wrap: wrap; }
-    /* border-collapse and the table's own overflow:hidden (rounded corners)
-       both break sticky cells in Chrome. Trade the corners for stickiness */
-    table { border-collapse: separate; border-spacing: 0; overflow: visible; }
     thead th:nth-child(2), tbody td:nth-child(2) {
       position: sticky; left: 0; z-index: 5; }
     thead th:nth-child(2) { z-index: 6; }
@@ -299,10 +315,20 @@
   <h1>D3 Women's Basketball: School Report Cards</h1>
   <p>411 programs · window 2018-2027 · recency-weighted · set your priorities and the ranking rebuilds for you</p>
 </header>
+<dialog id="welcome" data-ste="quote" aria-labelledby="welcomeTitle">
+  <div class="wbody">
+    <h2 id="welcomeTitle">Welcome to the D3 Stat Lab School Report Cards</h2>
+    <p>Thank you for being a customer. Your support helps improve these information resources and, I hope, the experience.</p>
+    <p>This is for all lovers of Division III women's basketball. Whether you are a high school recruit, a parent, a high school coach, or someone at the collegiate level, please understand that this site is meant to provide information, not to make the decision for you on where to attend.</p>
+    <p>The data here is provided as objectively as I can, and anywhere subjective grading or weighting was applied, I've disclosed it. The intent is to help you narrow your focus to the criteria that matter most to you. It is up to you to verify any critical piece of information that matters to you and, ultimately, to make the very human connections, relationships, and communication that an important decision like this requires.</p>
+    <p>I hope the data here lets you spend your time on the truly subjective, truly difference-making aspects of selecting a school. If you have questions about any of the data, or find errors or inaccuracies, <a href="contact.html">contact me</a> right away.</p>
+  </div>
+  <div class="wactions"><button type="button" id="welcomeGo">Continue to the report cards</button></div>
+</dialog>
 <div class="wrap">
 
 <div class="filterBar">
-  <span id="account"></span><button type="button" id="signOut">Sign out</button><button type="button" id="savePdf">Save top 20 as PDF</button>
+  <span id="account"></span><a class="btnLink" href="contact.html">Contact</a><button type="button" id="signOut">Sign out</button><button type="button" id="savePdf">Save top 20 as PDF</button>
   <button type="button" id="resetAll">Reset everything</button>
 </div>
 <div class="controlsWrap">
@@ -694,6 +720,14 @@ function decodePayload(b64) {
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 const DATA = await window.PROFILES.loadSchools();
+window.PROFILES.showWelcome();
+// Preview of the first-visit welcome: open the page with #welcome. In the app,
+// profiles-app.js opens it on an account's first visit.
+if (location.hash === "#welcome") {
+  const w = document.getElementById("welcome");
+  document.getElementById("welcomeGo").addEventListener("click", () => w.close());
+  w.showModal();
+}
 const BINS = [[2.25, "A+"], [1.75, "A"], [1.4, "A-"], [1.0, "B+"], [0.6, "B"], [0.3, "B-"], [0.0, "C+"], [-0.3, "C"], [-0.6, "C-"], [-1.0, "D+"], [-1.4, "D"], [-1.75, "D-"], [-99, "F"]];
 const REGIONS = ["Northeast", "Southeast", "Midwest", "Southwest", "West"];
 const STATES = ["AL", "AR", "CA", "CO", "CT", "DC", "GA", "IA", "IL", "IN", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MS", "NC", "NE", "NH", "NJ", "NY", "OH", "OR", "PA", "RI", "TN", "TX", "VA", "VT", "WA", "WI", "WV"];

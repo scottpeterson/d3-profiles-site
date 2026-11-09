@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="darkreader-lock">
+<meta name="theme-color" content="#17325e">
+<meta name="robots" content="noindex">
+<meta name="description" content="Ask a question about D3 WBB School Report Cards or report a data error.">
+<meta name="ste-allow" content="WBB">
+<title>Contact: School Report Cards</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script data-goatcounter="https://thed3statlab.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header class="top"><div class="bar">
+  <a class="brand" href="index.html">D3 WBB School Report Cards</a>
+  <a class="signin" href="app.html">Report cards</a>
+</div></header>
+
+<main class="page"><div class="wrap narrow stack">
+  <h1>Contact</h1>
+  <p class="note">Questions about the data, a grade that looks wrong, or an error in a school's profile: send it here and I read every message.</p>
+  <p class="msg good" id="sent" hidden>Your message is sent. Thank you.</p>
+
+  <form class="card stack" id="form" action="https://formspree.io/f/xjkragkq" method="POST">
+    <input type="hidden" name="_subject" value="School Report Cards contact">
+    <input type="hidden" name="_next" id="next" value="">
+    <label class="field" for="name">Your name
+      <input class="text" type="text" id="name" name="name" autocomplete="name" required>
+    </label>
+    <label class="field" for="email">Your email
+      <input class="text" type="email" id="email" name="email" autocomplete="email" required>
+    </label>
+    <label class="field" for="school">School, if the message is about one
+      <input class="text" type="text" id="school" name="school">
+    </label>
+    <label class="field" for="message">Message
+      <textarea class="text" id="message" name="message" rows="6" required></textarea>
+    </label>
+    <div class="actions"><button class="btn primary" type="submit">Send</button></div>
+  </form>
+</div></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="profiles-app.js"></script>
+<script>
+(async function () {
+  // Formspree returns the sender to this page with ?sent=1.
+  document.getElementById("next").value = location.origin + location.pathname + "?sent=1";
+  if (new URLSearchParams(location.search).has("sent")) {
+    document.getElementById("sent").hidden = false;
+    document.getElementById("form").hidden = true;
+    return;
+  }
+  const session = window.PROFILES.configured ? await window.PROFILES.currentSession() : null;
+  if (session) document.getElementById("email").value = session.user.email;
+})();
+</script>
+</body>
+</html>
