@@ -100,7 +100,10 @@
              color: var(--ink); box-shadow: 0 8px 32px rgba(16, 24, 40, .24); }
   #welcome::backdrop { background: rgba(16, 24, 40, .5); }
   #welcome .wbody { padding: 24px 28px 8px; }
+  /* The heading takes the dialog's opening focus (tabindex, autofocus) so the
+     browser does not focus the first link, scroll to it, and ring it. */
   #welcome h2 { margin: 0 0 12px; font-size: 24px; line-height: 1.25; }
+  #welcome h2:focus { outline: none; }
   #welcome p { margin: 0 0 12px; font-size: 16px; line-height: 1.55; color: var(--ink-2); }
   #welcome .wactions { display: flex; justify-content: flex-end; padding: 8px 28px 24px; }
   #welcomeGo { background: var(--accent); color: #fff; border: 0; border-radius: 8px; min-height: 44px;
@@ -329,7 +332,7 @@
 </header>
 <dialog id="welcome" data-ste="quote" aria-labelledby="welcomeTitle">
   <div class="wbody">
-    <h2 id="welcomeTitle">Welcome to the D3 Stat Lab School Report Cards</h2>
+    <h2 id="welcomeTitle" tabindex="-1" autofocus>Welcome to the D3 Stat Lab School Report Cards</h2>
     <p>Thank you for being a customer. Your support helps me provide information and resources to the D3 community that hopefully enhance the experience for all.</p>
     <p>This site is for all lovers of Division III women's basketball. Whether you are a high school recruit viewing this information, a parent, a high school coach, or someone affiliated at the collegiate level, please understand that this is meant to provide information, not to make the decision for you on where to attend.</p>
     <p>The data here is hopefully objectively provided and anywhere that subjective grading or weighting was applied, I've disclosed it. The intent is to easily narrow your focus to the criteria that matter the most to you, to your personal preference. It is up to you to verify any critical pieces of information that matter to you and, ultimately, to make the very human connections, relationships, and communication necessary to make such an important decision.</p>
