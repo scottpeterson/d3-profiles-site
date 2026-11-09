@@ -244,7 +244,10 @@
   .cmp td:first-child, .cmp th:first-child { text-align: left; font-weight: 600;
                                              white-space: nowrap; }
   .cmp td, .cmp th { text-align: center; }
-  .cmp td .best { font-weight: 600; }
+  /* The better value in a row gets a green fill and bold text. Bold alone was
+     too faint to find (Scott, 2026-11-09). */
+  .cmp td.best { background: #dff3e6; color: #1d5c33; font-weight: 600; }
+  .cmp td.best .sub { color: #1d5c33; font-weight: 600; }
 
   #tip { position: fixed; z-index: 50; max-width: 320px; background: #1a2230; color: #f2f5f9;
          font-size: 12px; line-height: 1.45; text-transform: none; letter-spacing: normal;
@@ -1559,7 +1562,7 @@ function renderCompare(ts) {
       if (vals.filter(v => v === best).length > 1) bestIdx = -1; // tie: no winner
     }
     return `<tr><td>${label}</td>${ts.map((t, i) =>
-      `<td>${bestIdx === i ? `<span class="best">${cell(t)}</span>` : cell(t)}</td>`).join("")}</tr>`;
+      `<td${bestIdx === i ? ' class="best"' : ""}>${cell(t)}</td>`).join("")}</tr>`;
   }).join("");
   const heads = ts.map(t => `<th><div class="cmphead" style="background:${t.bg};color:${t.tc}"
       onclick="location.hash='${t._slug}'" title="Open full profile">
@@ -1567,9 +1570,9 @@ function renderCompare(ts) {
       <span>${t.team}</span></div></th>`).join("");
   $("detail").innerHTML = `<div class="dwrap">
     <button class="hback" onclick="location.hash=''">← Back to rankings</button>
-    <div class="dcard"><h3>Side by side: bold marks the better number</h3>
+    <div class="dcard"><h3>Side by side</h3>
     <table class="cmp"><thead><tr><th></th>${heads}</tr></thead><tbody>${body}</tbody></table>
-    <div class="note">Grade rows bold the school with the higher σ. Click a school's header for its full profile.</div></div></div>`;
+    <div class="note">The better value in each row has a green background. For a grade, the higher σ is better. Click a school's header for its full profile.</div></div></div>`;
 }
 
 // The standalone report carries every profile in the page. The subscriber
