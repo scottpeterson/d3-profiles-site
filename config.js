@@ -5,5 +5,5 @@ window.PROFILES_CONFIG = {
   supabaseUrl: "https://mudjxkxsedftopjfyrtf.supabase.co",
   supabaseAnonKey: "sb_publishable_qmCR_y32gLpmVYqfUl0yqA_NDdOVNPR",
   // The Stripe Payment Link for School Report Cards (test mode until launch).
-  buyUrl: "https://buy.stripe.com/test_7sY6oI7zgdJK4MscE32ZO01",
+  buyUrl: "https://buy.stripe.com/14AfZi1ix27g9qv7579sk03",
 };
