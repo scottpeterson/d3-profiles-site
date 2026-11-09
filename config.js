@@ -6,6 +6,4 @@ window.PROFILES_CONFIG = {
   supabaseAnonKey: "SET_SUPABASE_ANON_KEY",
   // The Stripe Payment Link for School Report Cards (test mode until launch).
   buyUrl: "SET_STRIPE_PAYMENT_LINK_URL",
-  // Shown on the landing page, for example "$89". Empty hides the price line.
-  priceLabel: "",
 };

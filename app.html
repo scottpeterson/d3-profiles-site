@@ -284,6 +284,8 @@
     #detail .dcard { overflow-x: auto; }
   }
 </style>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script src="profiles-app.js"></script>
@@ -549,8 +551,8 @@ Blank for merged campuses that report as one school.">Undergrads since 2013</th>
 <details class="methodology" id="method">
   <summary>Methodology</summary>
   <p data-topic="priorities"><strong>Grades</strong> measure distance from the D3 average in standard deviations (σ).
-  They cover the last 10 seasons, and recent seasons count far more: each season back counts
-  about 78% of the one after it. A+ starts at +2.25σ, and C covers the average.</p>
+  A+ starts at +2.25σ. C covers the average.</p>
+  <p data-topic="priorities">Grades cover the last 10 seasons. Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.</p>
   <p data-topic="priorities">Each letter covers a fixed σ range, so the number of schools at each letter changes from
   grade to grade. A historic outlier grades far above a strong program, and programs with similar
   resumes grade alike. Hover any grade for its exact σ and percentile.</p>
@@ -658,19 +660,19 @@ Blank for merged campuses that report as one school.">Undergrads since 2013</th>
       <tr data-topic="majors"><td>Bachelor's majors offered</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Completions</td><td>July 2022 to June 2024</td></tr>
       <tr data-topic="location"><td>Campus setting, campus location</td><td><a href="https://nces.ed.gov/programs/edge/Geographic/LocaleBoundaries" target="_blank" rel="noopener">NCES locale codes</a> in the IPEDS directory</td><td>2024</td></tr>
       <tr data-topic="location"><td>Nearest city</td><td><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noopener">U.S. Census Bureau</a> city population estimates and place locations</td><td>July 1, 2024</td></tr>
-      <tr data-topic="find"><td>Distance from home</td><td>IPEDS campus locations; a ZIP code maps to the average location of IPEDS campuses with the same first three digits</td><td>2024</td></tr>
+      <tr data-topic="find"><td>Distance from home</td><td>IPEDS campus locations. A ZIP code maps to the average location of IPEDS campuses with the same first three digits.</td><td>2024</td></tr>
       <tr data-topic="finances"><td>Undergrad enrollment change</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2013 and fall 2023</td></tr>
       <tr data-topic="finances"><td>Endowment per student</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Finance, divided by fall enrollment</td><td>Fiscal year 2023</td></tr>
       <tr data-topic="finances"><td>Financial responsibility composite score</td><td><a href="https://studentaid.gov/data-center/school/composite-scores" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>Newest fiscal year listed, 2021 to 2023</td></tr>
       <tr data-topic="finances"><td>Heightened Cash Monitoring</td><td><a href="https://studentaid.gov/data-center/school/hcm" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>June 1, 2026</td></tr>
       <tr data-topic="athletics"><td>Directors' Cup</td><td><a href="https://nacda.com/sports/2018/7/17/directorscup-nacda-directorscup-previous-standings-html.aspx" target="_blank" rel="noopener">NACDA</a> final Division III standings</td><td>2014-15 to 2025-26</td></tr>
-      <tr><td>Season records</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> team pages; the current season from game results</td><td>Every season on file</td></tr>
+      <tr><td>Season records</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> team pages, plus game results for the current season</td><td>Every season on file</td></tr>
       <tr data-topic="athletics"><td>NCAA tournament history</td><td>NCAA Division III tournament results</td><td>1982 to present</td></tr>
       <tr><td>D3hoops poll rank</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> Top 25 poll</td><td>2026-27</td></tr>
       <tr><td>Head coaches</td><td>Each team's athletics website</td><td>Every season on file</td></tr>
       <tr><td>Rosters, class years, minutes, player stats</td><td>Each team's roster and statistics pages</td><td>Every season on file</td></tr>
       <tr><td>Playing style</td><td>Computed by us from game box scores, blended with a preseason projection over a team's first eight games</td><td>2026-27</td></tr>
-      <tr data-topic="school"><td>Women's college or coed</td><td><a href="https://www.womenscolleges.org/colleges" target="_blank" rel="noopener">Women's College Coalition</a> member list, with two exceptions in the method notes; men's share from <a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Member list, November 9, 2026; enrollment, fall 2023</td></tr>
+      <tr data-topic="school"><td>Women's college or coed</td><td><a href="https://www.womenscolleges.org/colleges" target="_blank" rel="noopener">Women's College Coalition</a> member list, with two exceptions in the method notes. Men's share from <a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment.</td><td>Member list: November 9, 2026. Enrollment: fall 2023.</td></tr>
     </tbody>
   </table>
 </details>
@@ -937,7 +939,7 @@ function recompute() {
   const zipTyped = $("homeZip").value.trim();
   $("homeStatus").textContent = home ? "straight-line miles from " + home.label
     : /^\d{5}$/.test(zipTyped) ? "ZIP not recognized. Try another."
-    : "type a ZIP (or tap 📍) to enable the distance filter";
+    : "Type a ZIP code or tap 📍 to turn on the distance filter.";
   try { localStorage.setItem("d3home", JSON.stringify({ zip: zipTyped, geo: geoHome })); } catch (e) {}
   for (const t of DATA) {
     t._mi = home && t.lat != null ? Math.round(milesBetween(home.pt, [t.lat, t.lon])) : null;

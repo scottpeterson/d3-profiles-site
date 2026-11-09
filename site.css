@@ -52,6 +52,7 @@ section.block > .wrap > p.intro { margin-top: 8px; color: var(--ink-2); max-widt
 .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
 .cards + .cards { margin-top: 16px; }
 .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cards.one { grid-template-columns: 1fr; }
 @media (max-width: 900px) { .cards, .cards.two { grid-template-columns: 1fr; } }
 .card { background: var(--card); border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 1px 2px rgba(16, 24, 40, .04); }
 .card > * + * { margin-top: 8px; }
@@ -107,4 +108,55 @@ input.text:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   section.block { padding-top: 36px; }
   section.block > .wrap > h2 { font-size: 20px; }
   dl.grades > div { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* Features with screenshots: text beside the image, stacked on a phone. */
+.feature { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 32px; align-items: center; margin-top: 32px; }
+.feature.wide { grid-template-columns: 1fr; gap: 16px; }
+.feature.wide .ftext { max-width: 720px; }
+.feature.wide figure.shot { max-width: 944px; }
+.feature + .cards { margin-top: 32px; }
+.ftext > * + * { margin-top: 8px; }
+.ftext h3 { font-size: 20px; display: flex; align-items: center; gap: 10px; }
+.ftext p, .ftext li { color: var(--ink-2); }
+.ftext ul { padding-left: 18px; }
+.ftext li + li { margin-top: 4px; }
+figure.shot { margin: 0; }
+figure.shot img { display: block; width: 100%; height: auto; border-radius: 12px; background: var(--card);
+                  box-shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 4px 16px rgba(16, 24, 40, .08); }
+figure.narrowShot img { max-width: 300px; margin: 0 auto; }
+figure.shot figcaption { margin-top: 8px; font-size: 14px; color: var(--ink-3); }
+@media (max-width: 900px) {
+  .feature { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* Program search and the programs left out */
+h3.subhead { font-size: 20px; margin-top: 32px; }
+.finder { margin-top: 20px; }
+.schoolList { list-style: none; padding: 0; margin: 12px 0 0; max-height: 360px; overflow-y: auto;
+              border-top: 1px solid var(--line); columns: 3 240px; column-gap: 24px; }
+.schoolList li { break-inside: avoid; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.schoolList .sname { display: block; font-weight: 500; }
+.schoolList .smeta, .schoolList .alias { display: block; font-size: 14px; color: var(--ink-3); }
+.schoolList li.out .smeta { color: var(--warn-ink); }
+.tableCard { margin-top: 16px; padding: 8px 20px; overflow-x: auto; }
+table.excluded { width: 100%; border-collapse: collapse; }
+table.excluded th, table.excluded td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
+table.excluded tr:last-child td { border-bottom: 0; }
+table.excluded th { font-size: 14px; color: var(--ink-3); font-weight: 600; }
+
+/* Method notes and the data sources table, copied from the report by the generator */
+.methods { margin-top: 20px; display: grid; gap: 12px; }
+details.methodology { background: var(--card); border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(16, 24, 40, .08); }
+details.methodology summary { font-weight: 600; font-size: 20px; cursor: pointer; }
+details.methodology p { margin-top: 12px; color: var(--ink-2); max-width: 760px; }
+details.methodology table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 14px; table-layout: fixed; }
+details.methodology th, details.methodology td { text-align: left; vertical-align: top; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line); }
+details.methodology th { color: var(--ink-3); font-weight: 600; }
+@media (max-width: 640px) {
+  details.methodology table, details.methodology tbody, details.methodology tr, details.methodology td { display: block; width: auto; }
+  details.methodology thead, details.methodology colgroup { display: none; }
+  details.methodology tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  details.methodology td { border: 0; padding: 2px 0; }
+  details.methodology td:first-child { font-weight: 600; color: var(--ink); }
 }

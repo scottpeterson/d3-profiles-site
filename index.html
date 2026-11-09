@@ -6,9 +6,11 @@
 <meta name="color-scheme" content="light">
 <meta name="darkreader-lock">
 <meta name="theme-color" content="#17325e">
-<meta name="description" content="Grades for all 411 Division III women's basketball programs, with filters for cost, academics, location, majors, and school finances.">
-<meta name="ste-allow" content="III,WBB">
+<meta name="description" content="Grades for Division III women's basketball programs, with filters for cost, academics, location, majors, and school finances.">
+<meta name="ste-allow" content="III,WBB,NPI">
 <title>D3 WBB School Report Cards</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
@@ -22,36 +24,34 @@
 
 <section class="hero"><div class="wrap">
   <h1>Grades for every Division III women's basketball program</h1>
-  <p class="lead">School Report Cards grades all 411 Division III programs on the basketball program and on the
+  <p class="lead">School Report Cards grades <span data-n>411</span> Division III programs on the basketball program and on the
   school around it. You choose how much each grade counts and filter by cost, academics, location, and majors. The
   list re-ranks as you change them.</p>
   <div class="actions">
-    <a class="btn primary buyLink" href="#buy">Buy a year of access</a>
+    <a class="btn primary buyLink" href="#buy">Buy a year of access for $129</a>
     <a class="btn secondary" href="#features">See what's inside</a>
   </div>
-  <p class="terms">You pay once for 365 days of access. The purchase does not renew.</p>
+  <p class="terms">You pay $129 once for 365 days of access. The purchase does not renew.</p>
 </div></section>
 
 <section class="block" id="features"><div class="wrap">
   <h2>Features</h2>
   <p class="intro">School Report Cards helps high school players and their families build a short list of colleges to contact and visit.</p>
-  <div class="cards">
-    <div class="card">
+
+  <div class="feature">
+    <div class="ftext">
       <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg></span>Rank by your priorities</h3>
-      <p>Each school gets nine grades from A+ to F. A slider from 0 to 10 sets how much each grade counts. The list re-ranks as you move a slider.
-      Set a grade to 0 to drop it from the ranking.</p>
+      <p>Each school gets nine grades from A+ to F. A slider from 0 to 10 sets how much each grade counts. The list
+      re-ranks as you move a slider. Set a grade to 0 to drop it from the ranking.</p>
     </div>
-    <div class="card">
-      <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg></span>Compare up to three schools</h3>
-      <p>Mark up to three schools with the star to see them side by side. In each row, bold marks the better number.</p>
-    </div>
-    <div class="card">
-      <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg></span>Save your top 20 as a PDF</h3>
-      <p>The PDF fits on one page. It lists your filters in plain words, your priorities, and the top 20 schools with every grade.</p>
-    </div>
+    <figure class="shot narrowShot">
+      <img src="img/priorities.webp" width="300" height="376" loading="lazy"
+           alt="The Ranking priorities card, with one slider for each of the nine grades. Academics is set to 9 and Net price to 8.">
+    </figure>
   </div>
-  <div class="cards two">
-    <div class="card">
+
+  <div class="feature wide">
+    <div class="ftext">
       <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg></span>Filter to schools that fit</h3>
       <ul>
         <li>Region, state, distance from your ZIP code, and campus setting</li>
@@ -61,6 +61,26 @@
         <li>School finances and federal oversight</li>
       </ul>
     </div>
+    <figure class="shot">
+      <a href="img/controls.webp" target="_blank" rel="noopener"><img src="img/controls.webp" width="848" height="1082" loading="lazy"
+           alt="The filter cards: Location, Graduate study, Majors, Find a school, School finances, School, Cost, Basketball and athletics, and Academics."></a>
+    </figure>
+  </div>
+
+  <div class="feature wide">
+    <div class="ftext">
+      <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="16" rx="1.5"/><rect x="14" y="4" width="7" height="16" rx="1.5"/></svg></span>Compare up to three schools</h3>
+      <p>Mark up to three schools with the star to see them side by side. In each row, bold marks the better number.
+      The comparison covers every grade, the record, the coach, roster retention, cost, academics, and school finances.</p>
+    </div>
+    <figure class="shot">
+      <a href="img/compare.webp" target="_blank" rel="noopener"><img src="img/compare.webp" width="944" height="691" loading="lazy"
+           alt="Three sample schools side by side, with a letter grade and a score for each of the nine grades."></a>
+      <figcaption>Sample schools with made-up names and numbers.</figcaption>
+    </figure>
+  </div>
+
+  <div class="cards one">
     <div class="card">
       <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Open a full profile</h3>
       <ul>
@@ -71,13 +91,41 @@
         <li>Playing style, campus facts, and net price by family income</li>
       </ul>
     </div>
+    <div class="card">
+      <h3><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3h10v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg></span>Save your top 20 as a PDF</h3>
+      <p>The PDF fits on one page. It lists your filters in plain words, your priorities, and the top 20 schools with every grade.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="programs"><div class="wrap">
+  <h2>Programs</h2>
+  <p class="intro">School Report Cards grades the <span data-n>411</span> programs whose games count in the 2026-27 NCAA
+  Power Index (NPI). Search by school name, a short name, or a former name.</p>
+  <div class="card finder">
+    <label class="field" for="schoolSearch">Find a program</label>
+    <input class="text" id="schoolSearch" type="search" placeholder="School name" autocomplete="off" spellcheck="false">
+    <p class="note" id="schoolCount" aria-live="polite"></p>
+    <ul class="schoolList" id="schoolList"></ul>
+  </div>
+  <h3 class="subhead">Programs not included</h3>
+  <p class="intro">Games against these programs do not count in the 2026-27 NPI, so School Report Cards does not grade
+  them. The list comes from the provisional members table on the
+  <a href="https://thed3statlab.com/reference.html" target="_blank" rel="noopener">D3 Stat Lab reference page</a>.</p>
+  <div class="card tableCard">
+    <table class="excluded">
+      <thead><tr><th>Program</th><th>Membership status, 2026-27</th></tr></thead>
+      <tbody id="excludedRows"></tbody>
+    </table>
   </div>
 </div></section>
 
 <section class="block" id="grades"><div class="wrap">
   <h2>Grades</h2>
   <p class="intro">Each grade compares a program with the Division III average over the last 10 seasons.
-  Each season counts about 78% as much as the season after it. The site lists the full method notes and the source of every figure.</p>
+  <!-- generated:decay -->
+Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.
+<!-- /generated:decay --></p>
   <dl class="grades card">
     <div><dt>Regular season</dt><dd>Win percentage, plus credit for reaching the NCAA tournament</dd></div>
     <div><dt>Tournament</dt><dd>NCAA tournament wins and how far each run went</dd></div>
@@ -91,24 +139,156 @@
   </dl>
 </div></section>
 
-<section class="block" id="sources"><div class="wrap">
-  <h2>Data sources</h2>
+<section class="block" id="methods"><div class="wrap">
+  <h2>Methods and data sources</h2>
   <p class="intro">Basketball grades come from game results and the roster pages each program publishes. School
   figures come from the U.S. Department of Education: the Integrated Postsecondary Education Data System
-  (IPEDS) and Federal Student Aid. Athletic department grades use the Learfield Directors' Cup standings.</p>
+  (IPEDS) and Federal Student Aid. Athletic department grades use the Learfield Directors' Cup standings.
+  Open each section for the full notes.</p>
+  <div class="methods">
+  <!-- generated:methods -->
+<details class="methodology" id="method">
+  <summary>Methodology</summary>
+  <p><strong>Grades</strong> measure distance from the D3 average in standard deviations (σ).
+  A+ starts at +2.25σ. C covers the average.</p>
+  <p>Grades cover the last 10 seasons. Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.</p>
+  <p>Each letter covers a fixed σ range, so the number of schools at each letter changes from
+  grade to grade. A historic outlier grades far above a strong program, and programs with similar
+  resumes grade alike. Hover any grade for its exact σ and percentile.</p>
+  <p><strong>Reg. season:</strong> win percentage plus a bonus for making the NCAA field.
+  <strong>Tournament:</strong> NCAA wins and how deep each run went.
+  <strong>Coaching stability:</strong> current coach tenure minus a penalty per head-coaching
+  change in the last decade.</p>
+  <p><strong>Coaching grade scope:</strong> the grade measures the stability of the head-coaching
+  position over the last 10 years. Stability usually signals overall program health. A coach's effect on the
+  program shows more in the Reg. season, Tournament, Roster, and Development grades. No grade here
+  covers personality or coaching style.</p>
+  <p><strong>Roster stability:</strong> minutes-weighted retention (two thirds) and freshman
+  share of minutes (one third). Retention is the share of non-senior minutes that came back the
+  next season, found by comparing each team's consecutive roster pages. Seniors and graduate
+  students who leave do not count against a program. Freshman share of minutes pools the minutes
+  of the last three rosters.</p>
+  <p><strong>Roster grade caveat, class years:</strong> the class year for each player comes
+  from the team's own roster page. We do not know whether a team lists academic class or athletic
+  eligibility, and teams may differ.</p>
+  <p>Some players graduate with eligibility left and skip a final season. If the roster lists such
+  a player as a junior, she looks like an underclassman who left, and her departure lowers the
+  program's retention. The same happens when a player stops playing to focus on academics.</p>
+  <p>We cannot separate those cases from a player who left the team for other reasons. Every
+  non-senior who does not return counts the same. Treat the Roster grade and the "Left early"
+  lists as an estimate built on that assumption.</p>
+  <p><strong>Academics:</strong> graduation rate and selectivity (from the acceptance rate), both
+  from the Integrated Postsecondary Education Data System (IPEDS), a U.S. Department of Education
+  survey.</p>
+  <p><strong>Player development:</strong> returning players' year-over-year growth in production
+  rate (pts+reb+ast per 30 min) and role (minutes). Each is measured against the typical D3
+  progression for a player at the same starting level and class, which removes regression to
+  the mean.</p>
+  <p>Holding an elite rate counts as development. A routine bounce from a low base earns no
+  credit. The grade weights players by minutes, across every offseason from 2023-24 to 2025-26. A season counts once it is
+  finished.</p>
+  <p><strong>Athletic dept.:</strong> average Learfield Directors' Cup points per season across
+  10 seasons, 2014-15 to 2025-26. The National Association of Collegiate Directors of Athletics
+  (NACDA) publishes the standings and published none for 2019-20 or 2020-21. The Cup scores a
+  school's finishes in NCAA championships across all sports, men's and women's, up to 18 sports a
+  year.</p>
+  <p>A season with no points counts as zero, including seasons before a school joined Division
+  III. The grade says nothing about the basketball program itself.</p>
+  <p><strong>Net price:</strong> the average net price for full-time first-year students who got
+  grant aid. Lower prices grade higher. The grade uses the price for all families, even when you
+  pick a family income. A school with no reported price grades at the D3 average.</p>
+  <p><strong>School finances:</strong> the change in undergraduate enrollment from fall 2013 to
+  fall 2023. The second measure is the endowment per full-time-equivalent student at the end of
+  fiscal year 2023. Both come from IPEDS. Each is measured on a log scale, so a school that doubled and a school
+  that halved sit the same distance from no change. The two count equally.</p>
+  <p>Some campuses merged and now report as one school, such as the three Vermont State
+  campuses. Their 2013 count covers one campus and their 2023 count covers the merged school, so
+  we leave their enrollment change blank. Some campuses report their endowment through a parent
+  university and show none.</p>
+  <p><strong>Federal oversight:</strong> the profile also shows two Department of Education
+  measures that the grade does not use. The financial responsibility composite score runs from
+  -1.0 to 3.0. A score of 1.5 or higher passes, 1.0 to 1.4 passes with extra oversight, and below
+  1.0 fails. Only private schools get one, so it would grade only part of the field.</p>
+  <p>Every school with a failing score or a cash-monitoring listing shows a label beside its name.
+  The Federal oversight checkboxes move those schools below the table instead of hiding them, and
+  set-aside schools leave the Overall grade.</p>
+  <p>Heightened
+  Cash Monitoring is a list of schools under extra federal oversight of their student aid money,
+  with the reason for each.</p>
+  <p>The <strong>Overall</strong> grade re-ranks the schools that match your filters using your
+  priority weights over the component σ-scores, then re-grades within that filtered set. Set a
+  priority to 0 to drop that grade from the ranking.</p>
+  <p><strong>Campus setting and nearest city:</strong> the setting is the locale code from the
+  National Center for Education Statistics (NCES). It measures distance from the campus to an
+  urban area. Nearest-city distances are straight-line miles to the closest U.S. city of each
+  size, so they ignore cities in Canada.</p>
+  <p><strong>Graduate study:</strong> the highest degree offered comes from the
+  IPEDS directory. A school awards a master's in a field when it awarded at least one master's degree
+  in it in July 2022 to June 2024. IPEDS has no field for combined bachelor's and master's (4+1)
+  programs, so check the school's catalog for those.</p>
+  <p><strong>Women's colleges:</strong> the label follows the Women's College
+  Coalition member list, with two exceptions. William Smith counts as a women's college: it is the
+  women's college paired with Hobart, with one shared campus and one federal record. Mississippi
+  University for Women (MUW) is a member but counts as coed. It began admitting men in 1982.</p>
+  <p><strong>Distance from home:</strong> straight-line miles from your ZIP code or
+  your location to each campus. A ZIP code maps to the average location of the IPEDS campuses with
+  the same first three digits. A distance can be off by several miles.</p>
+  <p><strong>Majors:</strong> a school offers a field when it awarded at least one bachelor's
+  degree in it in either of the last two years in IPEDS. A school that reports degrees only as
+  liberal arts or interdisciplinary studies shows no fields. Check the school's catalog before
+  you rule it out.</p>
+</details>
+<details class="methodology" id="sources">
+  <summary>Data sources</summary>
+  <p>Each school's profile links to its page on College Navigator, the U.S. Department of
+  Education's public view of the same federal survey data. College Navigator shows the newest
+  year in IPEDS, which can be one year newer than the data here.</p>
+  <table class="fixed srcTable">
+    <colgroup><col style="width:28%"><col style="width:46%"><col style="width:26%"></colgroup>
+    <thead><tr><th>Field</th><th>Source</th><th>Data year</th></tr></thead>
+    <tbody>
+      <tr><td>Enrollment</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2023</td></tr>
+      <tr><td>Tuition and fees</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Institutional Characteristics</td><td>2023-24</td></tr>
+      <tr><td>Acceptance rate</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Admissions</td><td>Fall 2023</td></tr>
+      <tr><td>Graduation rate</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Graduation Rates</td><td>2023</td></tr>
+      <tr><td>Net price, all families and by income</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Student Financial Aid</td><td>2022-23</td></tr>
+      <tr><td>First-year retention, student-to-faculty ratio</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2023</td></tr>
+      <tr><td>Highest degree offered</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Institutional Characteristics</td><td>2024</td></tr>
+      <tr><td>Master's fields awarded</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Completions</td><td>July 2022 to June 2024</td></tr>
+      <tr><td>Bachelor's majors offered</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Completions</td><td>July 2022 to June 2024</td></tr>
+      <tr><td>Campus setting, campus location</td><td><a href="https://nces.ed.gov/programs/edge/Geographic/LocaleBoundaries" target="_blank" rel="noopener">NCES locale codes</a> in the IPEDS directory</td><td>2024</td></tr>
+      <tr><td>Nearest city</td><td><a href="https://www.census.gov/programs-surveys/popest.html" target="_blank" rel="noopener">U.S. Census Bureau</a> city population estimates and place locations</td><td>July 1, 2024</td></tr>
+      <tr><td>Distance from home</td><td>IPEDS campus locations. A ZIP code maps to the average location of IPEDS campuses with the same first three digits.</td><td>2024</td></tr>
+      <tr><td>Undergrad enrollment change</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment</td><td>Fall 2013 and fall 2023</td></tr>
+      <tr><td>Endowment per student</td><td><a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Finance, divided by fall enrollment</td><td>Fiscal year 2023</td></tr>
+      <tr><td>Financial responsibility composite score</td><td><a href="https://studentaid.gov/data-center/school/composite-scores" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>Newest fiscal year listed, 2021 to 2023</td></tr>
+      <tr><td>Heightened Cash Monitoring</td><td><a href="https://studentaid.gov/data-center/school/hcm" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>June 1, 2026</td></tr>
+      <tr><td>Directors' Cup</td><td><a href="https://nacda.com/sports/2018/7/17/directorscup-nacda-directorscup-previous-standings-html.aspx" target="_blank" rel="noopener">NACDA</a> final Division III standings</td><td>2014-15 to 2025-26</td></tr>
+      <tr><td>Season records</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> team pages, plus game results for the current season</td><td>Every season on file</td></tr>
+      <tr><td>NCAA tournament history</td><td>NCAA Division III tournament results</td><td>1982 to present</td></tr>
+      <tr><td>D3hoops poll rank</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> Top 25 poll</td><td>2026-27</td></tr>
+      <tr><td>Head coaches</td><td>Each team's athletics website</td><td>Every season on file</td></tr>
+      <tr><td>Rosters, class years, minutes, player stats</td><td>Each team's roster and statistics pages</td><td>Every season on file</td></tr>
+      <tr><td>Playing style</td><td>Computed by us from game box scores, blended with a preseason projection over a team's first eight games</td><td>2026-27</td></tr>
+      <tr><td>Women's college or coed</td><td><a href="https://www.womenscolleges.org/colleges" target="_blank" rel="noopener">Women's College Coalition</a> member list, with two exceptions in the method notes. Men's share from <a href="https://nces.ed.gov/ipeds/datacenter/DataFiles.aspx" target="_blank" rel="noopener">IPEDS</a> Fall Enrollment.</td><td>Member list: November 9, 2026. Enrollment: fall 2023.</td></tr>
+    </tbody>
+  </table>
+</details>
+<!-- /generated:methods -->
+  </div>
 </div></section>
 
 <div class="wrap buy" id="buy">
   <div class="card">
     <h2>A year of access</h2>
-    <p class="price" id="price" hidden></p>
+    <p class="price">$129</p>
     <ul class="note">
-      <li>Every grade, filter, profile, and comparison for all 411 programs</li>
+      <li>Every grade, filter, profile, and comparison for all <span data-n>411</span> programs</li>
       <li>365 days from the day you pay, with no automatic renewal</li>
       <li>Sign in with the email you use at checkout. We email you a sign-in link, so there is no password.</li>
     </ul>
     <div class="actions">
-      <a class="btn primary buyLink" href="#buy">Buy a year of access</a>
+      <a class="btn primary buyLink" href="#buy">Buy a year of access for $129</a>
       <a class="btn secondary" href="signin.html">I already bought access</a>
     </div>
   </div>
@@ -135,20 +315,105 @@
   <p>D3 WBB School Report Cards is a product of <a href="https://www.thed3statlab.com" target="_blank" rel="noopener">The D3 Stat Lab</a>.</p>
 </div></footer>
 
+<!-- generated:schools -->
+<script type="application/json" id="schoolData">{"included":[{"n":"Adrian","c":"MIAA","s":"MI","a":["Adrian College"]},{"n":"Agnes Scott","c":"CCS","s":"GA","a":["Agnes Scott College"]},{"n":"Albertus Magnus","c":"GNAC","s":"CT","a":["Albertus Magnus College"]},{"n":"Albion","c":"MIAA","s":"MI","a":["Albion College"]},{"n":"Albright","c":"MACC","s":"PA","a":["Albright College"]},{"n":"Alfred","c":"E8","s":"NY","a":["Alfred University"]},{"n":"Alfred St.","c":"SUNYAC","s":"NY","a":["Alfred St","Alfred State","Alfred State College","SUNY College of Technology at Alfred"]},{"n":"Allegheny","c":"PAC","s":"PA","a":["Allegheny College"]},{"n":"Alma","c":"MIAA","s":"MI","a":["Alma College"]},{"n":"Alvernia","c":"MACC","s":"PA","a":["Alvernia University"]},{"n":"Alverno","c":"C2C","s":"WI","a":["Alverno College"]},{"n":"Amherst","c":"NESCAC","s":"MA","a":["Amherst College"]},{"n":"Anderson","c":"HCAC","s":"IN","a":["Anderson (IN)","Anderson IN","Anderson University","Anderson University (Indiana)"]},{"n":"Arcadia","c":"MACF","s":"PA","a":["Arcadia University"]},{"n":"Asbury","c":"CCS","s":"KY","a":["#Asbury University (active 2024-25)","Asbury University"]},{"n":"Augsburg","c":"MIAC","s":"MN","a":["Augsburg University"]},{"n":"Augustana","c":"CCIW","s":"IL","a":["Augustana (IL)","Augustana College","Augustana College (Illinois)","Augustana IL"]},{"n":"Aurora","c":"NACC","s":"IL","a":["Aurora University"]},{"n":"Austin","c":"SCAC","s":"TX","a":["Austin Col","Austin College"]},{"n":"Averett","c":"ODAC","s":"VA","a":["Averett University"]},{"n":"Babson","c":"NEWMAC","s":"MA","a":["Babson College"]},{"n":"Baldwin Wallace","c":"OAC","s":"OH","a":["Baldwin Wallace University","Baldwin-Wallace"]},{"n":"Bard","c":"LL","s":"NY","a":["Bard College"]},{"n":"Baruch","c":"CUNYAC","s":"NY","a":["Baruch College","CUNY Bernard M Baruch College"]},{"n":"Bates","c":"NESCAC","s":"ME","a":["Bates College"]},{"n":"Batten","c":"ODAC","s":"VA","a":["Batten University","Va. Wesleyan","Virginia Wesleyan","Virginia Wesleyan University"]},{"n":"Belhaven","c":"CCS","s":"MS","a":["Belhaven MS","Belhaven University"]},{"n":"Beloit","c":"MWC","s":"WI","a":["Beloit College"]},{"n":"Benedictine","c":"NACC","s":"IL","a":["Benedictine (IL)","Benedictine IL","Benedictine University","Benedictine University (Illinois)"]},{"n":"Berea","c":"HCAC","s":"KY","a":["Berea College"]},{"n":"Berry","c":"SAA","s":"GA","a":["Berry College"]},{"n":"Bethany","c":"PAC","s":"WV","a":["Bethany (WV)","Bethany College","Bethany College (West Virginia)","Bethany WV"]},{"n":"Bethany Lutheran","c":"UMAC","s":"MN","a":["Bethany Luth","Bethany Lutheran College"]},{"n":"Bethel","c":"MIAC","s":"MN","a":["Bethel (MN)","Bethel MN","Bethel University","Bethel University (Minnesota)"]},{"n":"Blackburn","c":"SLIAC","s":"IL","a":["Blackburn College"]},{"n":"Bluffton","c":"HCAC","s":"OH","a":["Bluffton University"]},{"n":"Bowdoin","c":"NESCAC","s":"ME","a":["Bowdoin College"]},{"n":"Brandeis","c":"UAA","s":"MA","a":["Brandeis University"]},{"n":"Brevard","c":"USAC","s":"NC","a":["Brevard College"]},{"n":"Bridgewater (VA)","c":"ODAC","s":"VA","a":["Bridgewater (Va.)","Bridgewater College","Bridgewater College (Virginia)","Bridgewater VA"]},{"n":"Bridgewater St.","c":"MASCAC","s":"MA","a":["Bridgewater MA","Bridgewater State","Bridgewater State University"]},{"n":"Brooklyn","c":"CUNYAC","s":"NY","a":["Brooklyn Col","Brooklyn College","CUNY Brooklyn College"]},{"n":"Bryn Mawr","c":"CC","s":"PA","a":["Bryn Mawr College"]},{"n":"Buena Vista","c":"ARC","s":"IA","a":["Buena Vista University"]},{"n":"Buffalo St.","c":"SUNYAC","s":"NY","a":["Buffalo St","Buffalo State","Buffalo State, State University of New York","SUNY Buffalo State University"]},{"n":"Cairn","c":"UEC","s":"PA","a":["Cairn University","Cairn University-Langhorne"]},{"n":"Cal Lutheran","c":"SCIAC","s":"CA","a":["California Lutheran University"]},{"n":"Caltech","c":"SCIAC","s":"CA","a":["California Institute of Technology"]},{"n":"Calvin","c":"MIAA","s":"MI","a":["Calvin University"]},{"n":"Capital","c":"OAC","s":"OH","a":["Capital University"]},{"n":"Carleton","c":"MIAC","s":"MN","a":["Carleton College","Carleton MN"]},{"n":"Carlow","c":"AMCC","s":"PA","a":["Carlow University"]},{"n":"Carnegie Mellon","c":"UAA","s":"PA","a":["Carnegie Mellon University"]},{"n":"Carroll","c":"CCIW","s":"WI","a":["Carroll (WI)","Carroll University","Carroll University (Wisconsin)","Carroll WI"]},{"n":"Carthage","c":"CCIW","s":"WI","a":["Carthage College"]},{"n":"Case Western","c":"UAA","s":"OH","a":["CWRU","Case Western Reserve","Case Western Reserve University"]},{"n":"Catholic","c":"LAND","s":"DC","a":["Catholic University","The Catholic University of America"]},{"n":"CCNY","c":"CUNYAC","s":"NY","a":["CUNY City College","City Col NY","City College (NY)","The City College of New York"]},{"n":"Cedar Crest","c":"UEC","s":"PA","a":["Cedar Crest College"]},{"n":"Centenary (LA)","c":"SCAC","s":"LA","a":["Centenary","Centenary (La.)","Centenary College (Louisiana)","Centenary College of Louisiana"]},{"n":"Centenary (NJ)","c":"AEC","s":"NJ","a":["Centenary (N.J.)","Centenary NJ","Centenary University","Centenary University (New Jersey)"]},{"n":"Central","c":"ARC","s":"IA","a":["Central (IA)","Central (IA)|Central IA","Central College","Central College (Iowa)","Central IA"]},{"n":"Centre","c":"SAA","s":"KY","a":["Centre College"]},{"n":"Chapman","c":"SCIAC","s":"CA","a":["Chapman University"]},{"n":"Chatham","c":"PAC","s":"PA","a":["Chatham University"]},{"n":"Chicago","c":"UAA","s":"IL","a":["UChicago","University of Chicago"]},{"n":"Christopher Newport","c":"C2C","s":"VA","a":["Chris Newport","Chris. Newport","Christopher Newport University"]},{"n":"Claremont-Mudd-Scripps","c":"SCIAC","s":"CA","a":["Claremont M.S.","Claremont McKenna College","Claremont McKenna-Harvey Mudd-Scripps Colleges","Claremont-M-S"]},{"n":"Clark","c":"NEWMAC","s":"MA","a":["Clark (MA)","Clark MA","Clark University","Clark University (Massachusetts)"]},{"n":"Clarkson","c":"LL","s":"NY","a":["Clarkson University"]},{"n":"Coast Guard","c":"NEWMAC","s":"CT","a":["U.S. Coast Guard Academy","United States Coast Guard Academy"]},{"n":"Coe","c":"ARC","s":"IA","a":["Coe College"]},{"n":"Colby","c":"NESCAC","s":"ME","a":["Colby College"]},{"n":"Colby-Sawyer","c":"GNAC","s":"NH","a":["Colby-Sawyer College"]},{"n":"Colorado College","c":"SCAC","s":"CO","a":["Colorado Col","Colorado Col."]},{"n":"Concordia (IL)","c":"NACC","s":"IL","a":["Concordia Chicago","Concordia IL","Concordia University Chicago","Concordia University-Chicago","Concordia-Chicago"]},{"n":"Concordia (MN)","c":"MIAC","s":"MN","a":["Concordia College at Moorhead","Concordia College, Moorhead","Concordia Mhd","Concordia Moorhead","Concordia-Mhead","Concordia-Moorhead"]},{"n":"Concordia (TX)","c":"SCAC","s":"TX","a":["Concordia (Texas)","Concordia TX","Concordia University Texas"]},{"n":"Concordia (WI)","c":"NACC","s":"WI","a":["Concordia (Wis.)","Concordia University Wisconsin","Concordia University-Wisconsin","Concordia WI","Concordia Wisconsin"]},{"n":"Connecticut College","c":"NESCAC","s":"CT","a":["CT College","Connecticut Col."]},{"n":"Cornell","c":"MWC","s":"IA","a":["Cornell College","Cornell IA"]},{"n":"Covenant","c":"CCS","s":"GA","a":["Covenant College"]},{"n":"Crown","c":"UMAC","s":"MN","a":["Crown (MN)","Crown College","Crown College (Minnesota)","Crown MN"]},{"n":"Curry","c":"CNE","s":"MA","a":["Curry College"]},{"n":"Dallas","c":"SCAC","s":"TX","a":["Dallas Univ","University of Dallas"]},{"n":"Dean","c":"GNAC","s":"MA","a":["Dean College"]},{"n":"Delaware Valley","c":"MACF","s":"PA","a":["Delaware Val","Delaware Valley University"]},{"n":"Denison","c":"NCAC","s":"OH","a":["Denison University"]},{"n":"DePauw","c":"NCAC","s":"IN","a":["DePauw University"]},{"n":"DeSales","c":"MACF","s":"PA","a":["DeSales University"]},{"n":"Dickinson","c":"CC","s":"PA","a":["Dickinson College"]},{"n":"Dominican","c":"NACC","s":"IL","a":["Dominican (IL)","Dominican IL","Dominican University","Dominican University (Illinois)"]},{"n":"Drew","c":"LAND","s":"NJ","a":["Drew University"]},{"n":"Dubuque","c":"ARC","s":"IA","a":["University of Dubuque"]},{"n":"Earlham","c":"HCAC","s":"IN","a":["Earlham College"]},{"n":"East Texas Baptist","c":"ASC","s":"TX","a":["E Texas Bap","East Tex. Baptist","East Texas Baptist University"]},{"n":"Eastern","c":"MACC","s":"PA","a":["Eastern Univ","Eastern University"]},{"n":"Eastern Connecticut St.","c":"LEC","s":"CT","a":["E Connecticut","Eastern Conn. St.","Eastern Connecticut","Eastern Connecticut State University"]},{"n":"Eastern Mennonite","c":"ODAC","s":"VA","a":["E Mennonite","East. Mennonite","Eastern Mennonite University"]},{"n":"Edgewood","c":"NACC","s":"WI","a":["Edgewood College"]},{"n":"Elizabethtown","c":"LAND","s":"PA","a":["Elizabethtown College"]},{"n":"Elmhurst","c":"CCIW","s":"IL","a":["Elmhurst University"]},{"n":"Elmira","c":"E8","s":"NY","a":["Elmira College"]},{"n":"Elms","c":"GNAC","s":"MA","a":["College of Our Lady of the Elms","Elms College"]},{"n":"Emerson","c":"NEWMAC","s":"MA","a":["Emerson College"]},{"n":"Emmanuel","c":"GNAC","s":"MA","a":["Emmanuel (MA)","Emmanuel College","Emmanuel College (Massachusetts)","Emmanuel MA"]},{"n":"Emory","c":"UAA","s":"GA","a":["Emory University"]},{"n":"Endicott","c":"CNE","s":"MA","a":["Endicott College"]},{"n":"Eureka","c":"SLIAC","s":"IL","a":["Eureka College"]},{"n":"Farmingdale St.","c":"SKY","s":"NY","a":["Farmingdale","Farmingdale State","Farmingdale State College"]},{"n":"FDU-Florham","c":"MACF","s":"NJ","a":["FDU Florham","FDU Madison","Fairleigh Dickinson University, Florham","Fairleigh Dickinson University-Florham Campus"]},{"n":"Fitchburg St.","c":"MASCAC","s":"MA","a":["Fitchburg St","Fitchburg State","Fitchburg State University"]},{"n":"Framingham St.","c":"MASCAC","s":"MA","a":["Framingham St","Framingham State","Framingham State University"]},{"n":"Franciscan","c":"PAC","s":"OH","a":["Franciscan (Ohio)","Franciscan OH","Franciscan University of Steubenville"]},{"n":"Franklin","c":"HCAC","s":"IN","a":["Franklin College"]},{"n":"Franklin & Marshall","c":"CC","s":"PA","a":["Frank & Marsh","Franklin & Marshall College","Franklin and Marshall","Franklin and Marshall College"]},{"n":"Fredonia St.","c":"SUNYAC","s":"NY","a":["Fredonia","SUNY Fredonia","SUNY at Fredonia","The State University of New York at Fredonia"]},{"n":"Gallaudet","c":"UEC","s":"DC","a":["Gallaudet University"]},{"n":"Geneva","c":"PAC","s":"PA","a":["Geneva College"]},{"n":"George Fox","c":"NWC","s":"OR","a":["George Fox University"]},{"n":"Gettysburg","c":"CC","s":"PA","a":["Gettysburg College"]},{"n":"Gordon","c":"CNE","s":"MA","a":["Gordon College"]},{"n":"Goucher","c":"LAND","s":"MD","a":["Goucher College"]},{"n":"Greensboro","c":"USAC","s":"NC","a":["Greensboro College"]},{"n":"Greenville","c":"SLIAC","s":"IL","a":["Greenville University"]},{"n":"Grinnell","c":"MWC","s":"IA","a":["Grinnell College"]},{"n":"Grove City","c":"PAC","s":"PA","a":["Grove City College"]},{"n":"Guilford","c":"ODAC","s":"NC","a":["Guilford College"]},{"n":"Gustavus Adolphus","c":"MIAC","s":"MN","a":["Gust Adolphus","Gustavus Adolphus College"]},{"n":"Gwynedd Mercy","c":"AEC","s":"PA","a":["Gwynedd Mercy University","Gwynedd-Mercy"]},{"n":"Hamilton","c":"NESCAC","s":"NY","a":["Hamilton College"]},{"n":"Hamline","c":"MIAC","s":"MN","a":["Hamline University"]},{"n":"Hanover","c":"HCAC","s":"IN","a":["Hanover College"]},{"n":"Hardin-Simmons","c":"ASC","s":"TX","a":["Hardin-Simmons University"]},{"n":"Hartford","c":"CNE","s":"CT","a":["University of Hartford"]},{"n":"Hartwick","c":"E8","s":"NY","a":["Hartwick College"]},{"n":"Haverford","c":"CC","s":"PA","a":["Haverford College"]},{"n":"Heidelberg","c":"OAC","s":"OH","a":["Heidelberg University"]},{"n":"Hendrix","c":"SCAC","s":"AR","a":["Hendrix College"]},{"n":"Hilbert","c":"AMCC","s":"NY","a":["Hilbert College"]},{"n":"Hiram","c":"PAC","s":"OH","a":["Hiram College"]},{"n":"Hollins","c":"ODAC","s":"VA","a":["Hollins University"]},{"n":"Hood","c":"MACC","s":"MD","a":["Hood College"]},{"n":"Hope","c":"MIAA","s":"MI","a":["Hope College"]},{"n":"Houghton","c":"E8","s":"NY","a":["Houghton College","Houghton University"]},{"n":"Howard Payne","c":"ASC","s":"TX","a":["Howard Payne University"]},{"n":"Hunter","c":"CUNYAC","s":"NY","a":["CUNY Hunter College","Hunter College"]},{"n":"Huntingdon","c":"CCS","s":"AL","a":["Huntingdon College"]},{"n":"Husson","c":"NAC","s":"ME","a":["Husson University"]},{"n":"Illinois College","c":"MWC","s":"IL","a":["Illinois Col","Illinois Col."]},{"n":"Illinois Tech","c":"NACC","s":"IL","a":["IL Tech","Illinois Institute of Technology"]},{"n":"Illinois Wesleyan","c":"CCIW","s":"IL","a":["IL Wesleyan","Ill. Wesleyan","Illinois Wesleyan University"]},{"n":"Immaculata","c":"AEC","s":"PA","a":["Immaculata University"]},{"n":"Ithaca","c":"LL","s":"NY","a":["Ithaca College"]},{"n":"John Carroll","c":"NCAC","s":"OH","a":["John Carroll University"]},{"n":"John Jay","c":"CUNYAC","s":"NY","a":["CUNY John Jay College of Criminal Justice","John Jay College of Criminal Justice"]},{"n":"Johns Hopkins","c":"CC","s":"MD","a":["Johns Hopkins University"]},{"n":"Johnson & Wales Providence","c":"CNE","s":"RI","a":["J&W RI","JWU (Providence)","JWU Providence","Johnson & Wales (RI)","Johnson & Wales University (Providence)","Johnson & Wales University-Providence"]},{"n":"Juniata","c":"LAND","s":"PA","a":["Juniata College"]},{"n":"Kalamazoo","c":"MIAA","s":"MI","a":["Kalamazoo College"]},{"n":"Kean","c":"NJAC","s":"NJ","a":["Kean University"]},{"n":"Keene St.","c":"LEC","s":"NH","a":["Keene St","Keene State","Keene State College"]},{"n":"Kenyon","c":"NCAC","s":"OH","a":["Kenyon College"]},{"n":"Keuka","c":"E8","s":"NY","a":["Keuka College"]},{"n":"Keystone","c":"UEC","s":"PA","a":["Keystone College"]},{"n":"King's","c":"MACF","s":"PA","a":["King's College","King's PA","Kings","Kings (PA)","King\u2019s College (Pennsylvania)"]},{"n":"Knox","c":"MWC","s":"IL","a":["Knox College"]},{"n":"La Roche","c":"AMCC","s":"PA","a":["La Roche University"]},{"n":"La Verne","c":"SCIAC","s":"CA","a":["University of La Verne"]},{"n":"LaGrange","c":"CCS","s":"GA","a":["LaGrange College"]},{"n":"Lake Forest","c":"MWC","s":"IL","a":["Lake Forest College"]},{"n":"Lakeland","c":"NACC","s":"WI","a":["Lakeland University"]},{"n":"Lancaster Bible","c":"UEC","s":"PA","a":["Lancaster Bib","Lancaster Bible College"]},{"n":"Lasell","c":"GNAC","s":"MA","a":["Lasell University"]},{"n":"Lawrence","c":"MWC","s":"WI","a":["Lawrence University"]},{"n":"Lebanon Valley","c":"MACF","s":"PA","a":["Lebanon Val","Lebanon Valley College"]},{"n":"Lehman","c":"CUNYAC","s":"NY","a":["CUNY Lehman College","Lehman College"]},{"n":"Lesley","c":"NAC","s":"MA","a":["Lesley University"]},{"n":"LeTourneau","c":"SCAC","s":"TX","a":["Le Tourneau","LeTourneau University"]},{"n":"Lewis & Clark","c":"NWC","s":"OR","a":["Lewis & Clark College","Lewis and Clark"]},{"n":"Linfield","c":"NWC","s":"OR","a":["Linfield University"]},{"n":"Loras","c":"ARC","s":"IA","a":["Loras College"]},{"n":"Luther","c":"MWC","s":"IA","a":["Luther College","Luther IA"]},{"n":"Lycoming","c":"LAND","s":"PA","a":["Lycoming College"]},{"n":"Lynchburg","c":"ODAC","s":"VA","a":["University of Lynchburg"]},{"n":"Lyon","c":"SLIAC","s":"AR","a":["Lyon College"]},{"n":"Macalester","c":"MIAC","s":"MN","a":["Macalester College"]},{"n":"Maine Farmington","c":"NAC","s":"ME","a":["ME Farmington","Maine-Farmington","Me.-Farmington","University of Maine at Farmington","University of Maine, Farmington"]},{"n":"Maine Maritime","c":"NAC","s":"ME","a":["ME Maritime","Maine Maritime Academy","Maine-Maritime"]},{"n":"Maine Presque Isle","c":"NAC","s":"ME","a":["ME Presque Isle","Maine-Presque Isle","Me.-Presque Isle","University of Maine at Presque Isle"]},{"n":"Manchester","c":"HCAC","s":"IN","a":["Manchester University"]},{"n":"Manhattanville","c":"SKY","s":"NY","a":["Manhattanville College","Manhattanville University"]},{"n":"Maranatha Baptist","c":"IND","s":"WI","a":["Maranatha Bap","Maranatha Baptist University"]},{"n":"Marian","c":"NACC","s":"WI","a":["Marian (WI)","Marian University","Marian University (Wisconsin)","Marian WI"]},{"n":"Marietta","c":"OAC","s":"OH","a":["Marietta College"]},{"n":"Martin Luther","c":"UMAC","s":"MN","a":["Martin Luther College"]},{"n":"Mary Baldwin","c":"USAC","s":"VA","a":["Mary Baldwin University"]},{"n":"Mary Hardin-Baylor","c":"ASC","s":"TX","a":["M Hardin-Baylor","University of Mary Hardin-Baylor"]},{"n":"Mary Washington","c":"C2C","s":"VA","a":["University of Mary Washington"]},{"n":"Marymount","c":"AEC","s":"VA","a":["Marymount (VA)","Marymount University","Marymount University (Virginia)","Marymount VA"]},{"n":"Maryville","c":"SAA","s":"TN","a":["Maryville (TN)","Maryville (Tenn.)","Maryville College","Maryville College (Tennessee)","Maryville TN"]},{"n":"Marywood","c":"MACF","s":"PA","a":["Marywood University"]},{"n":"McDaniel","c":"CC","s":"MD","a":["McDaniel College"]},{"n":"MCLA","c":"MASCAC","s":"MA","a":["MA Col Lib Arts","Massachusetts College","Massachusetts College of Liberal Arts"]},{"n":"McMurry","c":"ASC","s":"TX","a":["McMurry University"]},{"n":"Medgar Evers","c":"CUNYAC","s":"NY","a":["CUNY Medgar Evers College","Medgar Evers College"]},{"n":"Merchant Marine","c":"SKY","s":"NY","a":["U.S. Merchant Marine Academy","United States Merchant Marine Academy"]},{"n":"Meredith","c":"USAC","s":"NC","a":["Meredith College"]},{"n":"Messiah","c":"MACC","s":"PA","a":["Messiah University"]},{"n":"Methodist","c":"USAC","s":"NC","a":["Methodist University"]},{"n":"Middlebury","c":"NESCAC","s":"VT","a":["Middlebury College"]},{"n":"Millikin","c":"CCIW","s":"IL","a":["Millikin University"]},{"n":"Millsaps","c":"SAA","s":"MS","a":["Millsaps College"]},{"n":"Minnesota Morris","c":"UMAC","s":"MN","a":["MN Morris","Minn-Morris","Minn.-Morris","Minnesota-Morris","University of Minnesota, Morris","University of Minnesota-Morris"]},{"n":"Misericordia","c":"MACF","s":"PA","a":["Misericordia University"]},{"n":"MIT","c":"NEWMAC","s":"MA","a":["Massachusetts Institute of Technology"]},{"n":"Mitchell","c":"GNAC","s":"CT","a":["Mitchell College"]},{"n":"Monmouth","c":"MWC","s":"IL","a":["Monmouth (IL)","Monmouth College","Monmouth College (Illinois)","Monmouth IL"]},{"n":"Montclair St.","c":"NJAC","s":"NJ","a":["Montclair St","Montclair State","Montclair State University"]},{"n":"Moravian","c":"LAND","s":"PA","a":["Moravian College","Moravian University"]},{"n":"MSOE","c":"NACC","s":"WI","a":["Milwaukee Eng","Milwaukee School of Engineering"]},{"n":"Mt. Aloysius","c":"AMCC","s":"PA","a":["Mount Aloysius","Mount Aloysius College","Mt Aloysius"]},{"n":"Mt. Holyoke","c":"NEWMAC","s":"MA","a":["Mount Holyoke","Mount Holyoke College","Mt Holyoke"]},{"n":"Mt. St. Joseph","c":"HCAC","s":"OH","a":["Mount St. Joseph","Mount St. Joseph University","Mt St Joseph"]},{"n":"Mt. St. Mary","c":"SKY","s":"NY","a":["Mount Saint Mary College","Mount Saint Mary College (New York)","Mount St. Mary","Mt St Mary NY","Mt. St. Mary (NY)"]},{"n":"Mt. St. Vincent","c":"SKY","s":"NY","a":["College of Mount St. Vincent","Mount St. Vincent","Mt St Vincent","UMSV","University of Mount Saint Vincent"]},{"n":"Mt. Union","c":"OAC","s":"OH","a":["Mount Union","Mt Union","University of Mount Union"]},{"n":"Muhlenberg","c":"CC","s":"PA","a":["Muhlenberg College"]},{"n":"Muskingum","c":"OAC","s":"OH","a":["Muskingum University"]},{"n":"MUW","c":"SLIAC","s":"MS","a":["#Mississippi University for Women (active 2023-24)","MS Women","Mississippi University for Women"]},{"n":"Nazareth","c":"E8","s":"NY","a":["Nazareth College","Nazareth University"]},{"n":"NC Wesleyan","c":"USAC","s":"NC","a":["N.C. Wesleyan","North Carolina Wesleyan College","North Carolina Wesleyan University"]},{"n":"Nebraska Wesleyan","c":"ARC","s":"NE","a":["NE Wesleyan","Neb. Wesleyan","Nebraska Wesleyan University"]},{"n":"Neumann","c":"MACC","s":"PA","a":["Neumann University"]},{"n":"New England College","c":"GNAC","s":"NH","a":["N England Col","New England Col."]},{"n":"Nichols","c":"CNE","s":"MA","a":["Nichols College"]},{"n":"North Central (IL)","c":"CCIW","s":"IL","a":["N Central IL","North Central (Ill.)","North Central College"]},{"n":"North Central (MN)","c":"UMAC","s":"MN","a":["N Central MN","North Central (Minn.)","North Central University"]},{"n":"North Park","c":"CCIW","s":"IL","a":["North Park University"]},{"n":"Northwestern (MN)","c":"UMAC","s":"MN","a":["Northwestern (Minn.)","Northwestern MN","Northwestern-St. Paul","University of Northwestern-St Paul","University of Northwestern-St. Paul"]},{"n":"Norwich","c":"GNAC","s":"VT","a":["Norwich University"]},{"n":"Notre Dame (MD)","c":"UEC","s":"MD","a":["Notre Dame (Md.)","Notre Dame MD","Notre Dame of Maryland University"]},{"n":"NYU","c":"UAA","s":"NY","a":["New York University"]},{"n":"Oberlin","c":"NCAC","s":"OH","a":["Oberlin College"]},{"n":"Occidental","c":"SCIAC","s":"CA","a":["Occidental College"]},{"n":"Oglethorpe","c":"SAA","s":"GA","a":["Oglethorpe University"]},{"n":"Ohio Northern","c":"OAC","s":"OH","a":["Ohio Northern University"]},{"n":"Ohio Wesleyan","c":"NCAC","s":"OH","a":["Ohio Wesleyan University"]},{"n":"Olivet","c":"MIAA","s":"MI","a":["Olivet College","Olivet MI","The University of Olivet"]},{"n":"Oswego St.","c":"SUNYAC","s":"NY","a":["Oswego St","Oswego State","State University of New York at Oswego"]},{"n":"Otterbein","c":"OAC","s":"OH","a":["Otterbein University"]},{"n":"Ozarks","c":"SCAC","s":"AR","a":["Ozarks (AR)","Univ Ozarks","University of the Ozarks","University of the Ozarks (Arkansas)"]},{"n":"Pacific","c":"NWC","s":"OR","a":["Pacific (OR)","Pacific OR","Pacific University","Pacific University (Oregon)"]},{"n":"Pacific Lutheran","c":"NWC","s":"WA","a":["Pac Lutheran","Pacific Lutheran University"]},{"n":"Penn College","c":"UEC","s":"PA","a":["Penn Col Tech","Pennsylvania College of Technology"]},{"n":"Penn St. Abington","c":"UEC","s":"PA","a":["PSU-Abington","Penn St.-Abington","Penn State University, Abington","Penn State-Abington","Pennsylvania State University-Penn State Abington"]},{"n":"Penn St. Altoona","c":"AMCC","s":"PA","a":["PSU-Altoona","Penn St.-Altoona","Penn State University, Altoona","Penn State-Altoona","Pennsylvania State University-Penn State Altoona"]},{"n":"Penn St. Behrend","c":"AMCC","s":"PA","a":["PSU-Behrend","Penn St.-Behrend","Penn State-Behrend","Pennsylvania State University Erie, the Behrend College","Pennsylvania State University-Penn State Erie-Behrend College"]},{"n":"Penn St. Berks","c":"UEC","s":"PA","a":["PSU-Berks","Penn St.-Berks","Penn State Berks College","Penn State-Berks","Pennsylvania State University-Penn State Berks"]},{"n":"Penn St. Brandywine","c":"UEC","s":"PA","a":["PSU-Brandywine","Penn State-Brandywine","Pennsylvania State University-Penn State Brandywine"]},{"n":"Penn St. Harrisburg","c":"UEC","s":"PA","a":["PSU-Harrisburg","Penn State Harrisburg","Penn State-Harrisburg","Pennsylvania State University-Penn State Harrisburg"]},{"n":"Pfeiffer","c":"USAC","s":"NC","a":["Pfeiffer University"]},{"n":"Piedmont","c":"CCS","s":"GA","a":["Piedmont University"]},{"n":"Pitt-Bradford","c":"AMCC","s":"PA","a":["Pitt.-Bradford","University of Pittsburgh, Bradford","University of Pittsburgh-Bradford"]},{"n":"Pitt-Greensburg","c":"AMCC","s":"PA","a":["Pitt.-Greensburg","University of Pittsburgh, Greensburg","University of Pittsburgh-Greensburg"]},{"n":"Plattsburgh St.","c":"SUNYAC","s":"NY","a":["Plattsburgh St","Plattsburgh State","Plattsburgh State University of New York","State University of New York at Plattsburgh"]},{"n":"Plymouth St.","c":"LEC","s":"NH","a":["Plymouth St","Plymouth State","Plymouth State University"]},{"n":"Pomona-Pitzer","c":"SCIAC","s":"CA","a":["Pomona College","Pomona-Pitzer Colleges"]},{"n":"Pratt","c":"AEC","s":"NY","a":["#Pratt Institute (active 2022-23)","Pratt Inst","Pratt Institute-Main"]},{"n":"Principia","c":"SLIAC","s":"IL","a":["Principia College"]},{"n":"Puget Sound","c":"NWC","s":"WA","a":["University of Puget Sound"]},{"n":"Purchase","c":"SKY","s":"NY","a":["Purchase College, State University of New York","SUNY Purchase","SUNY at Purchase College","SUNY-Purchase"]},{"n":"Ramapo","c":"NJAC","s":"NJ","a":["Ramapo College","Ramapo College of New Jersey"]},{"n":"Randolph","c":"ODAC","s":"VA","a":["Randolph Col","Randolph College"]},{"n":"Randolph-Macon","c":"ODAC","s":"VA","a":["Randolph-Macon College"]},{"n":"Redlands","c":"SCIAC","s":"CA","a":["University of Redlands"]},{"n":"Regis","c":"GNAC","s":"MA","a":["Regis (MA)","Regis (Mass.)","Regis College","Regis College (Massachusetts)","Regis MA"]},{"n":"Rensselaer","c":"LL","s":"NY","a":["RPI","Rensselaer Polytechnic Institute"]},{"n":"Rhode Island College","c":"LEC","s":"RI","a":["RI College","Rhode Island Col."]},{"n":"Rhodes","c":"SAA","s":"TN","a":["Rhodes College"]},{"n":"Ripon","c":"MWC","s":"WI","a":["Ripon College"]},{"n":"RIT","c":"LL","s":"NY","a":["Rochester Institute of Technology","Rochester Tech"]},{"n":"Rivier","c":"GNAC","s":"NH","a":["Rivier University"]},{"n":"Roanoke","c":"ODAC","s":"VA","a":["Roanoke College"]},{"n":"Rochester","c":"UAA","s":"NY","a":["Rochester (NY)","Rochester NY","University of Rochester"]},{"n":"Rockford","c":"NACC","s":"IL","a":["Rockford University"]},{"n":"Roger Williams","c":"CNE","s":"RI","a":["Roger Williams University"]},{"n":"Rose-Hulman","c":"HCAC","s":"IN","a":["Rose-Hulman Institute of Technology"]},{"n":"Rowan","c":"NJAC","s":"NJ","a":["Rowan University"]},{"n":"Rutgers-Camden","c":"NJAC","s":"NJ","a":["Rutgers University-Camden","Rutgers, State Univ. of N. Jersey, Camden"]},{"n":"Rutgers-Newark","c":"NJAC","s":"NJ","a":["Rutgers University-Newark","Rutgers, State Univ. of N. Jersey, Newark"]},{"n":"Sage","c":"E8","s":"NY","a":["Russell Sage","Russell Sage College","Sage College"]},{"n":"Salem (NC)","c":"USAC","s":"NC","a":["Salem","Salem College","Salem College (North Carolina)","Salem NC"]},{"n":"Salem St.","c":"MASCAC","s":"MA","a":["Salem MA","Salem State","Salem State University"]},{"n":"Salisbury","c":"C2C","s":"MD","a":["Salisbury University"]},{"n":"Salve Regina","c":"NEWMAC","s":"RI","a":["Salve Regina University"]},{"n":"Sarah Lawrence","c":"SKY","s":"NY","a":["Sarah Lawrence College"]},{"n":"Schreiner","c":"ASC","s":"TX","a":["Schreiner University"]},{"n":"Scranton","c":"LAND","s":"PA","a":["University of Scranton"]},{"n":"Sewanee","c":"SAA","s":"TN","a":["The University of the South","University of the South"]},{"n":"Shenandoah","c":"ODAC","s":"VA","a":["Shenandoah University"]},{"n":"Simpson","c":"ARC","s":"IA","a":["Simpson (IA)","Simpson College","Simpson IA"]},{"n":"Skidmore","c":"LL","s":"NY","a":["Skidmore College"]},{"n":"Smith","c":"NEWMAC","s":"MA","a":["Smith College"]},{"n":"Southern Maine","c":"LEC","s":"ME","a":["S Maine","Southern Me.","University of Southern Maine"]},{"n":"Southern Virginia","c":"USAC","s":"VA","a":["S Virginia","Southern Va.","Southern Virginia University"]},{"n":"Southwestern","c":"SAA","s":"TX","a":["SW Univ TX","Southwestern (TX)","Southwestern University","Southwestern University (Texas)"]},{"n":"Spalding","c":"SLIAC","s":"KY","a":["Spalding University"]},{"n":"Springfield","c":"NEWMAC","s":"MA","a":["Springfield College"]},{"n":"St. Benedict","c":"MIAC","s":"MN","a":["College of Saint Benedict","Saint Benedict","St Benedict"]},{"n":"St. Catherine","c":"MIAC","s":"MN","a":["St Catherine","St Catherine University","St. Catherine University"]},{"n":"St. Elizabeth","c":"AEC","s":"NJ","a":["Saint Elizabeth","Saint Elizabeth University","St Elizabeth"]},{"n":"St. John Fisher","c":"E8","s":"NY","a":["St John Fisher","St. John Fisher College","St. John Fisher University"]},{"n":"St. Joseph (CT)","c":"GNAC","s":"CT","a":["Saint Joseph (CT)","St Joseph CT","St. Joseph (Conn.)","University of Saint Joseph","University of St. Joseph (Connecticut)"]},{"n":"St. Joseph's (ME)","c":"GNAC","s":"ME","a":["Saint Joseph's College of Maine","Saint Joseph\u2019s College (Maine)","St Joseph's ME","St. Josephs (ME)","St. Josephs (Maine)"]},{"n":"St. Joseph's Brooklyn","c":"SKY","s":"NY","a":["St Joseph's NY","St. Joseph's (NY)","St. Joseph's University-New York","St. Josephs (Bklyn.)","St. Josephs (Brkln)","St. Joseph\u2019s College (Brooklyn)"]},{"n":"St. Joseph's Long Island","c":"SKY","s":"NY","a":["St Joseph's LI","St. Joseph's (LI)","St. Joseph's University-New York","St. Josephs (L.I.)","St. Joseph\u2019s College (Long Island)"]},{"n":"St. Lawrence","c":"LL","s":"NY","a":["St Lawrence","St Lawrence University","St. Lawrence University"]},{"n":"St. Mary's (IN)","c":"MIAA","s":"IN","a":["Saint Mary's College","Saint Mary\u2019s College (Indiana)","St Mary's IN","St. Marys (IN)","St. Marys (Ind.)"]},{"n":"St. Mary's (MD)","c":"UEC","s":"MD","a":["St Mary's MD","St. Mary's College of Maryland","St. Marys (MD)","St. Marys (Md.)","St. Mary\u2019s College of Maryland"]},{"n":"St. Mary's (MN)","c":"MIAC","s":"MN","a":["Saint Mary's University of Minnesota","Saint Marys (MN)","Saint Mary\u2019s University of Minnesota","St Mary's MN","St. Marys (Minn.)"]},{"n":"St. Norbert","c":"NACC","s":"WI","a":["Saint Norbert College","St Norbert","St. Norbert College"]},{"n":"St. Olaf","c":"MIAC","s":"MN","a":["St Olaf","St Olaf College","St. Olaf College"]},{"n":"St. Scholastica","c":"MIAC","s":"MN","a":["St Scholastica","The College of Saint Scholastica","The College of St. Scholastica"]},{"n":"St. Thomas (TX)","c":"SCAC","s":"TX","a":["#University of St Thomas (Texas) (active 2023-24)","St Thomas TX","St. Thomas (Texas)","University of St Thomas"]},{"n":"St. Vincent","c":"PAC","s":"PA","a":["Saint Vincent","Saint Vincent College","St Vincent"]},{"n":"Stevens","c":"MACF","s":"NJ","a":["Stevens Institute of Technology"]},{"n":"Stevenson","c":"MACC","s":"MD","a":["Stevenson University"]},{"n":"Stockton","c":"NJAC","s":"NJ","a":["R Stockton","Stockton University"]},{"n":"Suffolk","c":"CNE","s":"MA","a":["Suffolk University"]},{"n":"SUNY Brockport","c":"E8","s":"NY","a":["Brockport","Brockport St","Brockport St.","State University of New York at Brockport"]},{"n":"SUNY Canton","c":"SUNYAC","s":"NY","a":["SUNY College of Technology at Canton","SUNY-Canton","State University of New York at Canton"]},{"n":"SUNY Cobleskill","c":"SUNYAC","s":"NY","a":["SUNY College of Agriculture and Technology at Cobleskill","SUNY-Cobleskill","State University of New York at Cobleskill"]},{"n":"SUNY Cortland","c":"SUNYAC","s":"NY","a":["Cortland","Cortland St","State University of New York at Cortland"]},{"n":"SUNY Delhi","c":"SUNYAC","s":"NY","a":["SUNY College of Technology at Delhi","State University of New York at Delhi"]},{"n":"SUNY Geneseo","c":"E8","s":"NY","a":["Geneseo St","SUNY College at Geneseo","State University of New York at Geneseo"]},{"n":"SUNY Morrisville","c":"SUNYAC","s":"NY","a":["Morrisville St","Morrisville St.","Morrisville State","Morrisville State College"]},{"n":"SUNY New Paltz","c":"NJAC","s":"NY","a":["State University of New York at New Paltz"]},{"n":"SUNY Old Westbury","c":"SKY","s":"NY","a":["Old Westbury","SUNY-Old Westbury","State University College at Old Westbury"]},{"n":"SUNY Oneonta","c":"SUNYAC","s":"NY","a":["State University of New York at Oneonta"]},{"n":"SUNY Poly","c":"E8","s":"NY","a":["SUNY Polytechnic Institute","SUNYIT","State University of New York Polytechnic Institute"]},{"n":"SUNY Potsdam","c":"SUNYAC","s":"NY","a":["SUNY College at Potsdam","State University of New York at Potsdam"]},{"n":"Susquehanna","c":"LAND","s":"PA","a":["Susquehanna University"]},{"n":"Swarthmore","c":"CC","s":"PA","a":["Swarthmore College"]},{"n":"TCNJ","c":"NJAC","s":"NJ","a":["College of NJ","The College of New Jersey"]},{"n":"Texas Lutheran","c":"SCAC","s":"TX","a":["TX Lutheran","Texas Lutheran University"]},{"n":"Thiel","c":"PAC","s":"PA","a":["Thiel College"]},{"n":"Thomas","c":"NAC","s":"ME","a":["Thomas (ME)","Thomas College","Thomas ME"]},{"n":"Transylvania","c":"HCAC","s":"KY","a":["Transylvania University"]},{"n":"Trine","c":"MIAA","s":"IN","a":["Trine University"]},{"n":"Trinity (CT)","c":"NESCAC","s":"CT","a":["Trinity (Conn.)","Trinity CT","Trinity College","Trinity College (Connecticut)"]},{"n":"Trinity (TX)","c":"SAA","s":"TX","a":["Trinity (Texas)","Trinity TX","Trinity University","Trinity University (Texas)"]},{"n":"Tufts","c":"NESCAC","s":"MA","a":["Tufts University"]},{"n":"UC Santa Cruz","c":"C2C","s":"CA","a":["University of California, Santa Cruz","University of California-Santa Cruz"]},{"n":"UMass Boston","c":"LEC","s":"MA","a":["MA Boston","Mass-Boston","University of Massachusetts Boston","University of Massachusetts-Boston"]},{"n":"UMass Dartmouth","c":"LEC","s":"MA","a":["MA Dartmouth","Mass-Dartmouth","University of Massachusetts, Dartmouth","University of Massachusetts-Dartmouth"]},{"n":"Union","c":"LL","s":"NY","a":["Union (NY)","Union College","Union College (New York)","Union NY"]},{"n":"University of New England","c":"CNE","s":"ME","a":["U New England"]},{"n":"Ursinus","c":"CC","s":"PA","a":["Ursinus College"]},{"n":"Utica","c":"E8","s":"NY","a":["Utica College","Utica University"]},{"n":"UW-Eau Claire","c":"WIAC","s":"WI","a":["University of Wisconsin-Eau Claire","WI Eau Claire","Wis.-Eau Claire"]},{"n":"UW-La Crosse","c":"WIAC","s":"WI","a":["University of Wisconsin-La Crosse","WI LaCrosse","Wis.-La Crosse"]},{"n":"UW-Oshkosh","c":"WIAC","s":"WI","a":["University of Wisconsin-Oshkosh","WI Oshkosh","Wis.-Oshkosh"]},{"n":"UW-Platteville","c":"WIAC","s":"WI","a":["University of Wisconsin-Platteville","WI Platteville","Wis.-Platteville"]},{"n":"UW-River Falls","c":"WIAC","s":"WI","a":["University of Wisconsin-River Falls","WI River Falls"]},{"n":"UW-Stevens Point","c":"WIAC","s":"WI","a":["University of Wisconsin-Stevens Point","WI Stevens Pt","Wis.-Stevens Point"]},{"n":"UW-Stout","c":"WIAC","s":"WI","a":["University of Wisconsin-Stout","WI Stout","Wis.-Stout"]},{"n":"UW-Superior","c":"UMAC","s":"WI","a":["University of Wisconsin-Superior","WI Superior","Wis.-Superior"]},{"n":"UW-Whitewater","c":"WIAC","s":"WI","a":["University of Wisconsin-Whitewater","WI Whitewater","Wis.-Whitewater"]},{"n":"Vassar","c":"LL","s":"NY","a":["Vassar College"]},{"n":"VTSU Castleton","c":"LEC","s":"VT","a":["Castleton","Castleton University","Vermont State University"]},{"n":"VTSU Johnson","c":"NAC","s":"VT","a":["NVU-Johnson","Northern Vermont University-Johnson","VTSU-Johnson","Vermont State University"]},{"n":"VTSU Lyndon","c":"NAC","s":"VT","a":["NVU-Lyndon","Northern Vermont University-Lyndon","Vermont State University"]},{"n":"Warren Wilson","c":"C2C","s":"NC","a":["#Warren Wilson College (active 2023-24)","Warren Wilson College"]},{"n":"Wartburg","c":"ARC","s":"IA","a":["Wartburg College"]},{"n":"Washington & Jefferson","c":"PAC","s":"PA","a":["Wash & Jeff","Wash. & Jeff.","Washington & Jefferson College","Washington and Jefferson","Washington and Jefferson College"]},{"n":"Washington & Lee","c":"ODAC","s":"VA","a":["Wash. & Lee","Washington and Lee","Washington and Lee University"]},{"n":"Washington College","c":"CC","s":"MD","a":["Washington Col.","Washington College (Maryland)","Washington MD"]},{"n":"WashU","c":"UAA","s":"MO","a":["Washington StL","Washington U.","Washington University in St Louis","Washington University in St. Louis"]},{"n":"Waynesburg","c":"PAC","s":"PA","a":["Waynesburg University"]},{"n":"Webster","c":"SLIAC","s":"MO","a":["Webster University"]},{"n":"Wellesley","c":"NEWMAC","s":"MA","a":["Wellesley College"]},{"n":"Wentworth","c":"CNE","s":"MA","a":["Wentworth Institute of Technology","Wentworth Tech"]},{"n":"Wesleyan (CT)","c":"NESCAC","s":"CT","a":["Wesleyan","Wesleyan CT","Wesleyan University","Wesleyan University (Connecticut)"]},{"n":"Western Connecticut St.","c":"LEC","s":"CT","a":["W Connecticut","WestConn","Western Connecticut","Western Connecticut State University"]},{"n":"Western New England","c":"CNE","s":"MA","a":["W New England","Western New Eng.","Western New England University"]},{"n":"Westfield St.","c":"MASCAC","s":"MA","a":["Westfield St","Westfield State","Westfield State University"]},{"n":"Westminster (MO)","c":"SLIAC","s":"MO","a":["Westminster (Mo.)","Westminster College","Westminster College (Missouri)","Westminster MO"]},{"n":"Westminster (PA)","c":"PAC","s":"PA","a":["Westminster (Pa.)","Westminster College","Westminster College (Pennsylvania)","Westminster PA"]},{"n":"Wheaton (IL)","c":"CCIW","s":"IL","a":["Wheaton (Ill.)","Wheaton College","Wheaton College (Illinois)","Wheaton IL"]},{"n":"Wheaton (MA)","c":"NEWMAC","s":"MA","a":["Wheaton (Mass.)","Wheaton College (Massachusetts)","Wheaton MA"]},{"n":"Whitman","c":"NWC","s":"WA","a":["Whitman College"]},{"n":"Whittier","c":"SCIAC","s":"CA","a":["Whittier College"]},{"n":"Whitworth","c":"NWC","s":"WA","a":["Whitworth University"]},{"n":"Widener","c":"MACC","s":"PA","a":["Widener University"]},{"n":"Wilkes","c":"LAND","s":"PA","a":["Wilkes University"]},{"n":"Willamette","c":"NWC","s":"OR","a":["Willamette University"]},{"n":"William Paterson","c":"NJAC","s":"NJ","a":["William Paterson University of New Jersey","Wm Paterson","Wm. Paterson"]},{"n":"William Peace","c":"USAC","s":"NC","a":["Peace","William Peace University"]},{"n":"William Smith","c":"LL","s":"NY","a":["Hobart & Smith","Hobart William Smith Colleges","William Smith College"]},{"n":"Williams","c":"NESCAC","s":"MA","a":["Williams College"]},{"n":"Wilmington","c":"OAC","s":"OH","a":["Wilmington (OH)","Wilmington College","Wilmington College (Ohio)","Wilmington OH"]},{"n":"Wilson","c":"UEC","s":"PA","a":["Wilson College"]},{"n":"Wisconsin Lutheran","c":"NACC","s":"WI","a":["WI Lutheran","Wis. Lutheran","Wisconsin Lutheran College"]},{"n":"Wittenberg","c":"NCAC","s":"OH","a":["Wittenberg University"]},{"n":"Wooster","c":"NCAC","s":"OH","a":["The College of Wooster"]},{"n":"Worcester St.","c":"MASCAC","s":"MA","a":["Worcester St","Worcester State","Worcester State University"]},{"n":"WPI","c":"NEWMAC","s":"MA","a":["Worcester Polytechnic Institute","Worcester Tech"]},{"n":"Yeshiva","c":"SKY","s":"NY","a":["Yeshiva University"]},{"n":"York (NY)","c":"CUNYAC","s":"NY","a":["CUNY York College","York (N.Y.)","York College (New York)","York NY"]},{"n":"York (PA)","c":"MACC","s":"PA","a":["York (Pa.)","York College (Pennsylvania)","York College of Pennsylvania","York PA"]}],"notIncluded":[{"n":"Regent","status":"Second-year provisional member"},{"n":"Johnson & Wales Charlotte","status":"Second-year provisional member"},{"n":"Azusa Pacific","status":"First-year reclassifying member (from Division II)"},{"n":"St. Francis","status":"First-year reclassifying member (from Division I)"},{"n":"Maine-Augusta","status":"Exploratory member"}]}</script>
+<!-- /generated:schools -->
 <script src="config.js"></script>
 <script>
-  // Point every buy button at the Stripe Payment Link and show the price,
-  // once config.js has them.
+  // Point every buy button at the Stripe Payment Link once config.js has it.
   (function () {
     const cfg = window.PROFILES_CONFIG || {};
     if (cfg.buyUrl && !cfg.buyUrl.startsWith("SET_")) {
       document.querySelectorAll("a.buyLink").forEach(a => { a.href = cfg.buyUrl; });
     }
-    if (cfg.priceLabel) {
-      const price = document.getElementById("price");
-      price.textContent = cfg.priceLabel;
-      price.hidden = false;
+  })();
+
+  // Program search. Each program carries its other names (short names, former
+  // names, the federal name), so "Hope College" finds Hope. A query matches
+  // by whole text, word starts, one or two typos per word, or letters in order.
+  (function () {
+    const data = JSON.parse(document.getElementById("schoolData").textContent);
+    const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/&/g, " and ").replace(/\bsaint\b/g, "st").replace(/[^a-z0-9]+/g, " ").trim();
+    function typos(a, b, max) {
+      if (Math.abs(a.length - b.length) > max) return max + 1;
+      let prev = Array.from({length: b.length + 1}, (_, j) => j);
+      for (let i = 1; i <= a.length; i++) {
+        const cur = [i];
+        for (let j = 1; j <= b.length; j++) {
+          cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        }
+        prev = cur;
+      }
+      return prev[b.length];
     }
+    function score(q, qWords, name) {
+      const flat = name.replace(/ /g, ""), qFlat = q.replace(/ /g, "");
+      if (name === q || flat === qFlat) return 100;
+      if (name.startsWith(q) || flat.startsWith(qFlat)) return 90;
+      if (name.includes(q) || flat.includes(qFlat)) return 80;
+      const words = name.split(" ");
+      let total = 0;
+      for (const w of qWords) {
+        const allowed = w.length >= 8 ? 2 : w.length >= 4 ? 1 : 0;
+        let best = 0;
+        for (const n of words) {
+          if (n.startsWith(w)) best = Math.max(best, 70);
+          else if (allowed && typos(w, n.slice(0, w.length + allowed), allowed) <= allowed) best = Math.max(best, 55);
+        }
+        if (!best) { total = 0; break; }
+        total += best;
+      }
+      // A name with fewer extra words ranks first: "wash u" puts WashU
+      // ahead of University of Mary Washington.
+      if (total) return total / qWords.length + 10 * qWords.length / Math.max(words.length, qWords.length);
+      let i = 0, gaps = 0;
+      for (const ch of flat) {
+        if (i < qFlat.length && ch === qFlat[i]) i++;
+        else if (i > 0 && i < qFlat.length) gaps++;
+      }
+      return i === qFlat.length && qFlat.length >= 3 ? Math.max(10, 40 - gaps * 2) : 0;
+    }
+    const rows = [
+      ...data.included.map(t => ({...t, keys: [t.n, ...t.a].map(k => [k, norm(k)])})),
+      ...data.notIncluded.map(t => ({...t, out: true, keys: [[t.n, norm(t.n)]]})),
+    ];
+    const list = document.getElementById("schoolList");
+    const count = document.getElementById("schoolCount");
+    const esc = s => s.replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+    function item(t, via) {
+      const sub = t.out ? `Not included: ${esc(t.status)}` : esc([t.c, t.s].filter(Boolean).join(", "));
+      const alias = via && via !== t.n ? `<span class="alias">Matched ${esc(via)}</span>` : "";
+      return `<li class="${t.out ? "out" : ""}"><span class="sname">${esc(t.n)}</span><span class="smeta">${sub}</span>${alias}</li>`;
+    }
+    function render() {
+      const q = norm(document.getElementById("schoolSearch").value);
+      if (!q) {
+        list.innerHTML = data.included.map(t => item(t)).join("");
+        count.textContent = `${data.included.length} programs, A to Z.`;
+        return;
+      }
+      const qWords = q.split(" ");
+      const hits = [];
+      for (const t of rows) {
+        let best = 0, via = null;
+        for (const [label, key] of t.keys) {
+          const s = score(q, qWords, key);
+          if (s > best) { best = s; via = label; }
+        }
+        if (best) hits.push({t, best, via});
+      }
+      hits.sort((a, b) => b.best - a.best || a.t.n.localeCompare(b.t.n));
+      list.innerHTML = hits.map(h => item(h.t, h.via)).join("");
+      const graded = hits.filter(h => !h.t.out).length;
+      count.textContent = hits.length
+        ? `${graded} graded program${graded === 1 ? "" : "s"} match. Best matches come first.`
+        : "No program matches. Check the spelling, or try a shorter part of the name.";
+    }
+    document.getElementById("schoolSearch").addEventListener("input", render);
+    render();
+    document.getElementById("excludedRows").innerHTML = data.notIncluded
+      .map(t => `<tr><td>${esc(t.n)}</td><td>${esc(t.status)}</td></tr>`).join("");
   })();
 </script>
 </body>
