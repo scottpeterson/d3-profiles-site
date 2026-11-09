@@ -53,7 +53,7 @@
   function warn(text) { msg.textContent = text; msg.hidden = false; }
 
   if (P.configured === false) {
-    warn("The site is not connected to its database yet. Fill in config.js.");
+    warn("The site has no database settings yet. Enter the Supabase values in config.js.");
     document.getElementById("send").disabled = true;
     return;
   }
