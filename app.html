@@ -26,9 +26,14 @@
   * { box-sizing: border-box; }
   body { margin: 0; font: 14px/1.45 IBM Plex Sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
          color: var(--ink); background: var(--surface); }
-  header { background: linear-gradient(135deg, #17325e, #1e5fd6); color: #fff; padding: 22px 28px; }
+  header { background: linear-gradient(135deg, #17325e, #1e5fd6); color: #fff; padding: 22px 28px;
+           display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   header h1 { margin: 0 0 4px; font-size: 24px; }
   header p { margin: 0; opacity: .85; font-size: 14px; }
+  header .hbtn { flex: none; color: #fff; border: 1px solid rgba(255, 255, 255, .75); border-radius: 8px;
+                 min-height: 36px; padding: 6px 14px; font-size: 14px; font-weight: 600; text-decoration: none;
+                 display: inline-flex; align-items: center; white-space: nowrap; }
+  header .hbtn:hover { background: rgba(255, 255, 255, .14); }
   .wrap { max-width: 1280px; margin: 0 auto; padding: 16px 20px 60px; }
 
   .filterBar { display: flex; align-items: center; justify-content: flex-end; gap: 12px;
@@ -144,7 +149,11 @@
      rows scroll under it. */
   table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card);
           border: 1px solid var(--line); border-radius: 10px; }
-  thead th { position: sticky; top: 0; z-index: 3; background: #17325e; color: #fff; font-size: 12px;
+  /* top: 6px keeps a sliver of page between the browser chrome and the stuck
+     header; the shadow paints that sliver in the page color so rows do not
+     show through it. */
+  thead th { position: sticky; top: 6px; z-index: 3; background: #17325e; color: #fff; font-size: 12px;
+             box-shadow: 0 -6px 0 0 var(--surface);
              text-transform: uppercase; letter-spacing: .04em; padding: 9px 8px; text-align: left;
              cursor: pointer; user-select: none; white-space: nowrap; }
   thead th:first-child { border-top-left-radius: 9px; }
@@ -312,23 +321,26 @@
 </head>
 <body>
 <header>
-  <h1>D3 Women's Basketball: School Report Cards</h1>
-  <p>411 programs · window 2018-2027 · recency-weighted · set your priorities and the ranking rebuilds for you</p>
+  <div>
+    <h1>D3 Women's Basketball: School Report Cards</h1>
+    <p>411 programs · window 2018-2027 · recency-weighted · set your priorities and the ranking rebuilds for you</p>
+  </div>
+  <a class="hbtn" href="contact.html">Contact</a>
 </header>
 <dialog id="welcome" data-ste="quote" aria-labelledby="welcomeTitle">
   <div class="wbody">
     <h2 id="welcomeTitle">Welcome to the D3 Stat Lab School Report Cards</h2>
-    <p>Thank you for being a customer. Your support helps improve these information resources and, I hope, the experience.</p>
-    <p>This is for all lovers of Division III women's basketball. Whether you are a high school recruit, a parent, a high school coach, or someone at the collegiate level, please understand that this site is meant to provide information, not to make the decision for you on where to attend.</p>
-    <p>The data here is provided as objectively as I can, and anywhere subjective grading or weighting was applied, I've disclosed it. The intent is to help you narrow your focus to the criteria that matter most to you. It is up to you to verify any critical piece of information that matters to you and, ultimately, to make the very human connections, relationships, and communication that an important decision like this requires.</p>
-    <p>I hope the data here lets you spend your time on the truly subjective, truly difference-making aspects of selecting a school. If you have questions about any of the data, or find errors or inaccuracies, <a href="contact.html">contact me</a> right away.</p>
+    <p>Thank you for being a customer. Your support helps enhance information resources and, hopefully, ultimately the experience.</p>
+    <p>For all lovers of Division III women's basketball. Whether you are a high school recruit viewing this information, a parent, a high school coach, or someone affiliated at the collegiate level, please understand that this is meant to provide information, not to make the decision for you on where to attend.</p>
+    <p>The data here is hopefully objectively provided and anywhere that subjective grading or weighting was applied, I've disclosed it. The intent is to easily narrow your focus to the criteria that matter the most to you, to your personal preference. It is up to you to verify any critical pieces of information that matter to you and, ultimately, to make the very human connections, relationships, and communication necessary to make such an important decision.</p>
+    <p>The data here will hopefully allow you to more quickly spend your time on the truly subjective, truly difference-making aspects of selecting a school. If you ever have questions about any of the data or find data errors or inaccuracies, please <a href="contact.html">reach out</a> immediately.</p>
   </div>
   <div class="wactions"><button type="button" id="welcomeGo">Continue to the report cards</button></div>
 </dialog>
 <div class="wrap">
 
 <div class="filterBar">
-  <span id="account"></span><a class="btnLink" href="contact.html">Contact</a><button type="button" id="signOut">Sign out</button><button type="button" id="savePdf">Save top 20 as PDF</button>
+  <span id="account"></span><button type="button" id="signOut">Sign out</button><button type="button" id="savePdf">Save top 20 as PDF</button>
   <button type="button" id="resetAll">Reset everything</button>
 </div>
 <div class="controlsWrap">
