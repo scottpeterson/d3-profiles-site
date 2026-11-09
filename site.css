@@ -75,6 +75,7 @@ dl.grades dd { margin: 0; color: var(--ink-2); }
 .buy h2 { font-size: 24px; }
 .buy .price { font-size: 32px; font-weight: 600; }
 .buy .actions { margin-top: 16px; }
+.buy .checkout-email { margin: 16px 0 0; color: var(--ink-2); }
 
 .faq { margin-top: 20px; display: grid; gap: 12px; }
 .faq details { background: var(--card); border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 3px rgba(16, 24, 40, .08); }
