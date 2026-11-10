@@ -463,9 +463,9 @@
     <h3>Religious affiliation</h3>
     <div class="checks" id="religionChecks">
       <label><input type="checkbox" value="yes" checked> Affiliated</label>
-      <label><input type="checkbox" value="no" checked> None reported</label>
+      <label><input type="checkbox" value="no" checked> Not applicable</label>
     </div>
-    <p class="cnote">Each school reports its own affiliation to IPEDS. The profile shows which one.</p>
+    <p class="cnote">Each school reports its own affiliation to IPEDS, or Not applicable. The profile shows the value.</p>
     <h3>Student body</h3>
     <div class="checks" id="genderChecks">
       <label><input type="checkbox" value="Women" checked> Women's college</label>
@@ -1530,7 +1530,7 @@ function honorsRosterCard(t) {
 function campusCard(t) {
   const money = v => v != null ? "$" + fmt(v) : "";
   const f = [["Enrollment", fmt(t.enrollment)], ["Type", t.control],
-    ["Religious affiliation", t.religion],
+    ["Religious affiliation", t.religion || (t.control ? "Not applicable" : "")],
     ["Tuition & fees", money(t.tuition)],
     ["Net price, all families", money(t.netPrice)],
     ["Acceptance rate", t.admit != null ? t.admit + "%" : ""],
