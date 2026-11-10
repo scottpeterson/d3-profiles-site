@@ -430,8 +430,11 @@
       <input type="text" id="homeZip" inputmode="numeric" maxlength="5" placeholder="Home ZIP">
       <button type="button" id="geoBtn" title="Use my location">&#128205;</button>
     </div>
-    <div class="rangeRow"><input type="range" id="dist" min="50" max="1550" step="50" value="1550"><span id="distLabel">Any</span></div>
     <div id="homeStatus"></div>
+    <h3>Min miles from home</h3>
+    <div class="rangeRow"><input type="range" id="distMin" min="0" max="1500" step="50" value="0"><span id="distMinLabel">Any</span></div>
+    <h3>Max miles from home</h3>
+    <div class="rangeRow"><input type="range" id="dist" min="50" max="1550" step="50" value="1550"><span id="distLabel">Any</span></div>
   </section>
   <section data-topic="finances" class="control mid">
     <h2><span class="cicon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16M7 16.5V12M12 16.5V8M17 16.5V4.5"/></svg></span>School finances</h2>
@@ -1033,7 +1036,9 @@ function recompute() {
   const fed = checkedValues("fedChecks");
 
   const home = homePoint();
+  const minDist = +$("distMin").value;
   const maxDist = +$("dist").value;
+  $("distMinLabel").textContent = minDist <= 0 ? "Any" : "≥ " + minDist + " mi";
   $("distLabel").textContent = maxDist >= 1550 ? "Any" : "≤ " + maxDist + " mi";
   const zipTyped = $("homeZip").value.trim();
   $("homeStatus").textContent = home ? "straight-line miles from " + home.label
@@ -1046,6 +1051,7 @@ function recompute() {
 
   const matched = DATA.filter(t => {
     if (home && maxDist < 1550 && (t._mi == null || t._mi > maxDist)) return false;
+    if (home && minDist > 0 && (t._mi == null || t._mi < minDist)) return false;
     if (q && !(t.team.toLowerCase().includes(q) || t.conf.toLowerCase().includes(q) ||
                t.mascot.toLowerCase().includes(q))) return false;
     if (stateFilter && t.state !== stateFilter) return false;
@@ -1223,6 +1229,7 @@ $("resetAll").addEventListener("click", () => {
   $("tuition").value = 70000;
   $("accept").value = 100;
   $("ncaa").value = 0;
+  $("distMin").value = 0;
   $("dist").value = 1550;
   $("search").value = "";
   $("state").value = "";
@@ -1308,7 +1315,10 @@ function filterSummary() {
   if (q) out.push(`Name, conference, or mascot contains "${q}"`);
   if ($("state").value) out.push("State: " + optText("state"));
   const home = homePoint();
-  if (home && +$("dist").value < 1550) out.push(`Within ${$("dist").value} miles of ${home.label}`);
+  const minMi = +$("distMin").value, maxMi = +$("dist").value;
+  if (home && minMi > 0 && maxMi < 1550) out.push(`Between ${minMi} and ${maxMi} miles of ${home.label}`);
+  else if (home && minMi > 0) out.push(`At least ${minMi} miles from ${home.label}`);
+  else if (home && maxMi < 1550) out.push(`Within ${maxMi} miles of ${home.label}`);
   for (const [id, label] of [["regionChecks", "Regions"], ["settingChecks", "Campus settings"],
       ["controlChecks", "School types"], ["religionChecks", "Religious affiliation"],
       ["genderChecks", "Student body"], ["sizeChecks", "Sizes"],
