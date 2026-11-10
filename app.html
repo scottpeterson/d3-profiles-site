@@ -147,9 +147,8 @@
   .count { font-size: 12px; color: var(--ink-3); margin: 2px 0 8px; }
 
   /* border-collapse and overflow:hidden both break sticky cells in Chrome, so
-     the corners come from the header cells and the wrapper stays overflow:visible
-     on desktop. The header then sticks to the top of the page while the 411
-     rows scroll under it. */
+     the corners come from the header cells. Detail tables sit in the #detail
+     scroller, where a sticky header works as is. */
   table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card);
           border: 1px solid var(--line); border-radius: 10px; }
   /* top: 6px keeps a sliver of page between the browser chrome and the stuck
@@ -159,6 +158,24 @@
              box-shadow: 0 -6px 0 0 var(--surface);
              text-transform: uppercase; letter-spacing: .04em; padding: 9px 8px; text-align: left;
              cursor: pointer; user-select: none; white-space: nowrap; }
+  /* The ranking table scrolls sideways inside .tableScroll at every width, so
+     the page never scrolls sideways. That wrapper clips a top-sticky header,
+     so a scroll handler translates each header cell down by how far the table
+     has scrolled past the top of the viewport (followHeader). The pin, rank,
+     and School cells stick to the wrapper's left edge; --c1 and --c2 hold the
+     rendered widths of the first two columns (sizeFrozen). */
+  .tableScroll thead th { position: relative; top: auto; z-index: 7; }
+  .tableScroll th:nth-child(-n+3), .tableScroll tbody tr:not(.asideHead) td:nth-child(-n+3) {
+    position: sticky; z-index: 5; }
+  .tableScroll thead th:nth-child(-n+3) { z-index: 8; }
+  .tableScroll th:nth-child(1), .tableScroll td:nth-child(1) { left: 0; }
+  .tableScroll th:nth-child(2), .tableScroll td:nth-child(2) { left: var(--c1, 32px); }
+  .tableScroll th:nth-child(3), .tableScroll td:nth-child(3) { left: calc(var(--c1, 32px) + var(--c2, 41px)); }
+  .tableScroll tbody tr:not(.asideHead) td:nth-child(-n+3) { background: var(--card); }
+  .tableScroll tbody tr:nth-child(even):not(.asideHead) td:nth-child(-n+3) { background: #fafbfd; }
+  .tableScroll tbody tr:not(.asideHead):hover td:nth-child(-n+3) { background: #eef3fb; }
+  .tableScroll tbody tr:not(.asideHead) td:nth-child(3) { box-shadow: 2px 0 4px rgba(16,24,40,.06); }
+  .tableScroll thead th:nth-child(3) { box-shadow: 0 -6px 0 0 var(--surface), 2px 0 4px rgba(16,24,40,.06); }
   thead th:first-child { border-top-left-radius: 9px; }
   thead th:last-child { border-top-right-radius: 9px; }
   thead th:hover { background: #1d3f78; }
@@ -188,8 +205,7 @@
   .g-d { background: var(--chip-d-bg); color: var(--chip-d-ink); }
   .g-f { background: var(--chip-f-bg); color: var(--chip-f-ink); }
   .empty { color: var(--ink-3); }
-  .tableScroll { overflow: visible; border-radius: 10px; }
-  @media (max-width: 900px) { .tableScroll { overflow-x: auto; } }
+  .tableScroll { overflow-x: auto; border-radius: 10px; }
   .methodology { background: var(--card); border: 1px solid var(--line); border-radius: 10px;
                  padding: 4px 16px; margin-top: 18px; font-size: 14px; color: var(--ink-2); }
   .methodology summary { cursor: pointer; font-weight: 600; padding: 10px 0; color: var(--ink); }
@@ -296,13 +312,7 @@
     .controlsWrap, .controls { grid-template-columns: 1fr; }
     .priorities { position: static; }
     .filterBar { flex-wrap: wrap; }
-    thead th:nth-child(2), tbody td:nth-child(2) {
-      position: sticky; left: 0; z-index: 5; }
-    thead th:nth-child(2) { z-index: 6; }
-    tbody td:nth-child(2) { background: var(--card);
-      box-shadow: 2px 0 4px rgba(16,24,40,.06); max-width: 150px; }
-    tbody tr:nth-child(even) td:nth-child(2) { background: #fafbfd; }
-    tbody tr:hover td:nth-child(2) { background: #eef3fb; }
+    .tableScroll td:nth-child(3) { max-width: 150px; }
     .hero { padding: 18px; gap: 16px; }
     .hero img { width: 80px; height: 80px; }
     .hero img.circle { padding: 8px; }
@@ -938,6 +948,28 @@ document.querySelectorAll("thead th[data-tip]").forEach(th => {
   th.addEventListener("mouseleave", () => { tip.style.display = "none"; });
 });
 
+// Frozen columns and the following header for the ranking table (see the
+// .tableScroll CSS). sizeFrozen measures the first two columns, so the third
+// sticks where the second ends; followHeader keeps the header cells over the
+// rows while the table scrolls past the top of the viewport.
+const scroller = document.querySelector(".tableScroll");
+const headCells = [...scroller.querySelectorAll("thead th")];
+function sizeFrozen() {
+  scroller.style.setProperty("--c1", headCells[0].offsetWidth + "px");
+  scroller.style.setProperty("--c2", headCells[1].offsetWidth + "px");
+}
+function followHeader() {
+  const r = scroller.querySelector("table").getBoundingClientRect();
+  const h = headCells[0].offsetHeight;
+  const y = r.top < 6 ? Math.min(6 - r.top, Math.max(0, r.height - h)) : 0;
+  const t = y ? `translateY(${y}px)` : "";
+  for (const th of headCells) th.style.transform = t;
+}
+new ResizeObserver(sizeFrozen).observe(headCells[1]);
+window.addEventListener("scroll", followHeader, { passive: true });
+window.addEventListener("resize", followHeader);
+sizeFrozen();
+
 document.querySelectorAll("thead th").forEach(th => {
   th.addEventListener("click", () => {
     const key = th.dataset.key;
@@ -1417,7 +1449,8 @@ function rosterMovesCard(t) {
   const caveat = `<p class="note">Class years are as each team lists them, and we cannot tell
     whether a team lists academic class or athletic eligibility. A listed underclassman who graduated,
     or who left to focus on academics, appears under "Left early" and lowers minutes retained. We cannot
-    separate those players from players who left the team for other reasons.</p>`;
+    separate those players from players who left the team for other reasons. The "Left early" tables
+    withhold player names.</p>`;
   return `<div class="dcard"><h3>Roster stability</h3>${stats}${caveat}${blocks}${tin}${none}</div>`;
 }
 
