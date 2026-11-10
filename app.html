@@ -457,6 +457,12 @@
       <label><input type="checkbox" value="Public" checked> Public</label>
       <label><input type="checkbox" value="Private" checked> Private</label>
     </div>
+    <h3>Religious affiliation</h3>
+    <div class="checks" id="religionChecks">
+      <label><input type="checkbox" value="yes" checked> Affiliated</label>
+      <label><input type="checkbox" value="no" checked> None reported</label>
+    </div>
+    <p class="cnote">Each school reports its own affiliation to IPEDS. The profile shows which one.</p>
     <h3>Student body</h3>
     <div class="checks" id="genderChecks">
       <label><input type="checkbox" value="Women" checked> Women's college</label>
@@ -1000,6 +1006,7 @@ function recompute() {
 
   const regions = checkedValues("regionChecks");
   const controls = checkedValues("controlChecks");
+  const religions = checkedValues("religionChecks");
   const genders = checkedValues("genderChecks");
   const sizes = checkedValues("sizeChecks");
   const maxTuition = +$("tuition").value;
@@ -1046,6 +1053,7 @@ function recompute() {
     if (t.control) {
       const c = t.control.startsWith("Public") ? "Public" : "Private";
       if (!controls.has(c)) return false;
+      if (!religions.has(t.religion ? "yes" : "no")) return false;
     }
     if (t.gender && !genders.has(t.gender)) return false;
     const bucket = sizeBucket(t.enrollment);
@@ -1200,7 +1208,7 @@ $("geoBtn").addEventListener("click", () => {
 
 $("resetAll").addEventListener("click", () => {
   for (const k of COMP_KEYS) $("w-" + k).value = 5;
-  document.querySelectorAll("#regionChecks input, #controlChecks input, #genderChecks input, #sizeChecks input, #settingChecks input, #degreeChecks input")
+  document.querySelectorAll("#regionChecks input, #controlChecks input, #religionChecks input, #genderChecks input, #sizeChecks input, #settingChecks input, #degreeChecks input")
     .forEach(c => { c.checked = true; });
   document.querySelectorAll("#majorChecks input").forEach(c => { c.checked = false; });
   $("citySize").value = "2";
@@ -1302,7 +1310,8 @@ function filterSummary() {
   const home = homePoint();
   if (home && +$("dist").value < 1550) out.push(`Within ${$("dist").value} miles of ${home.label}`);
   for (const [id, label] of [["regionChecks", "Regions"], ["settingChecks", "Campus settings"],
-      ["controlChecks", "School types"], ["genderChecks", "Student body"], ["sizeChecks", "Sizes"],
+      ["controlChecks", "School types"], ["religionChecks", "Religious affiliation"],
+      ["genderChecks", "Student body"], ["sizeChecks", "Sizes"],
       ["degreeChecks", "Highest degree offered"]]) {
     const note = groupNote(id, label);
     if (note) out.push(note);
@@ -1511,6 +1520,7 @@ function honorsRosterCard(t) {
 function campusCard(t) {
   const money = v => v != null ? "$" + fmt(v) : "";
   const f = [["Enrollment", fmt(t.enrollment)], ["Type", t.control],
+    ["Religious affiliation", t.religion],
     ["Tuition & fees", money(t.tuition)],
     ["Net price, all families", money(t.netPrice)],
     ["Acceptance rate", t.admit != null ? t.admit + "%" : ""],
