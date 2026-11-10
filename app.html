@@ -327,6 +327,9 @@
     .bars { gap: 4px; }
     .bars .rec { font-size: 12px; }
     #detail .dcard { overflow-x: auto; }
+    /* Detail table headers wrap on phones; a nowrap header wider than its
+       fixed column ran into the next one (2026-11-09). */
+    #detail thead th { white-space: normal; letter-spacing: 0; font-size: 11px; padding: 7px 4px; }
   }
 </style>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -1466,7 +1469,7 @@ function devCard(t) {
   const vsTyp = (rb, exp) => rb == null || exp == null ? ""
     : `<b style="color:${rb - exp >= 0 ? "#1e7d3c" : "#b34e18"}">${rb - exp >= 0 ? "+" : ""}${(rb - exp).toFixed(1)}</b>`;
   const tables = seasons.map(([label, rows], i) => `<h3${i ? ' style="margin-top:14px"' : ""}>Player development: returning players, ${label}</h3>
-    <table class="fixed">${cols(28, 10, 24, 24, 14)}<thead><tr><th>Player</th><th class="num">Class</th>
+    <table class="fixed">${cols(26, 12, 22, 22, 18)}<thead><tr><th>Player</th><th class="num">Class</th>
       <th class="num">Minutes</th><th class="num">Prod / 30 min</th>
       <th class="num" title="Year-over-year rate change compared with the average D3 player who started at the same production level and class. This is the fair comparison once regression to the mean is removed.">vs typical</th></tr></thead>
     <tbody>${rows.map(([p, cls, ma, mb, ra, rb, exp]) => `<tr><td>${p}</td><td class="num">${cls}</td>
