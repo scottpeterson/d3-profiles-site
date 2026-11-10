@@ -312,7 +312,11 @@
     .controlsWrap, .controls { grid-template-columns: 1fr; }
     .priorities { position: static; }
     .filterBar { flex-wrap: wrap; }
+    /* The frozen School cell is capped, so its flags wrap inside it instead
+       of painting over the columns that slide under it. */
     .tableScroll td:nth-child(3) { max-width: 150px; }
+    .tableScroll .schoolcell > div { min-width: 0; }
+    .tableScroll .flag { white-space: normal; }
     .hero { padding: 18px; gap: 16px; }
     .hero img { width: 80px; height: 80px; }
     .hero img.circle { padding: 8px; }
