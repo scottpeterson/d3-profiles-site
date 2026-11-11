@@ -355,10 +355,10 @@
 </header>
 <dialog id="welcome" data-ste="quote" aria-labelledby="welcomeTitle">
   <div class="wbody">
-    <h2 id="welcomeTitle" tabindex="-1" autofocus>Welcome to the D3 Stat Lab School Report Cards</h2>
+    <h2 id="welcomeTitle" tabindex="-1" autofocus>Welcome to The D3 Stat Lab School Report Cards</h2>
     <p>Thank you for being a customer. Your support helps me provide information and resources to the D3 community that hopefully enhance the experience for all.</p>
     <p>This site is for all lovers of Division III women's basketball. Whether you are a high school recruit viewing this information, a parent, a high school coach, or someone affiliated at the collegiate level, please understand that this is meant to provide information, not to make the decision for you on where to attend.</p>
-    <p>The data here is hopefully objectively provided and anywhere that subjective grading or weighting was applied, I've disclosed it. The intent is to easily narrow your focus to the criteria that matter the most to you, to your personal preference. It is up to you to verify any critical pieces of information that matter to you and, ultimately, to make the very human connections, relationships, and communication necessary to make such an important decision.</p>
+    <p data-verbatim>The data here is hopefully objectively provided and anywhere that subjective grading or weighting was applied, I've disclosed it. The intent is to easily narrow your focus to the criteria that matter the most to you, to your personal preference. It is up to you to verify any critical pieces of information that matter to you and, ultimately, to make the very human connections, relationships, and communication necessary to make such an important decision.</p>
     <p>No one should take the default rankings as useful on their own. The ranking is only useful when you set your own personal preferences for what's important to you and understand what each data input is measuring.</p>
     <p>The data here will hopefully allow you to more quickly spend your time on the truly subjective, truly difference-making aspects of selecting a school. If you ever have questions about any of the data or find data errors or inaccuracies, please <a href="contact.html">reach out</a> immediately.</p>
   </div>
@@ -540,13 +540,19 @@ Re-graded against the schools that match your filters.
 
 Move the sliders to re-rank.">Overall</th>
     <th class="num" data-key="reg" data-tip="Win percentage in each of the last 10 seasons, plus a bonus for making the NCAA field.
-Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18. A season with no games, such as 2020-21 for many programs, is skipped.
+Newer seasons count more.
+The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%.
+The weight keeps falling each season, to 11% for 2017-18.
+A season with no games, such as 2020-21 for many programs, is skipped.
 
 Graded by distance from the D3 average, so outlier programs stand apart.">Reg. Season</th>
-    <th class="num" data-key="trn" data-tip="NCAA tournament wins and how deep each run went, over the last 10 seasons.
-The 2021 tournament was canceled. Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.
+    <th class="num" data-key="trn" data-tip="NCAA Tournament wins and how deep each run went, over the last 10 seasons.
+The 2021 tournament was canceled.
+Newer seasons count more.
+The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%.
+The weight keeps falling each season, to 11% for 2017-18.
 
-Source: NCAA tournament results, 1982 to present.">Tourn.</th>
+Source: NCAA Tournament results, 1982 to present.">Tourn.</th>
     <th class="num" data-key="coach" data-tip="Stability of the head-coaching position.
 • Current head coach's tenure in seasons.
 • Minus a penalty for every head-coaching change in the last 10 years.
@@ -559,7 +565,7 @@ No grade here covers personality or coaching style.
 Source: head-coach history back to each program's first season.">Coaching</th>
     <th class="num" data-key="roster" data-tip="Two measures:
 • Retention, two thirds: the share of non-senior minutes that came back. Losing a 500-minute starter counts far more than bench churn.
-• Freshman share of team minutes, one third, pooled over the last three seasons.
+• First-year share of team minutes, one third, pooled over the last three seasons.
 Seniors and grad students who leave count as graduations.
 
 Caveat: class years come from team roster pages.
@@ -574,7 +580,7 @@ Graded by distance from the D3 average. Source: IPEDS 2023.">Acad.</th>
 • Production rate: points + rebounds + assists per 30 minutes, for 100+ minutes in both seasons.
 • Role: minutes played.
 
-Each is compared with the typical D3 player at the same starting level and class. Holding an elite rate counts as development, and routine freshman-to-sophomore gains don't inflate the grade.
+Each is compared with the typical D3 player at the same starting level and class. Holding an elite rate counts as development, and routine first-year-to-sophomore gains don't inflate the grade.
 
 Minutes-weighted across every offseason from 2023-24 to 2025-26. Graded by distance from the D3 average.">Develop.</th>
     <th class="num" data-key="ath" data-tip="Strength of the whole athletic department, every sport.
@@ -594,18 +600,18 @@ A school missing one measure is graded on the other.
 Source: IPEDS.">Finances</th>
     <th class="num" data-key="wpct" data-tip="2026-27 record, computed from game results.
 Sorts by win percentage.">'26-27</th>
-    <th class="num" data-key="ncaa10" data-tip="NCAA tournament appearances in the last 10 seasons.
+    <th class="num" data-key="ncaa10" data-tip="NCAA Tournament appearances in the last 10 seasons.
 The 2021 tournament was cancelled (COVID), so 9 is a perfect record.
 
 Hover a row's number for the most recent appearance year.">NCAA (10y)</th>
     <th data-key="coachName" data-tip="Current head coach and their first season leading the program.">Coach</th>
-    <th class="num" data-key="retention" data-tip="Share of freshman, sophomore, and junior minutes that came back the next season, averaged over the last two offseasons.
+    <th class="num" data-key="retention" data-tip="Share of first-year, sophomore, and junior minutes that came back the next season, averaged over the last two offseasons.
 Weighting by minutes makes a starter leaving matter far more than a walk-on leaving.
 Seniors and grad students who leave count as graduations.
 
 Class years are as teams list them. See the Roster caveat.">Retention</th>
-    <th class="num" data-key="frMin" data-tip="Freshman share of all team minutes, pooled over the last three seasons.
-It shows whether freshmen play here.">FR Min%</th>
+    <th class="num" data-key="frMin" data-tip="First-year share of all team minutes, pooled over the last three seasons.
+It shows whether first-years play here.">FR Min%</th>
     <th class="num" data-key="enrollment" data-tip="Total enrollment, undergrad + grad (U.S. Dept. of Education IPEDS, 2023).">Enroll</th>
     <th class="num" data-key="tuition" data-tip="Published tuition and fees for 2023-24 (IPEDS).
 In-state rate for public schools. Service academies charge none.">Tuition</th>
@@ -643,10 +649,10 @@ Blank for merged campuses that report as one school.">Undergrads since 2013</th>
   position over the last 10 years. Stability usually signals overall program health. A coach's effect on the
   program shows more in the Reg. season, Tournament, Roster, and Development grades. No grade here
   covers personality or coaching style.</p>
-  <p><strong>Roster stability:</strong> minutes-weighted retention (two thirds) and freshman
+  <p><strong>Roster stability:</strong> minutes-weighted retention (two thirds) and first-year
   share of minutes (one third). Retention is the share of non-senior minutes that came back the
   next season, found by comparing each team's consecutive roster pages. Seniors and graduate
-  students who leave do not count against a program. Freshman share of minutes pools the minutes
+  students who leave do not count against a program. First-year share of minutes pools the minutes
   of the last three rosters.</p>
   <p><strong>Roster grade caveat, class years:</strong> the class year for each player comes
   from the team's own roster page. We do not know whether a team lists academic class or athletic
@@ -746,7 +752,7 @@ Blank for merged campuses that report as one school.">Undergrads since 2013</th>
       <tr data-topic="finances"><td>Heightened Cash Monitoring</td><td><a href="https://studentaid.gov/data-center/school/hcm" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>June 1, 2026</td></tr>
       <tr data-topic="athletics"><td>Directors' Cup</td><td><a href="https://nacda.com/sports/2018/7/17/directorscup-nacda-directorscup-previous-standings-html.aspx" target="_blank" rel="noopener">NACDA</a> final Division III standings</td><td>2014-15 to 2025-26</td></tr>
       <tr><td>Season records</td><td><a href="https://stats.ncaa.org/" target="_blank" rel="noopener">stats.ncaa.org</a>, plus game results for the current season</td><td>Every season on file</td></tr>
-      <tr data-topic="athletics"><td>NCAA tournament history</td><td>NCAA Division III tournament results</td><td>1982 to present</td></tr>
+      <tr data-topic="athletics"><td>NCAA Tournament history</td><td>NCAA Division III tournament results</td><td>1982 to present</td></tr>
       <tr><td>D3hoops poll rank</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> Top 25 poll</td><td>2026-27</td></tr>
       <tr><td>Head coaches</td><td>Each team's athletics website</td><td>Every season on file</td></tr>
       <tr><td>Rosters, class years, minutes, player stats</td><td>Each team's roster and statistics pages</td><td>Every season on file</td></tr>
@@ -1398,13 +1404,13 @@ function trajectoryCard(t) {
   const bars = d.seasons.map(([y, w, l, ncaa]) => {
     const played = w + l > 0;
     const pct = played ? w / (w + l) : 0;
-    return `<div class="bar" title="${y - 1}-${String(y).slice(2)}: ${played ? w + "-" + l : "no season"}${ncaa ? " · NCAA tournament" : ""}">
+    return `<div class="bar" title="${y - 1}-${String(y).slice(2)}: ${played ? w + "-" + l : "no season"}${ncaa ? " · NCAA Tournament" : ""}">
       <div class="rec">${ncaa ? "★ " : ""}${played ? w + "-" + l : ""}</div>
       <div class="fill" style="height:${Math.round(pct * 100)}px;background:${bar}"></div>
       <div class="yr">'${String(y).slice(2)}</div></div>`;
   }).join("");
   const a = d.alltime;
-  return `<div class="dcard"><h3>Program trajectory: win% by season (★ = NCAA tournament)</h3>
+  return `<div class="dcard"><h3>Program trajectory: win% by season (★ = NCAA Tournament)</h3>
     <div class="bars">
       <div class="gl" style="bottom:18px"></div><div class="gt" style="bottom:18px">0%</div>
       <div class="gl mid" style="bottom:68px"></div><div class="gt" style="bottom:68px">50%</div>
@@ -1415,12 +1421,12 @@ function trajectoryCard(t) {
 
 function tournamentCard(t) {
   const runs = t.detail.tourn;
-  if (!runs.length) return `<div class="dcard"><h3>NCAA tournament history</h3>
-    <p class="note">No NCAA tournament appearances on record (1982-present).</p></div>`;
+  if (!runs.length) return `<div class="dcard"><h3>NCAA Tournament history</h3>
+    <p class="note">No NCAA Tournament appearances on record (1982-present).</p></div>`;
   const rows = runs.map(([y, rnd, w, champ]) => `<tr>
     <td class="num">${y}</td><td>${champ ? "🏆 National Champion" : "Reached " + rnd}</td>
     <td class="num">${w}</td></tr>`).join("");
-  return `<div class="dcard"><h3>NCAA tournament history: ${runs.length} appearance${runs.length > 1 ? "s" : ""}</h3>
+  return `<div class="dcard"><h3>NCAA Tournament history: ${runs.length} appearance${runs.length > 1 ? "s" : ""}</h3>
     <table><thead><tr><th class="num">Year</th><th>Result</th><th class="num">Wins</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 }
