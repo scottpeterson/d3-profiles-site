@@ -3,6 +3,7 @@
 <head><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="contrast-allow" content=".hero">
 <meta name="description" content="Grades for every D3 women's basketball program, with school filters and the source of every figure.">
 <meta name="color-scheme" content="light">
 <meta name="darkreader-lock">
@@ -111,9 +112,9 @@
   #welcomeGo:hover { background: #1a4fb4; }
   /* "i" buttons open the method notes and sources tagged with the card's topic. */
   .control { position: relative; }
-  .control h2 .info { margin-left: auto; flex: none; width: 32px; height: 32px; border: 0; border-radius: 8px;
+  .control h2 .info { margin-left: auto; flex: none; width: 32px; height: 32px; border: 1px solid transparent; border-radius: 8px;
                       background: transparent; color: var(--ink-3); display: grid; place-items: center; cursor: pointer; }
-  .control h2 .info:hover { background: #e8effc; color: #1a4fb4; }
+  .control h2 .info:hover { background: #e8effc; color: #1a4fb4; border-color: #1a4fb4; }
   .control h2 .info[aria-expanded="true"] { background: #1a4fb4; color: #fff; }
   .control > .infoPop { position: absolute; z-index: 30; top: 54px; left: 8px; right: 8px; margin: 0;
              max-height: 380px; overflow-y: auto; background: var(--card); border: 1px solid var(--field-line);
@@ -178,7 +179,8 @@
   .tableScroll thead th:nth-child(3) { box-shadow: 0 -6px 0 0 var(--surface), 2px 0 4px rgba(16,24,40,.06); }
   thead th:first-child { border-top-left-radius: 9px; }
   thead th:last-child { border-top-right-radius: 9px; }
-  thead th:hover { background: #1d3f78; }
+  /* only sortable headers (data-key) get a hover fill; detail-card headers have grey text */
+  thead th[data-key]:hover { background: #1d3f78; }
   thead th .dir { opacity: .9; font-size: 12px; margin-left: 3px; }
   thead th.num, td.num { text-align: center; }
   tbody td { padding: 7px 8px; border-top: 1px solid var(--line); font-size: 14px;
@@ -225,8 +227,8 @@
               filter: drop-shadow(0 2px 8px rgba(0,0,0,.2)); }
   .hero img.circle { background: #fff; border-radius: 50%; padding: 12px; }
   .hero h2 { font-size: 32px; margin: 0; letter-spacing: -.02em; }
-  .hmascot { font-style: italic; opacity: .9; font-size: 16px; margin-top: 2px; }
-  .hsub { opacity: .88; font-size: 14px; margin-top: 8px; }
+  .hmascot { font-style: italic; font-size: 16px; margin-top: 2px; }
+  .hsub { font-size: 14px; margin-top: 8px; }
   .dcard { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-top: 16px;
            box-shadow: 0 1px 3px rgba(16,24,40,.06); }
   .dcard h3 { font-size: 16px; margin: 0 0 12px; }
@@ -238,6 +240,9 @@
               letter-spacing: .04em; color: var(--ink-3); padding: 4px 6px;
               border-bottom: 1px solid var(--line); background: none; position: static; }
   .dcard td { padding: 5px 6px; border-bottom: 1px solid var(--line); }
+  .dcard th.sortable { cursor: pointer; }
+  .dcard th.sortable:hover, .dcard th.sortable:focus-visible { background: #eef3fb; color: var(--ink); }
+  .dcard th .dir { font-size: 11px; margin-left: 3px; }
   .dcard tr:last-child td { border-bottom: none; }
   .dcard th.num, .dcard td.num { text-align: center; }
   .dtwo { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -535,11 +540,11 @@ Re-graded against the schools that match your filters.
 
 Move the sliders to re-rank.">Overall</th>
     <th class="num" data-key="reg" data-tip="Win percentage in each of the last 10 seasons, plus a bonus for making the NCAA field.
-Recent seasons count more: each season back counts about 78% of the one after it.
+Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.
 
 Graded by distance from the D3 average, so outlier programs stand apart.">Reg. Season</th>
-    <th class="num" data-key="trn" data-tip="NCAA tournament wins and how deep each run went, over the last 10 tournaments.
-Recent tournaments count more.
+    <th class="num" data-key="trn" data-tip="NCAA tournament wins and how deep each run went, over the last 10 seasons.
+The 2021 tournament was canceled. Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.
 
 Source: NCAA tournament results, 1982 to present.">Tourn.</th>
     <th class="num" data-key="coach" data-tip="Stability of the head-coaching position.
@@ -626,7 +631,7 @@ Blank for merged campuses that report as one school.">Undergrads since 2013</th>
   <summary>Methodology</summary>
   <p data-topic="priorities"><strong>Grades</strong> measure distance from the D3 average in standard deviations (σ).
   A+ starts at +2.25σ. C covers the average.</p>
-  <p data-topic="priorities">Grades cover the last 10 seasons. Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18.</p>
+  <p data-topic="priorities">The Reg. season and Tournament grades cover the last 10 seasons. Newer seasons count more. The 2026-27 season counts in full, 2025-26 counts 78%, 2024-25 counts 61%, and 2023-24 counts 47%. The weight keeps falling each season, to 11% for 2017-18. The data sources table lists the period for every other grade.</p>
   <p data-topic="priorities">Each letter covers a fixed σ range, so the number of schools at each letter changes from
   grade to grade. A historic outlier grades far above a strong program, and programs with similar
   resumes grade alike. Hover any grade for its exact σ and percentile.</p>
@@ -740,7 +745,7 @@ Blank for merged campuses that report as one school.">Undergrads since 2013</th>
       <tr data-topic="finances"><td>Financial responsibility composite score</td><td><a href="https://studentaid.gov/data-center/school/composite-scores" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>Newest fiscal year listed, 2021 to 2023</td></tr>
       <tr data-topic="finances"><td>Heightened Cash Monitoring</td><td><a href="https://studentaid.gov/data-center/school/hcm" target="_blank" rel="noopener">Federal Student Aid</a>, U.S. Department of Education</td><td>June 1, 2026</td></tr>
       <tr data-topic="athletics"><td>Directors' Cup</td><td><a href="https://nacda.com/sports/2018/7/17/directorscup-nacda-directorscup-previous-standings-html.aspx" target="_blank" rel="noopener">NACDA</a> final Division III standings</td><td>2014-15 to 2025-26</td></tr>
-      <tr><td>Season records</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> team pages, plus game results for the current season</td><td>Every season on file</td></tr>
+      <tr><td>Season records</td><td><a href="https://stats.ncaa.org/" target="_blank" rel="noopener">stats.ncaa.org</a>, plus game results for the current season</td><td>Every season on file</td></tr>
       <tr data-topic="athletics"><td>NCAA tournament history</td><td>NCAA Division III tournament results</td><td>1982 to present</td></tr>
       <tr><td>D3hoops poll rank</td><td><a href="https://www.d3hoops.com/" target="_blank" rel="noopener">D3hoops.com</a> Top 25 poll</td><td>2026-27</td></tr>
       <tr><td>Head coaches</td><td>Each team's athletics website</td><td>Every season on file</td></tr>
@@ -1495,7 +1500,8 @@ function devCard(t) {
       <th class="num">Minutes</th><th class="num">Prod / 30 min</th>
       <th class="num" title="Year-over-year rate change compared with the average D3 player who started at the same production level and class. This is the fair comparison once regression to the mean is removed.">vs typical</th></tr></thead>
     <tbody>${rows.map(([p, cls, ma, mb, ra, rb, exp]) => `<tr><td>${p}</td><td class="num">${cls}</td>
-      <td class="num">${fmtD(ma, mb, 0)}</td><td class="num">${fmtD(ra, rb, 1)}</td>
+      <td class="num"${ma == null || mb == null ? "" : ` data-sort="${mb - ma}"`}>${fmtD(ma, mb, 0)}</td>
+      <td class="num"${ra == null || rb == null ? "" : ` data-sort="${rb - ra}"`}>${fmtD(ra, rb, 1)}</td>
       <td class="num">${vsTyp(rb, exp)}</td></tr>`).join("")}</tbody></table>`).join("");
   return `<div class="dcard">${tables}
     <div class="note">Production = points + rebounds + assists per 30 minutes (rates shown for 100+ minute
@@ -1691,6 +1697,51 @@ function renderCompare(ts) {
 // The standalone report carries every profile in the page. The subscriber
 // app (generate_school_profiles.py --app) fetches a profile when it opens.
 const loadDetails = window.PROFILES ? window.PROFILES.loadDetails : async () => {};
+// Profile card tables sort like the rankings table (design rule 2026-10-04): click or Enter on a header,
+// numbers first from high to low, text from A to Z, blanks always last.
+const CLASS_ORDER = {FR: 1, SO: 2, JR: 3, SR: 4, GR: 5};
+function cellKey(td) {
+  if (td.dataset.sort != null) return parseFloat(td.dataset.sort);
+  const t = td.textContent.trim();
+  if (t === "") return null;
+  if (t in CLASS_ORDER) return CLASS_ORDER[t];
+  const h = t.match(/^(\d)'(\d{1,2})/);
+  if (h) return +h[1] * 12 + +h[2];
+  const n = t.replace(/[,$%]/g, "").match(/^[+-]?\d+(\.\d+)?/);
+  return n ? parseFloat(n[0]) : t.toLowerCase();
+}
+function makeSortable(root) {
+  root.querySelectorAll(".dcard table").forEach(tbl => {
+    const heads = [...tbl.querySelectorAll("thead th")];
+    const body = tbl.tBodies[0];
+    if (!body || body.rows.length < 2 || [...body.rows].some(r => r.cells.length !== heads.length)) return;
+    heads.forEach((th, i) => {
+      th.classList.add("sortable");
+      th.tabIndex = 0;
+      th.setAttribute("aria-sort", "none");
+      const go = () => {
+        const rows = [...body.rows];
+        const numeric = rows.some(r => typeof cellKey(r.cells[i]) === "number");
+        const cur = th.getAttribute("aria-sort");
+        const asc = cur === "none" ? !numeric : cur === "descending";
+        rows.sort((a, b) => {
+          const x = cellKey(a.cells[i]), y = cellKey(b.cells[i]);
+          if (x === null || y === null) return x === y ? 0 : x === null ? 1 : -1;
+          const c = x < y ? -1 : x > y ? 1 : 0;
+          return asc ? c : -c;
+        });
+        rows.forEach(r => body.appendChild(r));
+        heads.forEach(h => { h.setAttribute("aria-sort", "none"); h.querySelector(".dir")?.remove(); });
+        th.setAttribute("aria-sort", asc ? "ascending" : "descending");
+        th.insertAdjacentHTML("beforeend", `<span class="dir">${asc ? "▲" : "▼"}</span>`);
+      };
+      th.addEventListener("click", go);
+      th.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+  });
+}
+
+let listScrollY = 0;
 async function syncDetail() {
   const hash = location.hash.replace(/^#/, "");
   const cmp = hash.match(/^compare=(.+)$/);
@@ -1700,13 +1751,19 @@ async function syncDetail() {
   if (location.hash.replace(/^#/, "") !== hash) return;
   if (ts.length >= 2) renderCompare(ts);
   else if (t) renderDetail(t);
+  makeSortable($("detail"));
   if (t || ts.length >= 2) {
+    // remember where the rankings list was, so closing the profile returns there
+    if ($("detail").classList.contains("open") === false) listScrollY = window.scrollY;
     $("detail").classList.add("open");
     document.body.classList.add("noscroll");
     $("detail").scrollTop = 0;
   } else {
+    const wasOpen = $("detail").classList.contains("open");
     $("detail").classList.remove("open");
     document.body.classList.remove("noscroll");
+    // an empty hash makes the browser jump to the top; put the list back where it was
+    if (wasOpen) window.scrollTo(0, listScrollY);
   }
 }
 $("rows").addEventListener("click", e => {
