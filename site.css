@@ -127,6 +127,11 @@ figure.shot { margin: 0; }
 figure.shot img { display: block; width: 100%; height: auto; border-radius: 12px; background: var(--card);
                   box-shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 4px 16px rgba(16, 24, 40, .08); }
 figure.narrowShot img { max-width: 300px; margin: 0 auto; }
+/* An image of several cards sits on the page surface with no frame of its own. */
+figure.shot.bare img { background: none; box-shadow: none; border-radius: 0;
+  /* The image has 16px of padding around the 848px-wide cards for their shadows;
+     pull it out so the card edges line up with the text column. */
+  width: calc(100% * 880 / 848); max-width: none; margin: calc(-100% * 16 / 848); }
 figure.shot figcaption { margin-top: 8px; font-size: 14px; color: var(--ink-3); }
 @media (max-width: 900px) {
   .feature { grid-template-columns: 1fr; gap: 16px; }
