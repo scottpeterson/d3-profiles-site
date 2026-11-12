@@ -814,6 +814,12 @@ function netFor(t) {
 const $ = (id) => document.getElementById(id);
 const fmt = (n) => n == null ? "" : n.toLocaleString("en-US");
 const sig = (z) => (z >= 0 ? "+" : "") + z.toFixed(2) + "σ";
+// English ordinal for a percentile: 1st, 2nd, 3rd, 11th, 12th, 13th, 21st, 22nd.
+const ordinal = (n) => {
+  const k = Math.round(n), t = k % 100;
+  const suffix = t >= 11 && t <= 13 ? "th" : ({1: "st", 2: "nd", 3: "rd"}[k % 10] || "th");
+  return k + suffix;
+};
 
 /* ---------- Distance from home ---------- */
 function milesBetween(a, b) {
@@ -1145,15 +1151,15 @@ function rowHtml(t, rank, overall) {
       <td><div class="schoolcell">${t.logo ? '<img class="logo" src="' + t.logo + '" alt="">' : '<span class="logo"></span>'}<div><span class="school"${t.mascot ? ' title="' + t.mascot + '"' : ""}>${t.team}</span>${flags(t)}
         <div class="sub">${t.conf}${t.city ? " · " + t.city + ", " + t.state : ""}${t._mi != null ? " · " + fmt(t._mi) + " mi" : ""}</div></div></div></td>
       <td class="num">${overall}</td>
-      <td class="num" title="${sig(t.comps.reg)} · ${t.pcts.reg}th pct">${chip(t.grades.reg)}</td>
-      <td class="num" title="${sig(t.comps.trn)} · ${t.pcts.trn}th pct">${chip(t.grades.trn)}</td>
-      <td class="num" title="${sig(t.comps.coach)} · ${t.pcts.coach}th pct">${chip(t.grades.coach)}</td>
-      <td class="num" title="${sig(t.comps.roster)} · ${t.pcts.roster}th pct">${chip(t.grades.roster)}</td>
-      <td class="num" title="${sig(t.comps.acad)} · ${t.pcts.acad}th pct">${chip(t.grades.acad)}</td>
-      <td class="num" title="${sig(t.comps.dev)} · ${t.pcts.dev}th pct">${chip(t.grades.dev)}</td>
-      <td class="num" title="${sig(t.comps.ath)} · ${t.pcts.ath}th pct">${chip(t.grades.ath)}</td>
-      <td class="num" title="${sig(t.comps.cost)} · ${t.pcts.cost}th pct">${chip(t.grades.cost)}</td>
-      <td class="num" title="${sig(t.comps.health)} · ${t.pcts.health}th pct">${chip(t.grades.health)}</td>
+      <td class="num" title="${sig(t.comps.reg)} · ${ordinal(t.pcts.reg)} pct">${chip(t.grades.reg)}</td>
+      <td class="num" title="${sig(t.comps.trn)} · ${ordinal(t.pcts.trn)} pct">${chip(t.grades.trn)}</td>
+      <td class="num" title="${sig(t.comps.coach)} · ${ordinal(t.pcts.coach)} pct">${chip(t.grades.coach)}</td>
+      <td class="num" title="${sig(t.comps.roster)} · ${ordinal(t.pcts.roster)} pct">${chip(t.grades.roster)}</td>
+      <td class="num" title="${sig(t.comps.acad)} · ${ordinal(t.pcts.acad)} pct">${chip(t.grades.acad)}</td>
+      <td class="num" title="${sig(t.comps.dev)} · ${ordinal(t.pcts.dev)} pct">${chip(t.grades.dev)}</td>
+      <td class="num" title="${sig(t.comps.ath)} · ${ordinal(t.pcts.ath)} pct">${chip(t.grades.ath)}</td>
+      <td class="num" title="${sig(t.comps.cost)} · ${ordinal(t.pcts.cost)} pct">${chip(t.grades.cost)}</td>
+      <td class="num" title="${sig(t.comps.health)} · ${ordinal(t.pcts.health)} pct">${chip(t.grades.health)}</td>
       <td class="num">${t.record || ''}</td>
       <td class="num" title="${t.lastNcaa ? "Last appearance: " + t.lastNcaa : "No appearances on record"}">${t.ncaa10}</td>
       <td>${t.coach}${t.coachSince ? '<div class="sub">since ' + t.coachSince + "</div>" : ""}</td>
@@ -1446,9 +1452,9 @@ function styleCard(t) {
   }
   return `<div class="dcard"><h3>Playing style: ${identity}, ${tempo.toLowerCase()}</h3>
     <div class="statRow">
-      <div class="stat"><div class="v">${s.o.toFixed(1)}</div><div class="lbl">Adj. offense (${s.oPct}th pct)</div></div>
-      <div class="stat"><div class="v">${s.d.toFixed(1)}</div><div class="lbl">Adj. defense (${s.dPct}th pct)</div></div>
-      <div class="stat"><div class="v">${s.t.toFixed(1)}</div><div class="lbl">Tempo, poss/40 (${s.tPct}th pct)</div></div>
+      <div class="stat"><div class="v">${s.o.toFixed(1)}</div><div class="lbl">Adj. offense (${ordinal(s.oPct)} pct)</div></div>
+      <div class="stat"><div class="v">${s.d.toFixed(1)}</div><div class="lbl">Adj. defense (${ordinal(s.dPct)} pct)</div></div>
+      <div class="stat"><div class="v">${s.t.toFixed(1)}</div><div class="lbl">Tempo, poss/40 (${ordinal(s.tPct)} pct)</div></div>
     </div>
     <div class="note">Adjusted points scored/allowed per 100 possessions and pace, ${CUR_LABEL}.
     Percentiles vs all of D3; defense percentile is inverted (stingier = higher). ${trend}</div></div>`;
